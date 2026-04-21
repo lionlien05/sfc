@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Dashboard · SFC Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--forest:#1A4A1C;--forest-2:#2C6B2F;--forest-3:#3E8C42;--forest-light:#6DB870;--forest-pale:#E8F4E8;--forest-xpale:#F2FAF2;--amber:#B86A00;--amber-2:#D4820A;--amber-pale:#FDF3DC;--amber-xpale:#FFFBF0;--coral:#B84430;--coral-pale:#FBF0EC;--sky:#1A5C8A;--sky-2:#2A7BC4;--sky-pale:#E6F2FB;--purple:#5B3FA0;--purple-pale:#F0EAFB;--ink:#0F1A10;--ink-2:#2A3A2C;--ink-3:#4A5E4C;--ink-4:#7A8E7C;--ink-5:#B0BDB2;--surface:#F6F8F6;--card:#FFFFFF;--border:rgba(26,74,28,0.1);--r:12px;--r-sm:8px;--r-lg:16px;--sh:0 1px 3px rgba(15,26,16,0.07),0 4px 16px rgba(15,26,16,0.05);--sh-md:0 2px 8px rgba(15,26,16,0.08),0 8px 32px rgba(15,26,16,0.08)}
+body{font-family:'Inter',sans-serif;background:var(--surface);color:var(--ink);font-size:13px;display:flex;min-height:100vh;line-height:1.5}
+/* SIDEBAR */
+.sidebar{width:230px;min-width:230px;background:var(--forest);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:50;overflow-y:auto}
+.logo-wrap{padding:20px 16px 16px;border-bottom:1px solid rgba(255,255,255,0.08)}
+.logo-mark{width:34px;height:34px;background:rgba(255,255,255,0.12);border-radius:9px;display:flex;align-items:center;justify-content:center;margin-bottom:9px}
+.logo-mark svg{width:18px;height:18px;color:#fff}
+.logo-name{font-family:'Syne',sans-serif;font-size:13.5px;font-weight:700;color:#fff}
+.logo-sub{font-size:9.5px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.07em;margin-top:1px}
+.nav-sec{padding:12px 8px 2px}
+.nav-lbl{font-size:9px;color:rgba(255,255,255,0.32);letter-spacing:0.12em;text-transform:uppercase;padding:0 8px;margin-bottom:4px;font-weight:600}
+.nav-a{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:var(--r-sm);color:rgba(255,255,255,0.55);font-size:12.5px;cursor:pointer;transition:all 0.13s;margin-bottom:1px;text-decoration:none}
+.nav-a:hover{background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.9)}
+.nav-a.active{background:rgba(255,255,255,0.15);color:#fff;font-weight:500}
+.nav-a svg{width:14px;height:14px;flex-shrink:0}
+.nb{margin-left:auto;background:var(--coral);color:#fff;font-size:9px;font-weight:700;padding:1px 5px;border-radius:9px;min-width:16px;text-align:center}
+.nb-a{margin-left:auto;background:var(--amber-2);color:#fff;font-size:9px;font-weight:700;padding:1px 5px;border-radius:9px}
+.nav-div{margin:5px 8px;border:none;border-top:1px solid rgba(255,255,255,0.07)}
+.sb-foot{margin-top:auto;padding:12px 8px;border-top:1px solid rgba(255,255,255,0.08)}
+.admin-row{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:var(--r-sm);background:rgba(255,255,255,0.07);cursor:pointer}
+.admin-row:hover{background:rgba(255,255,255,0.11)}
+.admin-av{width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,0.18);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex-shrink:0;font-family:'Syne',sans-serif}
+.admin-n{font-size:11.5px;font-weight:500;color:#fff}
+.admin-r{font-size:10px;color:rgba(255,255,255,0.4)}
+/* MAIN */
+.main{flex:1;margin-left:230px;display:flex;flex-direction:column;min-width:0}
+.topbar{background:var(--card);border-bottom:1px solid var(--border);padding:0 26px;height:54px;display:flex;align-items:center;position:sticky;top:0;z-index:10;gap:10px}
+.tb-title{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:var(--ink);letter-spacing:-0.01em}
+.tb-sub{font-size:11px;color:var(--ink-4);margin-top:1px}
+.tb-right{margin-left:auto;display:flex;align-items:center;gap:7px}
+.icon-btn{width:32px;height:32px;border-radius:50%;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;color:var(--ink-3);transition:all 0.13s}
+.icon-btn:hover{background:var(--forest-xpale);color:var(--forest-2)}
+.icon-btn svg{width:14px;height:14px}
+.ndot{position:absolute;top:6px;right:6px;width:6px;height:6px;background:var(--coral);border-radius:50%;border:1.5px solid #fff}
+.content{padding:22px 26px 48px}
+/* SHARED COMPONENTS */
+.sec-hd{display:flex;align-items:center;gap:10px;margin-bottom:14px;margin-top:4px}
+.sec-badge{font-size:9.5px;font-weight:700;padding:3px 9px;border-radius:20px;text-transform:uppercase;letter-spacing:0.07em}
+.b-sky{background:var(--sky-pale);color:var(--sky)}
+.b-coral{background:var(--coral-pale);color:var(--coral)}
+.b-forest{background:var(--forest-xpale);color:var(--forest-2)}
+.b-amber{background:var(--amber-xpale);color:var(--amber)}
+.sec-line{flex:1;height:1px;background:var(--border)}
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;margin-bottom:22px}
+.sc{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);padding:16px 16px 14px;position:relative;overflow:hidden;transition:box-shadow 0.15s}
+.sc::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:var(--r-lg) var(--r-lg) 0 0}
+.sc-sky::before{background:var(--sky-2)}.sc-gr::before{background:var(--forest-3)}.sc-amb::before{background:var(--amber-2)}.sc-red::before{background:var(--coral)}
+.sc:hover{box-shadow:var(--sh-md)}
+.sc-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:9px}
+.sc-ic{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center}
+.sc-ic svg{width:17px;height:17px}
+.ic-sky{background:var(--sky-pale);color:var(--sky-2)}.ic-gr{background:var(--forest-xpale);color:var(--forest-2)}.ic-amb{background:var(--amber-xpale);color:var(--amber-2)}.ic-red{background:var(--coral-pale);color:var(--coral)}
+.sc-trend{font-size:10.5px;font-weight:500}
+.t-up{color:var(--forest-3)}.t-dn{color:var(--coral)}.t-neu{color:var(--ink-4)}
+.sc-val{font-family:'Syne',sans-serif;font-size:28px;font-weight:700;color:var(--ink);line-height:1;margin-bottom:3px}
+.sc-lbl{font-size:12px;font-weight:500;color:var(--ink-2)}
+.sc-sub{font-size:11px;color:var(--ink-4);margin-top:2px}
+.panel{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden}
+.ph{padding:13px 17px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:8px}
+.ph-title{font-size:13px;font-weight:600;color:var(--ink)}
+.ph-act{font-size:11.5px;color:var(--forest-2);cursor:pointer;font-weight:500;padding:3px 7px;border-radius:5px;transition:background 0.13s;text-decoration:none}
+.ph-act:hover{background:var(--forest-xpale)}
+.pb{padding:13px 17px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-bottom:18px}
+.g31{display:grid;grid-template-columns:1.8fr 1fr;gap:15px;margin-bottom:18px}
+.ptrack{height:5px;background:var(--surface);border-radius:3px;overflow:hidden;width:100%}
+.pfill{height:100%;background:linear-gradient(90deg,var(--forest-3),var(--forest-light));border-radius:3px}
+.pill{font-size:9.5px;font-weight:600;padding:2px 8px;border-radius:9px;white-space:nowrap}
+.p-gr{background:var(--forest-xpale);color:var(--forest-2)}.p-amb{background:var(--amber-xpale);color:var(--amber)}.p-red{background:var(--coral-pale);color:var(--coral)}.p-sky{background:var(--sky-pale);color:var(--sky)}.p-gray{background:var(--surface);color:var(--ink-3);border:1px solid var(--border)}
+.av{border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;font-family:'Syne',sans-serif}
+.av-s{width:28px;height:28px;font-size:10px}
+.av-t{background:var(--sky-pale);color:var(--sky)}.av-g{background:var(--amber-xpale);color:var(--amber)}.av-a{background:var(--forest-xpale);color:var(--forest-2)}
+.urow{display:flex;align-items:center;gap:9px;padding:8px 0;border-bottom:1px solid var(--border)}
+.urow:last-child{border-bottom:none}
+.uinfo{flex:1;min-width:0}
+.un{font-size:12.5px;font-weight:500;color:var(--ink)}
+.us{font-size:11px;color:var(--ink-4);margin-top:1px}
+.btn{padding:6px 13px;border-radius:var(--r-sm);font-size:12px;font-weight:500;cursor:pointer;border:1px solid var(--border);background:var(--surface);color:var(--ink-3);font-family:'Inter',sans-serif;transition:all 0.13s;display:inline-flex;align-items:center;gap:5px;text-decoration:none}
+.btn:hover{background:var(--card);color:var(--ink);border-color:rgba(26,74,28,0.2)}
+.btn svg{width:13px;height:13px}
+.btn-p{background:var(--forest);color:#fff;border-color:var(--forest)}
+.btn-p:hover{background:var(--forest-2);color:#fff}
+.btn-sm{padding:3px 9px;font-size:11px}
+.btn-apr{background:var(--forest-xpale);color:var(--forest-2);border:1px solid rgba(26,74,28,0.18);font-size:11px;padding:3px 9px;border-radius:6px;cursor:pointer;font-weight:600;transition:all 0.13s}
+.btn-apr:hover{background:var(--forest-pale)}
+.btn-rej{background:var(--coral-pale);color:var(--coral);border:1px solid rgba(184,68,48,0.15);font-size:11px;padding:3px 9px;border-radius:6px;cursor:pointer;font-weight:600;transition:all 0.13s}
+.btn-rej:hover{background:#f9ddd7}
+.tab-row{display:flex;gap:4px;margin-bottom:13px;flex-wrap:wrap}
+.tab-btn{padding:4px 11px;border-radius:18px;font-size:11px;font-weight:500;cursor:pointer;color:var(--ink-3);background:var(--surface);border:1px solid var(--border);transition:all 0.13s}
+.tab-btn.act{background:var(--forest);color:#fff;border-color:var(--forest)}
+.iot-row{display:flex;align-items:flex-start;gap:9px;padding:9px 0;border-bottom:1px solid var(--border)}
+.iot-row:last-child{border-bottom:none}
+.sev-ic{width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.sev-ic svg{width:13px;height:13px}
+.ic-h{background:var(--coral-pale);color:var(--coral)}.ic-m{background:var(--amber-xpale);color:var(--amber)}.ic-l{background:var(--forest-xpale);color:var(--forest-2)}
+.iot-body{flex:1}.iot-t{font-size:12.5px;font-weight:500;color:var(--ink);line-height:1.3}.iot-m{font-size:11px;color:var(--ink-4);margin-top:2px}
+.iot-right{flex-shrink:0;display:flex;flex-direction:column;align-items:flex-end;gap:4px}
+.iot-time{font-size:10px;color:var(--ink-5)}
+.tag-sm{font-size:9.5px;font-weight:700;padding:2px 7px;border-radius:6px;text-transform:uppercase;letter-spacing:0.04em}
+.tag-bio{background:var(--forest-xpale);color:var(--forest-2)}.tag-eco{background:var(--sky-pale);color:var(--sky)}.tag-law{background:var(--amber-xpale);color:var(--amber)}.tag-safe{background:var(--coral-pale);color:var(--coral)}.tag-gen{background:var(--surface);color:var(--ink-3);border:1px solid var(--border)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.35}}
+.live-dot{width:6px;height:6px;background:var(--coral);border-radius:50%;display:inline-block;animation:pulse 1.4s infinite;margin-right:3px}
+.modal-ov{position:fixed;inset:0;background:rgba(10,20,10,0.45);display:flex;align-items:center;justify-content:center;z-index:200;backdrop-filter:blur(2px)}
+.modal-ov.hidden{display:none}
+.modal{background:var(--card);border-radius:var(--r-lg);width:480px;max-width:92vw;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,0.16);border:1px solid var(--border)}
+.mhd{padding:15px 19px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.m-title{font-family:'Syne',sans-serif;font-size:14.5px;font-weight:700;color:var(--ink)}
+.m-close{width:24px;height:24px;border-radius:5px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--ink-3)}
+.m-close:hover{background:var(--surface)}
+.m-close svg{width:13px;height:13px}
+.mb{padding:18px 19px;max-height:65vh;overflow-y:auto}
+.mft{padding:11px 19px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:7px}
+.fg{display:flex;flex-direction:column;gap:4px;margin-bottom:12px}
+.fl{font-size:10.5px;font-weight:700;color:var(--ink-4);text-transform:uppercase;letter-spacing:0.04em}
+.fi,.fs,.fta{border:1px solid var(--border);border-radius:var(--r-sm);padding:7px 10px;font-size:12.5px;font-family:'Inter',sans-serif;color:var(--ink);background:var(--surface);outline:none;width:100%}
+.fi:focus,.fs:focus,.fta:focus{border-color:rgba(26,74,28,0.3);background:var(--card)}
+.fta{resize:vertical;min-height:70px;line-height:1.6}
+#toast{position:fixed;bottom:22px;right:22px;background:var(--ink);color:#fff;padding:10px 16px;border-radius:var(--r);font-size:12.5px;font-weight:500;z-index:999;opacity:0;transform:translateY(6px);transition:all 0.22s;pointer-events:none;max-width:280px;box-shadow:var(--sh-md)}
+</style>
+</head>
+<body>
+<aside class="sidebar">
+  <div class="logo-wrap">
+    <div class="logo-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3C8 3 5 6.5 5 10c0 4 4 8 7 10 3-2 7-6 7-10 0-3.5-3-7-7-7z"/><circle cx="12" cy="9" r="2" fill="currentColor" stroke="none"/></svg></div>
+    <div class="logo-name">SFC Admin</div>
+    <div class="logo-sub">Sarawak Forestry Corp</div>
+  </div>
+  <div class="nav-sec">
+    <div class="nav-lbl">Overview</div>
+    <a class="nav-a active" href="sfc_01_dashboard.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>Dashboard</a>
+  </div>
+  <div class="nav-sec">
+    <div class="nav-lbl">Digital Learning</div>
+    <a class="nav-a" href="sfc_02_trainees.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Trainees<span class="nb-a">4</span></a>
+    <a class="nav-a" href="sfc_03_courses.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Courses &amp; Modules</a>
+    <a class="nav-a" href="sfc_05_certifications.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>Certifications</a>
+  </div>
+  <hr class="nav-div">
+  <div class="nav-sec">
+    <div class="nav-lbl">Park Monitoring</div>
+    <a class="nav-a" href="sfc_06_park_guides.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Park Guides</a>
+    <a class="nav-a" href="sfc_07_iot_monitor.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5.636 5.636a9 9 0 1 0 12.728 12.728"/><circle cx="12" cy="12" r="1"/></svg>IoT Monitor<span class="nb">3</span></a>
+    <a class="nav-a" href="sfc_08_notifications.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>Notifications<span class="nb">6</span></a>
+  </div>
+  <hr class="nav-div">
+  <div class="nav-sec">
+    <div class="nav-lbl">System</div>
+    <a class="nav-a" href="sfc_09_accounts.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>User Accounts</a>
+  </div>
+  <div class="sb-foot">
+    <div class="admin-row">
+      <div class="admin-av">AH</div>
+      <div><div class="admin-n">Ahmad Hisham</div><div class="admin-r">Super Admin</div></div>
+    </div>
+  </div>
+</aside>
+
+<div class="main">
+  <div class="topbar">
+    <div><div class="tb-title">Admin Dashboard</div><div class="tb-sub">Wednesday, 1 April 2026 · All Parks</div></div>
+    <div class="tb-right">
+      <a class="btn btn-p btn-sm" href="sfc_03_courses.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>New Course</a>
+      <a class="icon-btn" href="sfc_08_notifications.html" style="position:relative"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="ndot"></span></a>
+    </div>
+  </div>
+
+  <div class="content">
+    <!-- DIGITAL LEARNING -->
+    <div class="sec-hd"><span class="sec-badge b-sky">Digital Learning System</span><div class="sec-line"></div></div>
+    <div class="stat-grid">
+      <div class="sc sc-sky"><div class="sc-top"><div class="sc-ic ic-sky"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/></svg></div><span class="sc-trend t-up">↑ 12 this week</span></div><div class="sc-val">148</div><div class="sc-lbl">Active Trainees</div><div class="sc-sub">4 pending approval</div></div>
+      <div class="sc sc-gr"><div class="sc-top"><div class="sc-ic ic-gr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div><span class="sc-trend t-up">↑ 2 new</span></div><div class="sc-val">8</div><div class="sc-lbl">Active Courses</div><div class="sc-sub">32 modules · 5 categories</div></div>
+      <div class="sc sc-amb"><div class="sc-top"><div class="sc-ic ic-amb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg></div><span class="sc-trend t-up">↑ 8 this month</span></div><div class="sc-val">67</div><div class="sc-lbl">Certs Issued</div><div class="sc-sub">Across 3 cert levels</div></div>
+      <div class="sc sc-red"><div class="sc-top"><div class="sc-ic ic-red"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5.636 5.636a9 9 0 1 0 12.728 12.728"/><circle cx="12" cy="12" r="1"/></svg></div><span class="sc-trend t-dn" style="display:flex;align-items:center;gap:3px"><span class="live-dot"></span>Live</span></div><div class="sc-val">34</div><div class="sc-lbl">Active Park Guides</div><div class="sc-sub">3 with active IoT alerts</div></div>
+    </div>
+
+    <div class="g31">
+      <!-- Course Progress -->
+      <div class="panel">
+        <div class="ph"><span class="ph-title">Course Completion Overview</span><a class="ph-act" href="sfc_03_courses.html">Manage →</a></div>
+        <div class="pb">
+          <div style="font-size:11px;color:var(--ink-4);margin-bottom:8px;font-weight:500">Avg. completion by park</div>
+          <div style="display:flex;align-items:flex-end;gap:5px;height:50px;margin-bottom:14px">
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px"><div style="width:100%;height:72%;background:var(--forest-3);border-radius:3px 3px 0 0"></div><span style="font-size:9px;color:var(--ink-4)">Bako</span></div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px"><div style="width:100%;height:88%;background:var(--forest-3);border-radius:3px 3px 0 0"></div><span style="font-size:9px;color:var(--ink-4)">Niah</span></div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px"><div style="width:100%;height:60%;background:var(--forest-pale);border:1px solid rgba(62,140,66,0.3);border-radius:3px 3px 0 0"></div><span style="font-size:9px;color:var(--ink-4)">Semenggoh</span></div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px"><div style="width:100%;height:45%;background:var(--forest-pale);border:1px solid rgba(62,140,66,0.3);border-radius:3px 3px 0 0"></div><span style="font-size:9px;color:var(--ink-4)">Kubah</span></div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px"><div style="width:100%;height:55%;background:var(--forest-pale);border:1px solid rgba(62,140,66,0.3);border-radius:3px 3px 0 0"></div><span style="font-size:9px;color:var(--ink-4)">Lambir</span></div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px"><div style="width:100%;height:33%;background:var(--forest-pale);border:1px solid rgba(62,140,66,0.3);border-radius:3px 3px 0 0"></div><span style="font-size:9px;color:var(--ink-4)">Similajau</span></div>
+          </div>
+          <div id="course-list">
+            <div style="display:flex;align-items:center;gap:11px;padding:8px 0;border-bottom:1px solid var(--border)"><span class="tag-sm tag-bio">Biodiversity</span><div style="flex:1;min-width:0"><div style="font-size:12px;font-weight:500;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Conservation Fundamentals</div><div style="font-size:10.5px;color:var(--ink-4)">4 modules · 1 quiz each · General</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px"><span style="font-size:11.5px;font-weight:600;color:var(--ink-2)">78%</span><div class="ptrack" style="width:60px"><div class="pfill" style="width:78%"></div></div></div></div>
+            <div style="display:flex;align-items:center;gap:11px;padding:8px 0;border-bottom:1px solid var(--border)"><span class="tag-sm tag-eco">Eco-Tourism</span><div style="flex:1;min-width:0"><div style="font-size:12px;font-weight:500;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Eco-Tourism Excellence</div><div style="font-size:10.5px;color:var(--ink-4)">3 modules · 1 quiz each · General</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px"><span style="font-size:11.5px;font-weight:600;color:var(--ink-2)">64%</span><div class="ptrack" style="width:60px"><div class="pfill" style="width:64%"></div></div></div></div>
+            <div style="display:flex;align-items:center;gap:11px;padding:8px 0;border-bottom:1px solid var(--border)"><span class="tag-sm tag-law">Legislation</span><div style="flex:1;min-width:0"><div style="font-size:12px;font-weight:500;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Wildlife Laws & Ethics</div><div style="font-size:10.5px;color:var(--ink-4)">2 modules · 1 quiz each · General</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px"><span style="font-size:11.5px;font-weight:600;color:var(--ink-2)">51%</span><div class="ptrack" style="width:60px"><div class="pfill" style="width:51%"></div></div></div></div>
+            <div style="display:flex;align-items:center;gap:11px;padding:8px 0;border-bottom:1px solid var(--border)"><span class="tag-sm tag-safe">Safety</span><div style="flex:1;min-width:0"><div style="font-size:12px;font-weight:500;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Emergency Response Protocols</div><div style="font-size:10.5px;color:var(--ink-4)">3 modules · 1 quiz each · Bako N.P.</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px"><span style="font-size:11.5px;font-weight:600;color:var(--ink-2)">43%</span><div class="ptrack" style="width:60px"><div class="pfill" style="width:43%"></div></div></div></div>
+            <div style="display:flex;align-items:center;gap:11px;padding:8px 0"><span class="tag-sm tag-gen">General</span><div style="flex:1;min-width:0"><div style="font-size:12px;font-weight:500;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Visitor Engagement Skills</div><div style="font-size:10.5px;color:var(--ink-4)">2 modules · 1 quiz each · General</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px"><span style="font-size:11.5px;font-weight:600;color:var(--ink-2)">35%</span><div class="ptrack" style="width:60px"><div class="pfill" style="width:35%"></div></div></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right column -->
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <!-- Pending Approvals -->
+        <div class="panel">
+          <div class="ph"><span class="ph-title">Pending Approvals</span><span style="font-size:10px;font-weight:700;background:var(--amber-xpale);color:var(--amber);padding:2px 7px;border-radius:7px">6 waiting</span></div>
+          <div class="pb">
+            <div class="tab-row"><div class="tab-btn act" onclick="switchTab(this,'dt')">Trainees (4)</div><div class="tab-btn" onclick="switchTab(this,'dg')">Guides (2)</div></div>
+            <div id="dt">
+              <div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--border)"><div class="av av-s av-t">MH</div><div style="flex:1"><div style="font-size:12px;font-weight:500;color:var(--ink)">Muhammad Hazwan</div><div style="font-size:10.5px;color:var(--ink-4)">Bako N.P.</div></div><div style="display:flex;gap:4px"><span class="btn-apr" onclick="toast('Approved!')">Approve</span><span class="btn-rej" onclick="toast('Rejected.')">Reject</span></div></div>
+              <div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--border)"><div class="av av-s av-t">NR</div><div style="flex:1"><div style="font-size:12px;font-weight:500;color:var(--ink)">Norlia Roslan</div><div style="font-size:10.5px;color:var(--ink-4)">Niah N.P.</div></div><div style="display:flex;gap:4px"><span class="btn-apr" onclick="toast('Approved!')">Approve</span><span class="btn-rej" onclick="toast('Rejected.')">Reject</span></div></div>
+              <div style="display:flex;align-items:center;gap:8px;padding:7px 0"><div class="av av-s av-t">AZ</div><div style="flex:1"><div style="font-size:12px;font-weight:500;color:var(--ink)">Azhar Zulkifli</div><div style="font-size:10.5px;color:var(--ink-4)">Kubah N.P.</div></div><div style="display:flex;gap:4px"><span class="btn-apr" onclick="toast('Approved!')">Approve</span><span class="btn-rej" onclick="toast('Rejected.')">Reject</span></div></div>
+            </div>
+            <div id="dg" style="display:none">
+              <div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--border)"><div class="av av-s av-g">KB</div><div style="flex:1"><div style="font-size:12px;font-weight:500;color:var(--ink)">Kamal Bahrin</div><div style="font-size:10.5px;color:var(--ink-4)">Direct guide application</div></div><div style="display:flex;gap:4px"><span class="btn-apr" onclick="toast('Approved!')">Approve</span><span class="btn-rej" onclick="toast('Rejected.')">Reject</span></div></div>
+              <div style="display:flex;align-items:center;gap:8px;padding:7px 0"><div class="av av-s av-g">SW</div><div style="flex:1"><div style="font-size:12px;font-weight:500;color:var(--ink)">Suzana Wahab</div><div style="font-size:10.5px;color:var(--ink-4)">Promotion to Park Guide</div></div><div style="display:flex;gap:4px"><span class="btn-apr" onclick="toast('Approved!')">Approve</span><span class="btn-rej" onclick="toast('Rejected.')">Reject</span></div></div>
+            </div>
+          </div>
+        </div>
+        <!-- Recent Activity -->
+        <div class="panel">
+          <div class="ph"><span class="ph-title">Recent Activity</span><a class="ph-act" href="sfc_08_notifications.html">View all</a></div>
+          <div class="pb">
+            <div class="urow"><div style="width:6px;height:6px;border-radius:50%;background:var(--forest-3);flex-shrink:0;margin-top:4px"></div><div style="flex:1"><div style="font-size:12px;font-weight:500;color:var(--ink)">Ahmad Haziq finished Conservation Fundamentals</div><div style="font-size:10.5px;color:var(--ink-4)">Trainee · Bako N.P. · Score 91%</div></div><div style="margin-left:auto;flex-shrink:0;text-align:right"><div style="font-size:10px;color:var(--ink-5)">2h ago</div><span class="ph-act" style="font-size:10.5px;padding:2px 5px" onclick="toast('Certificate issued!')">Issue cert</span></div></div>
+            <div class="urow"><div style="width:6px;height:6px;border-radius:50%;background:var(--sky-2);flex-shrink:0;margin-top:4px"></div><div style="flex:1"><div style="font-size:12px;font-weight:500;color:var(--ink)">Lily Awang completed Eco-Tourism module quiz</div><div style="font-size:10.5px;color:var(--ink-4)">Trainee · Bako N.P. · Score 88%</div></div><div style="margin-left:auto;flex-shrink:0;text-align:right"><div style="font-size:10px;color:var(--ink-5)">5h ago</div><span class="ph-act" style="font-size:10.5px;padding:2px 5px" onclick="toast('Certificate issued!')">Issue cert</span></div></div>
+            <div class="urow" style="border-bottom:none"><div style="width:6px;height:6px;border-radius:50%;background:var(--amber-2);flex-shrink:0;margin-top:4px"></div><div style="flex:1"><div style="font-size:12px;font-weight:500;color:var(--ink)">Remy Bulat missed quiz deadline</div><div style="font-size:10.5px;color:var(--ink-4)">Wildlife Laws · Kubah N.P.</div></div><div style="margin-left:auto;flex-shrink:0;text-align:right"><div style="font-size:10px;color:var(--ink-5)">1d ago</div><span class="ph-act" style="font-size:10.5px;padding:2px 5px" onclick="toast('Reminder sent!')">Remind</span></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- IOT SECTION -->
+    <div class="sec-hd" style="margin-top:6px"><span class="sec-badge b-coral">IoT Park Monitoring System</span><div class="sec-line"></div></div>
+    <div class="g2">
+      <div class="panel">
+        <div class="ph"><span class="ph-title">IoT Activity Log</span><div style="display:flex;align-items:center;gap:8px"><span style="display:flex;align-items:center;font-size:11px;color:var(--coral);font-weight:500"><span class="live-dot"></span>3 alerts</span><a class="ph-act" href="sfc_07_iot_monitor.html">Full log →</a></div></div>
+        <div class="pb">
+          <div class="iot-row"><div class="sev-ic ic-h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div><div class="iot-body"><div class="iot-t">Wildlife handling — orangutan contact</div><div class="iot-m">Remy Bulat · Bako N.P. · CAM-04</div></div><div class="iot-right"><span class="iot-time">09:42 AM</span><a class="btn btn-sm" style="color:var(--sky-2);background:var(--sky-pale);border-color:var(--sky-pale)" href="sfc_07_iot_monitor.html">View</a></div></div>
+          <div class="iot-row"><div class="sev-ic ic-h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div><div class="iot-body"><div class="iot-t">Protected plant disturbance</div><div class="iot-m">Unknown · Niah N.P. · CAM-11</div></div><div class="iot-right"><span class="iot-time">08:15 AM</span><a class="btn btn-sm" style="color:var(--sky-2);background:var(--sky-pale);border-color:var(--sky-pale)" href="sfc_07_iot_monitor.html">View</a></div></div>
+          <div class="iot-row"><div class="sev-ic ic-m"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div><div class="iot-body"><div class="iot-t">Visitor off designated trail</div><div class="iot-m">Danial Bujang · Semenggoh N.R. · CAM-07</div></div><div class="iot-right"><span class="iot-time">Yesterday</span><a class="btn btn-sm" style="color:var(--sky-2);background:var(--sky-pale);border-color:var(--sky-pale)" href="sfc_07_iot_monitor.html">View</a></div></div>
+          <div class="iot-row" style="border-bottom:none"><div class="sev-ic ic-l"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div><div class="iot-body"><div class="iot-t">Tour completed — no abnormalities</div><div class="iot-m">Siti Rahimah · Niah N.P. · CAM-02</div></div><div class="iot-right"><span class="iot-time">Yesterday</span><span class="btn btn-sm" style="color:var(--ink-4)">Archive</span></div></div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div class="panel">
+          <div class="ph"><span class="ph-title">Active Park Guides</span><a class="ph-act" href="sfc_06_park_guides.html">See all</a></div>
+          <div class="pb">
+            <div class="urow"><div class="av av-s av-g">DB</div><div class="uinfo"><div class="un">Danial Bujang</div><div class="us">Semenggoh N.R. · CAM-07</div></div><span class="pill p-gr">On Tour</span></div>
+            <div class="urow"><div class="av av-s av-g">SR</div><div class="uinfo"><div class="un">Siti Rahimah</div><div class="us">Niah N.P. · CAM-02</div></div><span class="pill p-amb">Available</span></div>
+            <div class="urow"><div class="av av-s av-g">RB</div><div class="uinfo"><div class="un">Remy Bulat</div><div class="us">Bako N.P. · CAM-04</div></div><span class="pill p-red">Alert</span></div>
+            <div class="urow" style="border-bottom:none"><div class="av av-s av-g">NF</div><div class="uinfo"><div class="un">Nadia Fitri</div><div class="us">Kubah N.P. · CAM-09</div></div><span class="pill p-amb">Available</span></div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="ph"><span class="ph-title">Certifications</span><a class="ph-act" href="sfc_05_certifications.html">Manage</a></div>
+          <div class="pb">
+            <div class="urow"><div style="width:28px;height:28px;border-radius:7px;background:var(--amber-xpale);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg viewBox="0 0 24 24" fill="none" stroke="var(--amber-2)" stroke-width="2" style="width:13px;height:13px"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg></div><span style="flex:1;font-size:12px;font-weight:500;color:var(--ink)">Basic Guide Cert</span><span style="font-size:11px;color:var(--ink-3);margin-right:8px">42 issued</span><span class="btn-apr" onclick="toast('Issue cert modal opened.')">+ Issue</span></div>
+            <div class="urow"><div style="width:28px;height:28px;border-radius:7px;background:var(--amber-xpale);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg viewBox="0 0 24 24" fill="none" stroke="var(--amber-2)" stroke-width="2" style="width:13px;height:13px"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg></div><span style="flex:1;font-size:12px;font-weight:500;color:var(--ink)">Biodiversity Specialist</span><span style="font-size:11px;color:var(--ink-3);margin-right:8px">15 issued</span><span class="btn-apr" onclick="toast('Issue cert modal opened.')">+ Issue</span></div>
+            <div class="urow" style="border-bottom:none"><div style="width:28px;height:28px;border-radius:7px;background:var(--amber-xpale);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg viewBox="0 0 24 24" fill="none" stroke="var(--amber-2)" stroke-width="2" style="width:13px;height:13px"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg></div><span style="flex:1;font-size:12px;font-weight:500;color:var(--ink)">Senior Park Guide</span><span style="font-size:11px;color:var(--ink-3);margin-right:8px">10 issued</span><span class="btn-apr" onclick="toast('Issue cert modal opened.')">+ Issue</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="toast"></div>
+<script>
+function switchTab(el,id){document.querySelectorAll('.tab-btn').forEach(t=>t.classList.remove('act'));el.classList.add('act');document.getElementById('dt').style.display=id==='dt'?'block':'none';document.getElementById('dg').style.display=id==='dg'?'block':'none';}
+let _tt;function toast(m){const t=document.getElementById('toast');t.textContent=m;t.style.opacity='1';t.style.transform='translateY(0)';clearTimeout(_tt);_tt=setTimeout(()=>{t.style.opacity='0';t.style.transform='translateY(6px)'},2800)}
+</script>
+</body>
+</html>

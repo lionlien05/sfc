@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>User Accounts · SFC Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--forest:#1A4A1C;--forest-2:#2C6B2F;--forest-3:#3E8C42;--forest-light:#6DB870;--forest-pale:#E8F4E8;--forest-xpale:#F2FAF2;--amber:#B86A00;--amber-2:#D4820A;--amber-pale:#FDF3DC;--amber-xpale:#FFFBF0;--coral:#B84430;--coral-pale:#FBF0EC;--sky:#1A5C8A;--sky-2:#2A7BC4;--sky-pale:#E6F2FB;--purple:#5B3FA0;--purple-pale:#F0EAFB;--ink:#0F1A10;--ink-2:#2A3A2C;--ink-3:#4A5E4C;--ink-4:#7A8E7C;--ink-5:#B0BDB2;--surface:#F6F8F6;--card:#FFFFFF;--border:rgba(26,74,28,0.1);--r:12px;--r-sm:8px;--r-lg:16px;--sh:0 1px 3px rgba(15,26,16,0.07),0 4px 16px rgba(15,26,16,0.05);--sh-md:0 2px 8px rgba(15,26,16,0.08),0 8px 32px rgba(15,26,16,0.08)}
+body{font-family:'Inter',sans-serif;background:var(--surface);color:var(--ink);font-size:13px;display:flex;min-height:100vh;line-height:1.5}
+/* SIDEBAR */
+.sidebar{width:230px;min-width:230px;background:var(--forest);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:50;overflow-y:auto}
+.logo-wrap{padding:20px 16px 16px;border-bottom:1px solid rgba(255,255,255,0.08)}
+.logo-mark{width:34px;height:34px;background:rgba(255,255,255,0.12);border-radius:9px;display:flex;align-items:center;justify-content:center;margin-bottom:9px}
+.logo-mark svg{width:18px;height:18px;color:#fff}
+.logo-name{font-family:'Syne',sans-serif;font-size:13.5px;font-weight:700;color:#fff}
+.logo-sub{font-size:9.5px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.07em;margin-top:1px}
+.nav-sec{padding:12px 8px 2px}
+.nav-lbl{font-size:9px;color:rgba(255,255,255,0.32);letter-spacing:0.12em;text-transform:uppercase;padding:0 8px;margin-bottom:4px;font-weight:600}
+.nav-a{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:var(--r-sm);color:rgba(255,255,255,0.55);font-size:12.5px;cursor:pointer;transition:all 0.13s;margin-bottom:1px;text-decoration:none}
+.nav-a:hover{background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.9)}
+.nav-a.active{background:rgba(255,255,255,0.15);color:#fff;font-weight:500}
+.nav-a svg{width:14px;height:14px;flex-shrink:0}
+.nb{margin-left:auto;background:var(--coral);color:#fff;font-size:9px;font-weight:700;padding:1px 5px;border-radius:9px;min-width:16px;text-align:center}
+.nb-a{margin-left:auto;background:var(--amber-2);color:#fff;font-size:9px;font-weight:700;padding:1px 5px;border-radius:9px}
+.nav-div{margin:5px 8px;border:none;border-top:1px solid rgba(255,255,255,0.07)}
+.sb-foot{margin-top:auto;padding:12px 8px;border-top:1px solid rgba(255,255,255,0.08)}
+.admin-row{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:var(--r-sm);background:rgba(255,255,255,0.07);cursor:pointer}
+.admin-av{width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,0.18);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex-shrink:0;font-family:'Syne',sans-serif}
+.admin-n{font-size:11.5px;font-weight:500;color:#fff}
+.admin-r{font-size:10px;color:rgba(255,255,255,0.4)}
+/* MAIN */
+.main{flex:1;margin-left:230px;display:flex;flex-direction:column;min-width:0}
+.topbar{background:var(--card);border-bottom:1px solid var(--border);padding:0 26px;height:54px;display:flex;align-items:center;position:sticky;top:0;z-index:10;gap:10px}
+.tb-title{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:var(--ink);letter-spacing:-0.01em}
+.tb-sub{font-size:11px;color:var(--ink-4);margin-top:1px}
+.tb-right{margin-left:auto;display:flex;align-items:center;gap:7px}
+.icon-btn{width:32px;height:32px;border-radius:50%;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;color:var(--ink-3);transition:all 0.13s;text-decoration:none}
+.icon-btn:hover{background:var(--forest-xpale);color:var(--forest-2)}
+.icon-btn svg{width:14px;height:14px}
+.ndot{position:absolute;top:6px;right:6px;width:6px;height:6px;background:var(--coral);border-radius:50%;border:1.5px solid #fff}
+/* TABS */
+.tab-bar{background:var(--card);border-bottom:1px solid var(--border);padding:0 26px;display:flex;gap:0;position:sticky;top:54px;z-index:9}
+.tab-item{padding:12px 16px;font-size:12.5px;font-weight:500;color:var(--ink-4);border-bottom:2px solid transparent;cursor:pointer;transition:all 0.13s;white-space:nowrap}
+.tab-item:hover{color:var(--ink-2)}
+.tab-item.act{color:var(--forest-2);border-bottom-color:var(--forest-2)}
+/* SEARCH */
+.search-bar{background:var(--card);border-bottom:1px solid var(--border);padding:0 26px;height:50px;display:flex;align-items:center;gap:9px}
+.sw{position:relative;max-width:300px;flex:1}
+.sw svg{position:absolute;left:9px;top:50%;transform:translateY(-50%);width:13px;height:13px;color:var(--ink-4);pointer-events:none}
+.si{width:100%;border:1px solid var(--border);border-radius:var(--r-sm);padding:6px 10px 6px 30px;font-size:12.5px;font-family:'Inter',sans-serif;background:var(--surface);outline:none;color:var(--ink)}
+.si:focus{border-color:rgba(26,74,28,0.25);background:var(--card)}
+.fsel{border:1px solid var(--border);border-radius:18px;padding:5px 22px 5px 10px;font-size:11.5px;font-family:'Inter',sans-serif;color:var(--ink-3);background:var(--card);cursor:pointer;outline:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%237A8E7C' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 7px center}
+/* CONTENT */
+.content{padding:22px 26px 48px}
+/* BUTTONS */
+.btn{padding:6px 13px;border-radius:var(--r-sm);font-size:12px;font-weight:500;cursor:pointer;border:1px solid var(--border);background:var(--surface);color:var(--ink-3);font-family:'Inter',sans-serif;transition:all 0.13s;display:inline-flex;align-items:center;gap:5px;text-decoration:none}
+.btn:hover{background:var(--card);color:var(--ink);border-color:rgba(26,74,28,0.2)}
+.btn svg{width:13px;height:13px}
+.btn-p{background:var(--forest);color:#fff;border-color:var(--forest)}
+.btn-p:hover{background:var(--forest-2);color:#fff}
+.btn-sm{padding:3px 9px;font-size:11px}
+.btn-danger{background:var(--coral-pale);color:var(--coral);border-color:rgba(184,68,48,0.18)}
+.btn-danger:hover{background:#f9ddd7}
+.btn-amber{background:var(--amber-xpale);color:var(--amber);border-color:rgba(184,106,0,0.18)}
+/* PILLS */
+.pill{font-size:9.5px;font-weight:600;padding:2px 8px;border-radius:9px;white-space:nowrap}
+.p-gr{background:var(--forest-xpale);color:var(--forest-2)}.p-amb{background:var(--amber-xpale);color:var(--amber)}.p-red{background:var(--coral-pale);color:var(--coral)}.p-sky{background:var(--sky-pale);color:var(--sky)}.p-gray{background:var(--surface);color:var(--ink-3);border:1px solid var(--border)}.p-pur{background:var(--purple-pale);color:var(--purple)}
+/* AVATAR */
+.av{border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;font-family:'Syne',sans-serif}
+.av-s{width:28px;height:28px;font-size:10px}.av-m{width:36px;height:36px;font-size:12px}.av-lg{width:46px;height:46px;font-size:15px}
+.av-t{background:var(--sky-pale);color:var(--sky)}.av-g{background:var(--amber-xpale);color:var(--amber)}.av-a{background:var(--forest-xpale);color:var(--forest-2)}.av-su{background:var(--purple-pale);color:var(--purple)}
+/* PANEL */
+.panel{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;margin-bottom:20px}
+.ph{padding:13px 17px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:8px}
+.ph-title{font-size:13px;font-weight:600;color:var(--ink)}
+.ph-act{font-size:11.5px;color:var(--forest-2);cursor:pointer;font-weight:500;padding:3px 7px;border-radius:5px;transition:background 0.13s;background:none;border:none;font-family:'Inter',sans-serif}
+.ph-act:hover{background:var(--forest-xpale)}
+.pb{padding:13px 17px}
+/* STAT GRID */
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;margin-bottom:22px}
+.sc{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);padding:16px 16px 14px;position:relative;overflow:hidden;transition:box-shadow 0.15s}
+.sc::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:var(--r-lg) var(--r-lg) 0 0}
+.sc-gr::before{background:var(--forest-3)}.sc-amb::before{background:var(--amber-2)}.sc-sky::before{background:var(--sky-2)}.sc-pur::before{background:var(--purple)}
+.sc:hover{box-shadow:var(--sh-md)}
+.sc-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:9px}
+.sc-ic{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center}
+.sc-ic svg{width:17px;height:17px}
+.ic-gr{background:var(--forest-xpale);color:var(--forest-2)}.ic-amb{background:var(--amber-xpale);color:var(--amber-2)}.ic-sky{background:var(--sky-pale);color:var(--sky-2)}.ic-pur{background:var(--purple-pale);color:var(--purple)}
+.sc-trend{font-size:10.5px;font-weight:500}.t-up{color:var(--forest-3)}.t-neu{color:var(--ink-4)}
+.sc-val{font-family:'Syne',sans-serif;font-size:28px;font-weight:700;color:var(--ink);line-height:1;margin-bottom:3px}
+.sc-lbl{font-size:12px;font-weight:500;color:var(--ink-2)}.sc-sub{font-size:11px;color:var(--ink-4);margin-top:2px}
+/* TABLE */
+.tbl{width:100%;border-collapse:collapse}
+.tbl th{text-align:left;font-size:10.5px;font-weight:600;color:var(--ink-4);padding:8px 13px;border-bottom:1px solid var(--border);text-transform:uppercase;letter-spacing:0.05em;background:var(--surface);white-space:nowrap}
+.tbl td{padding:10px 13px;border-bottom:1px solid var(--border);font-size:12.5px;color:var(--ink-2);vertical-align:middle}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:rgba(246,248,246,0.6)}
+/* TOGGLE */
+.toggle{width:34px;height:19px;border-radius:10px;background:var(--ink-5);position:relative;cursor:pointer;transition:background 0.2s;flex-shrink:0;border:none;padding:0}
+.toggle.on{background:var(--forest-3)}
+.toggle::after{content:'';position:absolute;width:13px;height:13px;background:#fff;border-radius:50%;top:3px;left:3px;transition:transform 0.2s;box-shadow:0 1px 3px rgba(0,0,0,0.2)}
+.toggle.on::after{transform:translateX(15px)}
+/* SECURITY SECTION */
+.security-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border)}
+.security-row:last-child{border-bottom:none}
+.sr-left{flex:1}
+.sr-title{font-size:13px;font-weight:500;color:var(--ink);margin-bottom:2px}
+.sr-desc{font-size:11.5px;color:var(--ink-4);line-height:1.5}
+/* TRASH */
+.trash-item{display:flex;align-items:flex-start;gap:11px;padding:11px 0;border-bottom:1px solid var(--border)}
+.trash-item:last-child{border-bottom:none}
+.trash-ic{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:var(--coral-pale);color:var(--coral)}
+.trash-ic svg{width:16px;height:16px}
+.trash-body{flex:1}
+.trash-name{font-size:13px;font-weight:500;color:var(--ink);margin-bottom:2px}
+.trash-meta{font-size:11.5px;color:var(--ink-4)}
+.trash-warn{font-size:11px;color:var(--coral);margin-top:3px}
+.trash-actions{display:flex;gap:5px;flex-shrink:0;margin-top:2px}
+/* AUDIT LOG */
+.audit-row{display:flex;gap:12px;padding:9px 0;border-bottom:1px solid var(--border);align-items:flex-start}
+.audit-row:last-child{border-bottom:none}
+.audit-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px}
+.audit-body{flex:1}
+.audit-action{font-size:12.5px;font-weight:500;color:var(--ink);margin-bottom:2px}
+.audit-meta{font-size:11px;color:var(--ink-4)}
+.audit-time{font-size:10.5px;color:var(--ink-5);flex-shrink:0;white-space:nowrap}
+/* FORM */
+.fg{display:flex;flex-direction:column;gap:4px;margin-bottom:12px}
+.fl{font-size:10.5px;font-weight:700;color:var(--ink-4);text-transform:uppercase;letter-spacing:0.04em}
+.fi,.fss,.fta{border:1px solid var(--border);border-radius:var(--r-sm);padding:7px 10px;font-size:12.5px;font-family:'Inter',sans-serif;color:var(--ink);background:var(--surface);outline:none;width:100%}
+.fi:focus,.fss:focus,.fta:focus{border-color:rgba(26,74,28,0.3);background:var(--card)}
+.fta{resize:vertical;min-height:70px;line-height:1.6}
+.g2f{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.pw-wrap{position:relative}
+.pw-wrap .fi{padding-right:36px}
+.pw-eye{position:absolute;right:9px;top:50%;transform:translateY(-50%);cursor:pointer;color:var(--ink-4);border:none;background:none;padding:0;display:flex;align-items:center}
+.pw-eye svg{width:14px;height:14px}
+.info-box{border-radius:var(--r-sm);padding:10px 12px;font-size:12px;line-height:1.6;margin-bottom:12px}
+.info-sky{background:var(--sky-pale);border:1px solid rgba(26,92,138,0.15);color:var(--sky)}
+.info-amber{background:var(--amber-xpale);border:1px solid rgba(184,106,0,0.15);color:var(--amber)}
+.info-green{background:var(--forest-xpale);border:1px solid rgba(26,74,28,0.15);color:var(--forest-2)}
+.info-coral{background:var(--coral-pale);border:1px solid rgba(184,68,48,0.15);color:var(--coral)}
+/* PERM GRID */
+.perm-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:12px}
+.perm-item{display:flex;align-items:center;gap:7px;padding:8px 10px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-sm);cursor:pointer;transition:all 0.12s}
+.perm-item:hover{background:var(--forest-xpale);border-color:rgba(26,74,28,0.18)}
+.perm-item input{accent-color:var(--forest-2);width:13px;height:13px;cursor:pointer}
+.perm-item span{font-size:12px;color:var(--ink-2)}
+/* MODAL */
+.modal-ov{position:fixed;inset:0;background:rgba(10,20,10,0.45);display:flex;align-items:center;justify-content:center;z-index:200;backdrop-filter:blur(2px)}
+.modal-ov.hidden{display:none}
+.modal{background:var(--card);border-radius:var(--r-lg);width:540px;max-width:94vw;max-height:90vh;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,0.16);border:1px solid var(--border);display:flex;flex-direction:column}
+.modal-sm{width:420px}
+.mhd{padding:15px 19px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.m-title{font-family:'Syne',sans-serif;font-size:14.5px;font-weight:700;color:var(--ink)}
+.m-close{width:24px;height:24px;border-radius:5px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--ink-3);border:none;background:none}
+.m-close:hover{background:var(--surface)}
+.m-close svg{width:13px;height:13px}
+.mb{padding:18px 19px;overflow-y:auto;flex:1}
+.mft{padding:11px 19px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:7px;flex-shrink:0}
+/* TOAST */
+#toast{position:fixed;bottom:22px;right:22px;background:var(--ink);color:#fff;padding:10px 16px;border-radius:var(--r);font-size:12.5px;font-weight:500;z-index:999;opacity:0;transform:translateY(6px);transition:all 0.22s;pointer-events:none;max-width:280px;box-shadow:0 2px 8px rgba(15,26,16,0.2)}
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="logo-wrap"><div class="logo-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3C8 3 5 6.5 5 10c0 4 4 8 7 10 3-2 7-6 7-10 0-3.5-3-7-7-7z"/><circle cx="12" cy="9" r="2" fill="currentColor" stroke="none"/></svg></div><div class="logo-name">SFC Admin</div><div class="logo-sub">Sarawak Forestry Corp</div></div>
+  <div class="nav-sec"><div class="nav-lbl">Overview</div><a class="nav-a" href="sfc_01_dashboard.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>Dashboard</a></div>
+  <div class="nav-sec"><div class="nav-lbl">Digital Learning</div>
+    <a class="nav-a" href="sfc_02_trainees.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Trainees<span class="nb-a">4</span></a>
+    <a class="nav-a" href="sfc_03_courses.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Courses &amp; Modules</a>
+    <a class="nav-a" href="sfc_05_certifications.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>Certifications</a>
+  </div>
+  <hr class="nav-div">
+  <div class="nav-sec"><div class="nav-lbl">Park Monitoring</div>
+    <a class="nav-a" href="sfc_06_park_guides.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Park Guides</a>
+    <a class="nav-a" href="sfc_07_iot_monitor.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5.636 5.636a9 9 0 1 0 12.728 12.728"/><circle cx="12" cy="12" r="1"/></svg>IoT Monitor<span class="nb">3</span></a>
+    <a class="nav-a" href="sfc_08_notifications.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>Notifications<span class="nb">6</span></a>
+  </div>
+  <hr class="nav-div">
+  <div class="nav-sec"><div class="nav-lbl">System</div><a class="nav-a active" href="sfc_09_accounts.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>User Accounts</a></div>
+  <div class="sb-foot"><div class="admin-row"><div class="admin-av">AH</div><div><div class="admin-n">Ahmad Hisham</div><div class="admin-r">Super Admin</div></div></div></div>
+</aside>
+
+<div class="main">
+  <div class="topbar">
+    <div><div class="tb-title">User Accounts</div><div class="tb-sub">186 total users · Role-based access control</div></div>
+    <div class="tb-right">
+      <a class="icon-btn" href="sfc_08_notifications.html" style="position:relative"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="ndot"></span></a>
+      <button class="btn" onclick="switchTab(document.querySelectorAll('.tab-item')[3],'trash')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>Trash Bin</button>
+      <button class="btn btn-p" onclick="openM('add-user')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add User</button>
+    </div>
+  </div>
+
+  <div class="tab-bar">
+    <div class="tab-item act" onclick="switchTab(this,'accounts')">All Accounts</div>
+    <div class="tab-item" onclick="switchTab(this,'security')">Security Settings</div>
+    <div class="tab-item" onclick="switchTab(this,'audit')">Audit Log</div>
+    <div class="tab-item" onclick="switchTab(this,'trash')">Trash Bin <span style="font-size:9px;background:var(--coral);color:#fff;padding:1px 5px;border-radius:8px;margin-left:3px">3</span></div>
+  </div>
+
+  <div class="search-bar" id="search-section">
+    <div class="sw"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input class="si" placeholder="Search by name, email, role..."></div>
+    <select class="fsel"><option>All Roles</option><option>Super Admin</option><option>Admin</option><option>Park Guide</option><option>Trainee</option></select>
+    <select class="fsel"><option>All Status</option><option>Active</option><option>Suspended</option><option>Pending</option></select>
+    <select class="fsel"><option>All Parks</option><option>Bako N.P.</option><option>Niah N.P.</option><option>Semenggoh N.R.</option><option>Kubah N.P.</option></select>
+  </div>
+
+  <div class="content">
+
+    <!-- ═══ TAB: ALL ACCOUNTS ═══ -->
+    <div id="tab-accounts">
+      <div class="stat-grid">
+        <div class="sc sc-pur"><div class="sc-top"><div class="sc-ic ic-pur"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><span class="sc-trend t-neu">—</span></div><div class="sc-val">4</div><div class="sc-lbl">Admins</div><div class="sc-sub">1 super · 3 park admins</div></div>
+        <div class="sc sc-gr"><div class="sc-top"><div class="sc-ic ic-gr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div><span class="sc-trend t-up">↑ 2 new</span></div><div class="sc-val">34</div><div class="sc-lbl">Park Guides</div><div class="sc-sub">Across 6 parks</div></div>
+        <div class="sc sc-sky"><div class="sc-top"><div class="sc-ic ic-sky"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div><span class="sc-trend t-up">↑ 12</span></div><div class="sc-val">148</div><div class="sc-lbl">Trainees</div><div class="sc-sub">4 pending approval</div></div>
+        <div class="sc sc-amb"><div class="sc-top"><div class="sc-ic ic-amb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div><span class="sc-trend t-neu">—</span></div><div class="sc-val">186</div><div class="sc-lbl">Total Users</div><div class="sc-sub">All roles combined</div></div>
+      </div>
+
+      <div class="panel">
+        <div class="ph"><span class="ph-title">All User Accounts</span><button class="ph-act" onclick="toast('User list exported.')">Export CSV</button></div>
+        <div style="overflow-x:auto">
+          <table class="tbl">
+            <thead><tr><th>User</th><th>Role</th><th>Email</th><th>Park</th><th>Status</th><th>2FA</th><th>Last Login</th><th>Actions</th></tr></thead>
+            <tbody>
+              <tr>
+                <td><div style="display:flex;align-items:center;gap:8px"><div class="av av-s av-su">AH</div><div><div style="font-weight:500">Ahmad Hisham</div><div style="font-size:10.5px;color:var(--ink-4)">USR-0001</div></div></div></td>
+                <td><span class="pill p-pur">Super Admin</span></td>
+                <td style="font-size:12px;color:var(--ink-4)">ahmad.hisham@sfc.gov.my</td>
+                <td><span style="font-size:12px;color:var(--ink-3)">All Parks</span></td>
+                <td><span class="pill p-gr">Active</span></td>
+                <td><span class="pill p-gr" style="font-size:9px">Enabled</span></td>
+                <td style="font-size:12px;color:var(--ink-4)">Just now</td>
+                <td><div style="display:flex;gap:4px"><button class="btn btn-sm" onclick="openM('edit-user')">Edit</button></div></td>
+              </tr>
+              <tr>
+                <td><div style="display:flex;align-items:center;gap:8px"><div class="av av-s av-a">NB</div><div><div style="font-weight:500">Nurul Bazilah</div><div style="font-size:10.5px;color:var(--ink-4)">USR-0002</div></div></div></td>
+                <td><span class="pill p-sky">Admin</span></td>
+                <td style="font-size:12px;color:var(--ink-4)">nurul.bazilah@sfc.gov.my</td>
+                <td><span style="font-size:12px;color:var(--ink-3)">Bako, Niah</span></td>
+                <td><span class="pill p-gr">Active</span></td>
+                <td><span class="pill p-gr" style="font-size:9px">Enabled</span></td>
+                <td style="font-size:12px;color:var(--ink-4)">2h ago</td>
+                <td><div style="display:flex;gap:4px"><button class="btn btn-sm" onclick="openM('edit-user')">Edit</button><button class="btn btn-sm" onclick="openM('permissions-modal')">Permissions</button></div></td>
+              </tr>
+              <tr>
+                <td><div style="display:flex;align-items:center;gap:8px"><div class="av av-s av-g">DB</div><div><div style="font-weight:500">Danial Bujang</div><div style="font-size:10.5px;color:var(--ink-4)">G-2001</div></div></div></td>
+                <td><span class="pill p-amb">Park Guide</span></td>
+                <td style="font-size:12px;color:var(--ink-4)">danial.bujang@sfc.gov.my</td>
+                <td><span style="font-size:12px;color:var(--ink-3)">Semenggoh N.R.</span></td>
+                <td><span class="pill p-gr">Active</span></td>
+                <td><span class="pill p-gray" style="font-size:9px">Off</span></td>
+                <td style="font-size:12px;color:var(--ink-4)">1h ago</td>
+                <td><div style="display:flex;gap:4px"><button class="btn btn-sm" onclick="openM('edit-user')">Edit</button><button class="btn btn-sm" onclick="openM('reset-pw')">Reset PW</button><button class="btn btn-sm btn-amber" onclick="openM('change-role')">Role</button></div></td>
+              </tr>
+              <tr>
+                <td><div style="display:flex;align-items:center;gap:8px"><div class="av av-s av-g">RB</div><div><div style="font-weight:500">Remy Bulat</div><div style="font-size:10.5px;color:var(--ink-4)">G-2003</div></div></div></td>
+                <td><span class="pill p-amb">Park Guide</span></td>
+                <td style="font-size:12px;color:var(--ink-4)">remy.bulat@sfc.gov.my</td>
+                <td><span style="font-size:12px;color:var(--ink-3)">Bako N.P.</span></td>
+                <td><span class="pill p-gr">Active</span></td>
+                <td><span class="pill p-gray" style="font-size:9px">Off</span></td>
+                <td style="font-size:12px;color:var(--ink-4)">30m ago</td>
+                <td><div style="display:flex;gap:4px"><button class="btn btn-sm" onclick="openM('edit-user')">Edit</button><button class="btn btn-sm" onclick="openM('reset-pw')">Reset PW</button><button class="btn btn-sm btn-danger" onclick="openM('suspend-modal')">Suspend</button></div></td>
+              </tr>
+              <tr>
+                <td><div style="display:flex;align-items:center;gap:8px"><div class="av av-s av-t">AHZ</div><div><div style="font-weight:500">Ahmad Haziq</div><div style="font-size:10.5px;color:var(--ink-4)">T-1000</div></div></div></td>
+                <td><span class="pill p-sky">Trainee</span></td>
+                <td style="font-size:12px;color:var(--ink-4)">ahmad.haziq@email.com</td>
+                <td><span style="font-size:12px;color:var(--ink-3)">Bako N.P.</span></td>
+                <td><span class="pill p-gr">Active</span></td>
+                <td><span class="pill p-gray" style="font-size:9px">Off</span></td>
+                <td style="font-size:12px;color:var(--ink-4)">1h ago</td>
+                <td><div style="display:flex;gap:4px"><button class="btn btn-sm" onclick="openM('edit-user')">Edit</button><button class="btn btn-sm btn-amber" onclick="openM('change-role')">Role</button><button class="btn btn-sm btn-danger" onclick="openM('suspend-modal')">Suspend</button></div></td>
+              </tr>
+              <tr>
+                <td><div style="display:flex;align-items:center;gap:8px"><div class="av av-s av-t">LA</div><div><div style="font-weight:500">Lily Awang</div><div style="font-size:10.5px;color:var(--ink-4)">T-1001</div></div></div></td>
+                <td><span class="pill p-sky">Trainee</span></td>
+                <td style="font-size:12px;color:var(--ink-4)">lily.awang@email.com</td>
+                <td><span style="font-size:12px;color:var(--ink-3)">Bako N.P.</span></td>
+                <td><span class="pill p-gr">Active</span></td>
+                <td><span class="pill p-gray" style="font-size:9px">Off</span></td>
+                <td style="font-size:12px;color:var(--ink-4)">2h ago</td>
+                <td><div style="display:flex;gap:4px"><button class="btn btn-sm" onclick="openM('edit-user')">Edit</button><button class="btn btn-sm btn-amber" onclick="openM('change-role')">Role</button><button class="btn btn-sm btn-danger" onclick="openM('suspend-modal')">Suspend</button></div></td>
+              </tr>
+              <tr>
+                <td><div style="display:flex;align-items:center;gap:8px"><div class="av av-s av-t">RJ</div><div><div style="font-weight:500">Roslan Jaafar</div><div style="font-size:10.5px;color:var(--ink-4)">T-1004</div></div></div></td>
+                <td><span class="pill p-sky">Trainee</span></td>
+                <td style="font-size:12px;color:var(--ink-4)">roslan.j@email.com</td>
+                <td><span style="font-size:12px;color:var(--ink-3)">Bako N.P.</span></td>
+                <td><span class="pill p-red">Suspended</span></td>
+                <td><span class="pill p-gray" style="font-size:9px">Off</span></td>
+                <td style="font-size:12px;color:var(--ink-4)">—</td>
+                <td><div style="display:flex;gap:4px"><button class="btn btn-sm" onclick="openM('edit-user')">Edit</button><button class="btn btn-sm btn-p" onclick="toast('Account reinstated.')">Reinstate</button><button class="btn btn-sm btn-danger" onclick="openM('delete-modal')">Delete</button></div></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ TAB: SECURITY SETTINGS ═══ -->
+    <div id="tab-security" style="display:none">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+        <div>
+          <div class="panel">
+            <div class="ph"><span class="ph-title">Authentication</span><button class="ph-act" onclick="toast('Settings saved.')">Save</button></div>
+            <div class="pb">
+              <div class="security-row"><div class="sr-left"><div class="sr-title">Require 2FA for all admins</div><div class="sr-desc">Super admins and park admins must use two-factor authentication.</div></div><button class="toggle on" onclick="this.classList.toggle('on')"></button></div>
+              <div class="security-row"><div class="sr-left"><div class="sr-title">Require 2FA for park guides</div><div class="sr-desc">IoT-assigned guides are prompted to enable 2FA on next login.</div></div><button class="toggle" onclick="this.classList.toggle('on')"></button></div>
+              <div class="security-row"><div class="sr-left"><div class="sr-title">Force password change on first login</div><div class="sr-desc">Applies to directly registered park guides with admin-set passwords.</div></div><button class="toggle on" onclick="this.classList.toggle('on')"></button></div>
+              <div class="security-row"><div class="sr-left"><div class="sr-title">Session timeout</div><div class="sr-desc">Auto-logout after period of inactivity.</div></div>
+                <select style="border:1px solid var(--border);border-radius:var(--r-sm);padding:5px 8px;font-size:12px;font-family:'Inter',sans-serif;background:var(--surface);outline:none;color:var(--ink)"><option>4 hours</option><option selected>8 hours</option><option>24 hours</option></select>
+              </div>
+              <div class="security-row"><div class="sr-left"><div class="sr-title">Lock after failed login attempts</div><div class="sr-desc">Account locks after N consecutive failed password attempts.</div></div>
+                <select style="border:1px solid var(--border);border-radius:var(--r-sm);padding:5px 8px;font-size:12px;font-family:'Inter',sans-serif;background:var(--surface);outline:none;color:var(--ink)"><option>3 attempts</option><option selected>5 attempts</option><option>10 attempts</option></select>
+              </div>
+              <div class="security-row"><div class="sr-left"><div class="sr-title">Allow single sign-on (SSO)</div><div class="sr-desc">Connect with institutional SSO provider (Sarawak Gov).</div></div><button class="toggle" onclick="this.classList.toggle('on')"></button></div>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="ph"><span class="ph-title">Password Policy</span><button class="ph-act" onclick="toast('Policy saved.')">Save</button></div>
+            <div class="pb">
+              <div class="security-row"><div class="sr-left"><div class="sr-title">Minimum length: 8 characters</div><div class="sr-desc">Enforce a minimum password length for all users.</div></div><button class="toggle on" onclick="this.classList.toggle('on')"></button></div>
+              <div class="security-row"><div class="sr-left"><div class="sr-title">Require uppercase &amp; numbers</div><div class="sr-desc">Passwords must include at least one uppercase letter and one number.</div></div><button class="toggle on" onclick="this.classList.toggle('on')"></button></div>
+              <div class="security-row"><div class="sr-left"><div class="sr-title">Require special character</div><div class="sr-desc">Passwords must include at least one special character (e.g. @, #, !).</div></div><button class="toggle" onclick="this.classList.toggle('on')"></button></div>
+              <div class="security-row"><div class="sr-left"><div class="sr-title">Password expiry (guides)</div><div class="sr-desc">Park guides must renew their password periodically.</div></div>
+                <select style="border:1px solid var(--border);border-radius:var(--r-sm);padding:5px 8px;font-size:12px;font-family:'Inter',sans-serif;background:var(--surface);outline:none;color:var(--ink)"><option>Never</option><option>Every 6 months</option><option selected>Every 12 months</option></select>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="panel">
+            <div class="ph"><span class="ph-title">Data Protection</span><button class="ph-act" onclick="toast('Settings saved.')">Save</button></div>
+            <div class="pb">
+              <div class="security-row"><div class="sr-left"><div class="sr-title">Encrypt all personal data at rest</div><div class="sr-desc">AES-256 encryption for all stored user profiles and training records.</div></div><button class="toggle on" onclick="this.classList.toggle('on')"></button></div>
+              <div class="security-row"><div class="sr-left"><div class="sr-title">Encrypt data in transit (TLS)</div><div class="sr-desc">All platform traffic uses TLS 1.3 minimum.</div></div><button class="toggle on" onclick="this.classList.toggle('on')"></button></div>
+              <div class="security-row"><div class="sr-left"><div class="sr-title">Allow data export (admins only)</div><div class="sr-desc">Only admin roles can export trainee or guide data as CSV/PDF.</div></div><button class="toggle on" onclick="this.classList.toggle('on')"></button></div>
+              <div class="security-row"><div class="sr-left"><div class="sr-title">Anonymise trainee data in reports</div><div class="sr-desc">Replace names with IDs in exported compliance reports.</div></div><button class="toggle" onclick="this.classList.toggle('on')"></button></div>
+              <div class="security-row"><div class="sr-left"><div class="sr-title">Auto-purge deleted accounts after</div><div class="sr-desc">Permanently delete accounts moved to trash after this period.</div></div>
+                <select style="border:1px solid var(--border);border-radius:var(--r-sm);padding:5px 8px;font-size:12px;font-family:'Inter',sans-serif;background:var(--surface);outline:none;color:var(--ink)"><option>14 days</option><option selected>30 days</option><option>90 days</option></select>
+              </div>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="ph"><span class="ph-title">Audit &amp; Logging</span><button class="ph-act" onclick="toast('Settings saved.')">Save</button></div>
+            <div class="pb">
+              <div class="security-row"><div class="sr-left"><div class="sr-title">Log all admin actions</div><div class="sr-desc">Every admin action is timestamped and attributed to the acting user.</div></div><button class="toggle on" onclick="this.classList.toggle('on')"></button></div>
+              <div class="security-row"><div class="sr-left"><div class="sr-title">Log login/logout events</div><div class="sr-desc">Track all authentication events for all user roles.</div></div><button class="toggle on" onclick="this.classList.toggle('on')"></button></div>
+              <div class="security-row"><div class="sr-left"><div class="sr-title">Alert on suspicious login</div><div class="sr-desc">Notify super admin if a login occurs from an unusual location or device.</div></div><button class="toggle on" onclick="this.classList.toggle('on')"></button></div>
+              <div class="security-row"><div class="sr-left"><div class="sr-title">Retain audit logs for</div><div class="sr-desc">How long audit records are kept before auto-archival.</div></div>
+                <select style="border:1px solid var(--border);border-radius:var(--r-sm);padding:5px 8px;font-size:12px;font-family:'Inter',sans-serif;background:var(--surface);outline:none;color:var(--ink)"><option>6 months</option><option>1 year</option><option selected>2 years</option><option>Forever</option></select>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ TAB: AUDIT LOG ═══ -->
+    <div id="tab-audit" style="display:none">
+      <div style="display:flex;gap:9px;margin-bottom:16px;flex-wrap:wrap;align-items:center">
+        <select class="fsel"><option>All Actions</option><option>Account Created</option><option>Role Changed</option><option>Password Reset</option><option>Login</option><option>Certificate Issued</option><option>Course Assigned</option></select>
+        <select class="fsel"><option>All Users</option><option>Ahmad Hisham</option><option>Nurul Bazilah</option></select>
+        <select class="fsel"><option>All Time</option><option>Today</option><option>This Week</option><option>This Month</option></select>
+        <button class="btn btn-sm" style="margin-left:auto" onclick="toast('Audit log exported.')">Export Log</button>
+      </div>
+      <div class="panel">
+        <div class="ph"><span class="ph-title">Audit Log</span><span style="font-size:11px;color:var(--ink-4)">Last updated: 1 Apr 2026, 09:45 AM</span></div>
+        <div class="pb">
+          <div class="audit-row"><div class="audit-dot" style="background:var(--coral)"></div><div class="audit-body"><div class="audit-action">IoT Alert auto-generated — wildlife handling, Bako N.P.</div><div class="audit-meta">System · CAM-04 · Remy Bulat</div></div><div class="audit-time">09:42 AM · Today</div></div>
+          <div class="audit-row"><div class="audit-dot" style="background:var(--forest-3)"></div><div class="audit-body"><div class="audit-action">Certificate issued — Ahmad Haziq, Basic Guide Certificate</div><div class="audit-meta">By: Ahmad Hisham · Score: 91%</div></div><div class="audit-time">08:30 AM · Today</div></div>
+          <div class="audit-row"><div class="audit-dot" style="background:var(--sky-2)"></div><div class="audit-body"><div class="audit-action">Course assigned — Conservation Fundamentals → Muhammad Hazwan</div><div class="audit-meta">By: Ahmad Hisham</div></div><div class="audit-time">08:15 AM · Today</div></div>
+          <div class="audit-row"><div class="audit-dot" style="background:var(--amber-2)"></div><div class="audit-body"><div class="audit-action">Password reset sent — Zulaikha Ibrahim (admin-assigned pw not changed)</div><div class="audit-meta">By: Ahmad Hisham</div></div><div class="audit-time">07:50 AM · Today</div></div>
+          <div class="audit-row"><div class="audit-dot" style="background:var(--forest-3)"></div><div class="audit-body"><div class="audit-action">Admin login — Ahmad Hisham</div><div class="audit-meta">IP: 103.28.x.x · Device: Chrome / Windows</div></div><div class="audit-time">07:32 AM · Today</div></div>
+          <div class="audit-row"><div class="audit-dot" style="background:var(--forest-3)"></div><div class="audit-body"><div class="audit-action">Park guide registered — Kamal Bahrin, Bako N.P.</div><div class="audit-meta">By: Ahmad Hisham · Temp password set · Courses bulk-assigned</div></div><div class="audit-time">4:15 PM · 31 Mar</div></div>
+          <div class="audit-row"><div class="audit-dot" style="background:var(--purple)"></div><div class="audit-body"><div class="audit-action">Role changed — Suzana Wahab, Trainee → Park Guide</div><div class="audit-meta">By: Ahmad Hisham · Reason: Completed all courses</div></div><div class="audit-time">2:00 PM · 31 Mar</div></div>
+          <div class="audit-row"><div class="audit-dot" style="background:var(--coral)"></div><div class="audit-body"><div class="audit-action">Account suspended — Roslan Jaafar</div><div class="audit-meta">By: Ahmad Hisham · Reason: Incomplete modules after 3 reminders</div></div><div class="audit-time">11:30 AM · 28 Mar</div></div>
+          <div class="audit-row"><div class="audit-dot" style="background:var(--forest-3)"></div><div class="audit-body"><div class="audit-action">Certificate issued — Siti Rahimah, Biodiversity Specialist</div><div class="audit-meta">By: Ahmad Hisham · Score: 92%</div></div><div class="audit-time">10:00 AM · 28 Mar</div></div>
+          <div class="audit-row"><div class="audit-dot" style="background:var(--sky-2)"></div><div class="audit-body"><div class="audit-action">Security setting changed — 2FA enforced for all admins</div><div class="audit-meta">By: Ahmad Hisham</div></div><div class="audit-time">9:00 AM · 25 Mar</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ TAB: TRASH BIN ═══ -->
+    <div id="tab-trash" style="display:none">
+      <div class="info-box info-amber" style="margin-bottom:16px;display:flex;align-items:flex-start;gap:8px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;flex-shrink:0;margin-top:1px"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg><span>Deleted accounts are kept for <strong>30 days</strong> before permanent deletion. Restore or permanently delete below. Restored accounts retain all training history and certifications.</span></div>
+      <div class="panel">
+        <div class="ph">
+          <span class="ph-title">Trash Bin — Deleted Accounts</span>
+          <button class="btn btn-sm btn-danger" onclick="toast('All trash permanently deleted.')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:11px;height:11px"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg>Empty Trash</button>
+        </div>
+        <div class="pb">
+          <div class="trash-item">
+            <div class="trash-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div>
+            <div class="trash-body">
+              <div class="trash-name">Roslan Jaafar</div>
+              <div class="trash-meta">Trainee · T-1004 · Bako N.P. · Deleted by Ahmad Hisham on 28 Mar 2026</div>
+              <div class="trash-warn">Permanent deletion in 15 days (12 Apr 2026)</div>
+            </div>
+            <div class="trash-actions">
+              <button class="btn btn-sm btn-p" onclick="toast('Roslan Jaafar restored. Account reactivated.')">Restore</button>
+              <button class="btn btn-sm btn-danger" onclick="openM('perm-delete')">Delete Permanently</button>
+            </div>
+          </div>
+          <div class="trash-item">
+            <div class="trash-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+            <div class="trash-body">
+              <div class="trash-name">Hafiz Mahmud</div>
+              <div class="trash-meta">Park Guide · G-2010 · Lambir Hills N.P. · Deleted by Ahmad Hisham on 15 Mar 2026</div>
+              <div class="trash-warn">Permanent deletion in 2 days (3 Apr 2026)</div>
+            </div>
+            <div class="trash-actions">
+              <button class="btn btn-sm btn-p" onclick="toast('Hafiz Mahmud restored.')">Restore</button>
+              <button class="btn btn-sm btn-danger" onclick="openM('perm-delete')">Delete Permanently</button>
+            </div>
+          </div>
+          <div class="trash-item">
+            <div class="trash-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div>
+            <div class="trash-body">
+              <div class="trash-name">Salmah Yusof</div>
+              <div class="trash-meta">Trainee · T-1088 · Kubah N.P. · Deleted by Nurul Bazilah on 10 Mar 2026</div>
+              <div class="trash-warn" style="color:var(--coral);font-weight:600">⚠ Permanent deletion in 1 day (2 Apr 2026) — act now!</div>
+            </div>
+            <div class="trash-actions">
+              <button class="btn btn-sm btn-p" onclick="toast('Salmah Yusof restored.')">Restore</button>
+              <button class="btn btn-sm btn-danger" onclick="openM('perm-delete')">Delete Permanently</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- MODAL: Add User -->
+<div class="modal-ov hidden" id="add-user">
+  <div class="modal">
+    <div class="mhd"><span class="m-title">Add User Account</span><button class="m-close" onclick="closeM('add-user')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+    <div class="mb">
+      <div class="g2f"><div class="fg"><div class="fl">Full Name</div><input class="fi" placeholder="Full name"></div><div class="fg"><div class="fl">Email</div><input class="fi" type="email" placeholder="user@sfc.gov.my"></div></div>
+      <div class="g2f"><div class="fg"><div class="fl">Role</div><select class="fss" id="role-sel" onchange="togglePwNote(this.value)"><option value="admin">Admin</option><option value="guide">Park Guide</option><option value="trainee">Trainee</option></select></div><div class="fg"><div class="fl">Park Access</div><select class="fss"><option>All Parks</option><option>Bako N.P.</option><option>Niah N.P.</option><option>Semenggoh N.R.</option><option>Kubah N.P.</option></select></div></div>
+      <div id="pw-note-guide" style="display:none"><div class="info-box info-amber"><strong>Park Guide:</strong> Admin assigns a temporary password. Guide must change it on first login.</div></div>
+      <div id="pw-note-trainee" style="display:none"><div class="info-box info-sky"><strong>Trainee:</strong> The trainee sets their own password during self-registration. No admin password needed.</div></div>
+      <div class="fg" id="pw-field">
+        <div class="fl">Password</div>
+        <div class="pw-wrap"><input class="fi" type="password" id="new-user-pw" placeholder="Set password"><button class="pw-eye" onclick="togglePw('new-user-pw',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div>
+      </div>
+      <div class="fg"><div class="fl">Require 2FA</div><div style="display:flex;align-items:center;gap:8px;margin-top:2px"><button class="toggle on" id="tfa-toggle" onclick="this.classList.toggle('on')"></button><span style="font-size:12px;color:var(--ink-3)">Recommended for admin and guide accounts</span></div></div>
+    </div>
+    <div class="mft"><button class="btn" onclick="closeM('add-user')">Cancel</button><button class="btn btn-p" onclick="toast('User account created. Setup email sent.');closeM('add-user')">Create Account</button></div>
+  </div>
+</div>
+
+<!-- MODAL: Edit User -->
+<div class="modal-ov hidden" id="edit-user">
+  <div class="modal">
+    <div class="mhd"><span class="m-title">Edit User — Danial Bujang</span><button class="m-close" onclick="closeM('edit-user')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+    <div class="mb">
+      <div class="g2f"><div class="fg"><div class="fl">Full Name</div><input class="fi" value="Danial Bujang"></div><div class="fg"><div class="fl">Email</div><input class="fi" value="danial.bujang@sfc.gov.my"></div></div>
+      <div class="g2f"><div class="fg"><div class="fl">Phone</div><input class="fi" value="+60 12-8834221"></div><div class="fg"><div class="fl">Park Assignment</div><select class="fss"><option>Bako N.P.</option><option>Niah N.P.</option><option selected>Semenggoh N.R.</option><option>Kubah N.P.</option></select></div></div>
+      <div class="fg"><div class="fl">Account Status</div><select class="fss"><option>Active</option><option>Suspended</option></select></div>
+      <div class="fg"><div class="fl">2FA</div><div style="display:flex;align-items:center;gap:8px;margin-top:2px"><button class="toggle" onclick="this.classList.toggle('on')"></button><span style="font-size:12px;color:var(--ink-3)">Currently disabled</span></div></div>
+    </div>
+    <div class="mft"><button class="btn" onclick="closeM('edit-user')">Cancel</button><button class="btn btn-p" onclick="toast('Changes saved.');closeM('edit-user')">Save Changes</button></div>
+  </div>
+</div>
+
+<!-- MODAL: Change Role -->
+<div class="modal-ov hidden" id="change-role">
+  <div class="modal modal-sm">
+    <div class="mhd"><span class="m-title">Change Role — Ahmad Haziq</span><button class="m-close" onclick="closeM('change-role')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+    <div class="mb">
+      <div style="padding:10px 12px;background:var(--surface);border-radius:var(--r-sm);border:1px solid var(--border);margin-bottom:13px;font-size:12.5px;color:var(--ink-3)">Current role: <strong style="color:var(--ink)">Trainee</strong></div>
+      <div class="fg"><div class="fl">New Role</div>
+        <select class="fss">
+          <option>Trainee</option>
+          <option selected>Park Guide</option>
+          <option>Admin</option>
+        </select>
+      </div>
+      <div class="info-box info-amber" id="role-change-note">Promoting to Park Guide: A temporary admin-assigned password will be issued. The guide must change it on first login. IoT camera can be assigned from the Park Guides page.</div>
+      <div class="fg"><div class="fl">Reason (internal note)</div><textarea class="fta" placeholder="e.g. Completed all required courses, eligible for promotion."></textarea></div>
+    </div>
+    <div class="mft"><button class="btn" onclick="closeM('change-role')">Cancel</button><button class="btn btn-p" onclick="toast('Role updated. User notified.');closeM('change-role')">Confirm Role Change</button></div>
+  </div>
+</div>
+
+<!-- MODAL: Permissions -->
+<div class="modal-ov hidden" id="permissions-modal">
+  <div class="modal">
+    <div class="mhd"><span class="m-title">Manage Permissions — Nurul Bazilah</span><button class="m-close" onclick="closeM('permissions-modal')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+    <div class="mb">
+      <div style="font-size:12.5px;color:var(--ink-3);margin-bottom:12px">Role: <span class="pill p-sky">Admin</span> · Park access: Bako N.P., Niah N.P.</div>
+      <div class="fl" style="margin-bottom:8px">Permissions</div>
+      <div class="perm-grid">
+        <div class="perm-item" onclick="this.querySelector('input').click()"><input type="checkbox" checked onclick="event.stopPropagation();this.checked=!this.checked"><span>Manage trainees</span></div>
+        <div class="perm-item" onclick="this.querySelector('input').click()"><input type="checkbox" checked onclick="event.stopPropagation();this.checked=!this.checked"><span>Approve registrations</span></div>
+        <div class="perm-item" onclick="this.querySelector('input').click()"><input type="checkbox" checked onclick="event.stopPropagation();this.checked=!this.checked"><span>Manage courses</span></div>
+        <div class="perm-item" onclick="this.querySelector('input').click()"><input type="checkbox" checked onclick="event.stopPropagation();this.checked=!this.checked"><span>Issue certificates</span></div>
+        <div class="perm-item" onclick="this.querySelector('input').click()"><input type="checkbox" checked onclick="event.stopPropagation();this.checked=!this.checked"><span>View IoT footage</span></div>
+        <div class="perm-item" onclick="this.querySelector('input').click()"><input type="checkbox" onclick="event.stopPropagation();this.checked=!this.checked"><span>Manage user accounts</span></div>
+        <div class="perm-item" onclick="this.querySelector('input').click()"><input type="checkbox" onclick="event.stopPropagation();this.checked=!this.checked"><span>Access security settings</span></div>
+        <div class="perm-item" onclick="this.querySelector('input').click()"><input type="checkbox" onclick="event.stopPropagation();this.checked=!this.checked"><span>Upload AI training data</span></div>
+        <div class="perm-item" onclick="this.querySelector('input').click()"><input type="checkbox" onclick="event.stopPropagation();this.checked=!this.checked"><span>Delete accounts</span></div>
+        <div class="perm-item" onclick="this.querySelector('input').click()"><input type="checkbox" onclick="event.stopPropagation();this.checked=!this.checked"><span>Export all data</span></div>
+      </div>
+    </div>
+    <div class="mft"><button class="btn" onclick="closeM('permissions-modal')">Cancel</button><button class="btn btn-p" onclick="toast('Permissions saved.');closeM('permissions-modal')">Save Permissions</button></div>
+  </div>
+</div>
+
+<!-- MODAL: Reset Password -->
+<div class="modal-ov hidden" id="reset-pw">
+  <div class="modal modal-sm">
+    <div class="mhd"><span class="m-title">Reset Password — Danial Bujang</span><button class="m-close" onclick="closeM('reset-pw')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+    <div class="mb">
+      <div class="info-box info-amber">This sets a new temporary password. The guide must change it on their next login.</div>
+      <div class="fg">
+        <div class="fl">New Temporary Password</div>
+        <div class="pw-wrap"><input class="fi" type="password" id="rpw1" placeholder="New temporary password"><button class="pw-eye" onclick="togglePw('rpw1',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div>
+      </div>
+      <div class="fg">
+        <div class="fl">Confirm Password</div>
+        <div class="pw-wrap"><input class="fi" type="password" id="rpw2" placeholder="Confirm password"><button class="pw-eye" onclick="togglePw('rpw2',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div>
+      </div>
+    </div>
+    <div class="mft"><button class="btn" onclick="closeM('reset-pw')">Cancel</button><button class="btn btn-sm" onclick="toast('Reset email sent to guide.');closeM('reset-pw')">Send Reset Link</button><button class="btn btn-p" onclick="toast('Password reset. Guide notified.');closeM('reset-pw')">Set New Password</button></div>
+  </div>
+</div>
+
+<!-- MODAL: Suspend -->
+<div class="modal-ov hidden" id="suspend-modal">
+  <div class="modal modal-sm">
+    <div class="mhd"><span class="m-title">Suspend Account?</span><button class="m-close" onclick="closeM('suspend-modal')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+    <div class="mb">
+      <div class="info-box info-coral">Suspending this account will immediately revoke platform access. The user will not be able to log in. All training records and certifications are preserved.</div>
+      <div class="fg"><div class="fl">Reason for Suspension</div><textarea class="fta" placeholder="e.g. Incomplete modules after repeated reminders. IoT violation under review."></textarea></div>
+    </div>
+    <div class="mft"><button class="btn" onclick="closeM('suspend-modal')">Cancel</button><button class="btn btn-danger" onclick="toast('Account suspended. User notified.');closeM('suspend-modal')">Suspend Account</button></div>
+  </div>
+</div>
+
+<!-- MODAL: Permanent Delete -->
+<div class="modal-ov hidden" id="perm-delete">
+  <div class="modal modal-sm">
+    <div class="mhd"><span class="m-title">Permanently Delete Account?</span><button class="m-close" onclick="closeM('perm-delete')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+    <div class="mb">
+      <div class="info-box info-coral"><strong>This action cannot be undone.</strong> The account, all personal data, training records, and certifications will be permanently erased in compliance with data protection regulations. IoT footage involving this user will be anonymised.</div>
+      <div class="fg"><div class="fl">Type the user's name to confirm</div><input class="fi" placeholder="e.g. Roslan Jaafar"></div>
+    </div>
+    <div class="mft"><button class="btn" onclick="closeM('perm-delete')">Cancel</button><button class="btn btn-danger" onclick="toast('Account permanently deleted.');closeM('perm-delete')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg>Permanently Delete</button></div>
+  </div>
+</div>
+
+<!-- MODAL: Delete (move to trash) -->
+<div class="modal-ov hidden" id="delete-modal">
+  <div class="modal modal-sm">
+    <div class="mhd"><span class="m-title">Move to Trash?</span><button class="m-close" onclick="closeM('delete-modal')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+    <div class="mb">
+      <div class="info-box info-amber">This account will be moved to the Trash Bin. It can be restored within 30 days. After 30 days it will be permanently deleted automatically.</div>
+      <div class="fg"><div class="fl">Reason</div><textarea class="fta" placeholder="Optional reason for deletion..."></textarea></div>
+    </div>
+    <div class="mft"><button class="btn" onclick="closeM('delete-modal')">Cancel</button><button class="btn btn-danger" onclick="toast('Account moved to trash.');closeM('delete-modal')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg>Move to Trash</button></div>
+  </div>
+</div>
+
+<div id="toast"></div>
+<script>
+var tabNames = ['accounts','security','audit','trash'];
+
+function switchTab(el, name) {
+  document.querySelectorAll('.tab-item').forEach(function(t){ t.classList.remove('act'); });
+  el.classList.add('act');
+  tabNames.forEach(function(t){
+    var el = document.getElementById('tab-' + t);
+    if (el) el.style.display = (t === name) ? 'block' : 'none';
+  });
+  var sb = document.getElementById('search-section');
+  if (sb) sb.style.display = name === 'accounts' ? 'flex' : 'none';
+}
+
+function openM(id){ var e=document.getElementById(id); if(e) e.classList.remove('hidden'); }
+function closeM(id){ var e=document.getElementById(id); if(e) e.classList.add('hidden'); }
+document.querySelectorAll('.modal-ov').forEach(function(o){
+  o.addEventListener('click', function(e){ if(e.target===o) o.classList.add('hidden'); });
+});
+
+function togglePw(id, btn) {
+  var inp = document.getElementById(id);
+  if (!inp) return;
+  var show = inp.type === 'password';
+  inp.type = show ? 'text' : 'password';
+  btn.innerHTML = show
+    ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>'
+    : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
+}
+
+function togglePwNote(role) {
+  document.getElementById('pw-note-guide').style.display = role === 'guide' ? 'block' : 'none';
+  document.getElementById('pw-note-trainee').style.display = role === 'trainee' ? 'block' : 'none';
+  document.getElementById('pw-field').style.display = role === 'trainee' ? 'none' : 'block';
+}
+
+var _tt;
+function toast(m) {
+  var t = document.getElementById('toast');
+  t.textContent = m;
+  t.style.opacity = '1';
+  t.style.transform = 'translateY(0)';
+  clearTimeout(_tt);
+  _tt = setTimeout(function(){ t.style.opacity = '0'; t.style.transform = 'translateY(6px)'; }, 2800);
+}
+</script>
+</body>
+</html>

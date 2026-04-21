@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>IoT Monitor · SFC Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--forest:#1A4A1C;--forest-2:#2C6B2F;--forest-3:#3E8C42;--forest-light:#6DB870;--forest-pale:#E8F4E8;--forest-xpale:#F2FAF2;--amber:#B86A00;--amber-2:#D4820A;--amber-pale:#FDF3DC;--amber-xpale:#FFFBF0;--coral:#B84430;--coral-pale:#FBF0EC;--sky:#1A5C8A;--sky-2:#2A7BC4;--sky-pale:#E6F2FB;--purple:#5B3FA0;--purple-pale:#F0EAFB;--ink:#0F1A10;--ink-2:#2A3A2C;--ink-3:#4A5E4C;--ink-4:#7A8E7C;--ink-5:#B0BDB2;--surface:#F6F8F6;--card:#FFFFFF;--border:rgba(26,74,28,0.1);--r:12px;--r-sm:8px;--r-lg:16px;--sh:0 1px 3px rgba(15,26,16,0.07),0 4px 16px rgba(15,26,16,0.05);--sh-md:0 2px 8px rgba(15,26,16,0.08),0 8px 32px rgba(15,26,16,0.08)}
+body{font-family:'Inter',sans-serif;background:var(--surface);color:var(--ink);font-size:13px;display:flex;min-height:100vh;line-height:1.5}
+.sidebar{width:230px;min-width:230px;background:var(--forest);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:50;overflow-y:auto}
+.logo-wrap{padding:20px 16px 16px;border-bottom:1px solid rgba(255,255,255,0.08)}
+.logo-mark{width:34px;height:34px;background:rgba(255,255,255,0.12);border-radius:9px;display:flex;align-items:center;justify-content:center;margin-bottom:9px}
+.logo-mark svg{width:18px;height:18px;color:#fff}
+.logo-name{font-family:'Syne',sans-serif;font-size:13.5px;font-weight:700;color:#fff}
+.logo-sub{font-size:9.5px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.07em;margin-top:1px}
+.nav-sec{padding:12px 8px 2px}
+.nav-lbl{font-size:9px;color:rgba(255,255,255,0.32);letter-spacing:0.12em;text-transform:uppercase;padding:0 8px;margin-bottom:4px;font-weight:600}
+.nav-a{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:var(--r-sm);color:rgba(255,255,255,0.55);font-size:12.5px;cursor:pointer;transition:all 0.13s;margin-bottom:1px;text-decoration:none}
+.nav-a:hover{background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.9)}
+.nav-a.active{background:rgba(255,255,255,0.15);color:#fff;font-weight:500}
+.nav-a svg{width:14px;height:14px;flex-shrink:0}
+.nb{margin-left:auto;background:var(--coral);color:#fff;font-size:9px;font-weight:700;padding:1px 5px;border-radius:9px;min-width:16px;text-align:center}
+.nb-a{margin-left:auto;background:var(--amber-2);color:#fff;font-size:9px;font-weight:700;padding:1px 5px;border-radius:9px}
+.nav-div{margin:5px 8px;border:none;border-top:1px solid rgba(255,255,255,0.07)}
+.sb-foot{margin-top:auto;padding:12px 8px;border-top:1px solid rgba(255,255,255,0.08)}
+.admin-row{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:var(--r-sm);background:rgba(255,255,255,0.07);cursor:pointer}
+.admin-av{width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,0.18);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex-shrink:0;font-family:'Syne',sans-serif}
+.admin-n{font-size:11.5px;font-weight:500;color:#fff}
+.admin-r{font-size:10px;color:rgba(255,255,255,0.4)}
+.main{flex:1;margin-left:230px;display:flex;flex-direction:column;min-width:0}
+.topbar{background:var(--card);border-bottom:1px solid var(--border);padding:0 26px;height:54px;display:flex;align-items:center;position:sticky;top:0;z-index:10;gap:10px}
+.tb-title{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:var(--ink);letter-spacing:-0.01em}
+.tb-sub{font-size:11px;color:var(--ink-4);margin-top:1px}
+.tb-right{margin-left:auto;display:flex;align-items:center;gap:7px}
+.icon-btn{width:32px;height:32px;border-radius:50%;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;color:var(--ink-3);transition:all 0.13s;text-decoration:none}
+.icon-btn:hover{background:var(--forest-xpale);color:var(--forest-2)}
+.icon-btn svg{width:14px;height:14px}
+.ndot{position:absolute;top:6px;right:6px;width:6px;height:6px;background:var(--coral);border-radius:50%;border:1.5px solid #fff}
+.tab-bar{background:var(--card);border-bottom:1px solid var(--border);padding:0 26px;display:flex;gap:0;position:sticky;top:54px;z-index:9}
+.tab-item{padding:12px 16px;font-size:12.5px;font-weight:500;color:var(--ink-4);border-bottom:2px solid transparent;cursor:pointer;transition:all 0.13s;white-space:nowrap}
+.tab-item:hover{color:var(--ink-2)}
+.tab-item.act{color:var(--forest-2);border-bottom-color:var(--forest-2)}
+.content{padding:22px 26px 48px}
+.btn{padding:6px 13px;border-radius:var(--r-sm);font-size:12px;font-weight:500;cursor:pointer;border:1px solid var(--border);background:var(--surface);color:var(--ink-3);font-family:'Inter',sans-serif;transition:all 0.13s;display:inline-flex;align-items:center;gap:5px;text-decoration:none}
+.btn:hover{background:var(--card);color:var(--ink);border-color:rgba(26,74,28,0.2)}
+.btn svg{width:13px;height:13px}
+.btn-p{background:var(--forest);color:#fff;border-color:var(--forest)}
+.btn-p:hover{background:var(--forest-2);color:#fff}
+.btn-sm{padding:3px 9px;font-size:11px}
+.btn-danger{background:var(--coral-pale);color:var(--coral);border-color:rgba(184,68,48,0.18)}
+.btn-danger:hover{background:#f9ddd7}
+.btn-amber{background:var(--amber-xpale);color:var(--amber);border-color:rgba(184,106,0,0.18)}
+.btn-amber:hover{background:var(--amber-pale)}
+.pill{font-size:9.5px;font-weight:600;padding:2px 8px;border-radius:9px;white-space:nowrap}
+.p-gr{background:var(--forest-xpale);color:var(--forest-2)}.p-amb{background:var(--amber-xpale);color:var(--amber)}.p-red{background:var(--coral-pale);color:var(--coral)}.p-sky{background:var(--sky-pale);color:var(--sky)}.p-gray{background:var(--surface);color:var(--ink-3);border:1px solid var(--border)}.p-pur{background:var(--purple-pale);color:var(--purple)}
+.panel{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;margin-bottom:20px}
+.ph{padding:13px 17px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:8px}
+.ph-title{font-size:13px;font-weight:600;color:var(--ink)}
+.ph-act{font-size:11.5px;color:var(--forest-2);cursor:pointer;font-weight:500;padding:3px 7px;border-radius:5px;transition:background 0.13s;background:none;border:none;font-family:'Inter',sans-serif}
+.ph-act:hover{background:var(--forest-xpale)}
+.pb{padding:13px 17px}
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;margin-bottom:20px}
+.sc{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);padding:16px 16px 14px;position:relative;overflow:hidden;transition:box-shadow 0.15s}
+.sc::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:var(--r-lg) var(--r-lg) 0 0}
+.sc-gr::before{background:var(--forest-3)}.sc-amb::before{background:var(--amber-2)}.sc-sky::before{background:var(--sky-2)}.sc-red::before{background:var(--coral)}
+.sc:hover{box-shadow:var(--sh-md)}
+.sc-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:9px}
+.sc-ic{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center}
+.sc-ic svg{width:17px;height:17px}
+.ic-gr{background:var(--forest-xpale);color:var(--forest-2)}.ic-amb{background:var(--amber-xpale);color:var(--amber-2)}.ic-sky{background:var(--sky-pale);color:var(--sky-2)}.ic-red{background:var(--coral-pale);color:var(--coral)}
+.sc-trend{font-size:10.5px;font-weight:500}.t-up{color:var(--forest-3)}.t-dn{color:var(--coral)}.t-neu{color:var(--ink-4)}
+.sc-val{font-family:'Syne',sans-serif;font-size:28px;font-weight:700;color:var(--ink);line-height:1;margin-bottom:3px}
+.sc-lbl{font-size:12px;font-weight:500;color:var(--ink-2)}.sc-sub{font-size:11px;color:var(--ink-4);margin-top:2px}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.35}}
+.live-dot{width:6px;height:6px;background:var(--coral);border-radius:50%;display:inline-block;animation:pulse 1.4s infinite;margin-right:3px}
+.live-dot-g{background:var(--forest-3)}
+/* CAMERA GRID */
+.cam-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
+.cam-card{border-radius:var(--r);background:#0D1810;aspect-ratio:16/9;position:relative;overflow:hidden;cursor:pointer;transition:transform 0.15s}
+.cam-card:hover{transform:scale(1.01)}
+.cam-card.alert-cam{box-shadow:0 0 0 2.5px var(--coral)}
+.cam-bg{position:absolute;inset:0;background:radial-gradient(ellipse at 30% 40%,rgba(62,140,66,0.16) 0%,transparent 60%)}
+.cam-overlay-top{position:absolute;top:0;left:0;right:0;padding:8px 10px;display:flex;justify-content:space-between;align-items:flex-start;z-index:2}
+.cam-id{font-size:10px;font-weight:700;color:#fff;background:rgba(0,0,0,0.55);padding:2px 7px;border-radius:5px;font-family:'Syne',sans-serif}
+.cam-live-badge{font-size:9.5px;font-weight:700;padding:2px 7px;border-radius:5px}
+.badge-live{background:rgba(184,68,48,0.88);color:#fff}
+.badge-idle{background:rgba(0,0,0,0.45);color:rgba(255,255,255,0.65)}
+.badge-alert{background:var(--coral);color:#fff;animation:pulse 1s infinite}
+.cam-play{width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,0.13);display:flex;align-items:center;justify-content:center;border:1.5px solid rgba(255,255,255,0.28);z-index:2;position:relative;transition:background 0.13s}
+.cam-card:hover .cam-play{background:rgba(255,255,255,0.22)}
+.cam-play svg{width:16px;height:16px;color:#fff;margin-left:2px}
+.cam-overlay-bot{position:absolute;bottom:0;left:0;right:0;padding:7px 10px;background:linear-gradient(transparent,rgba(0,0,0,0.65));display:flex;justify-content:space-between;align-items:flex-end;z-index:2}
+.cam-guide-name{font-size:10.5px;color:rgba(255,255,255,0.85);font-weight:500}
+.cam-park-name{font-size:10px;color:rgba(255,255,255,0.5)}
+/* INCIDENT TABLE */
+.tbl{width:100%;border-collapse:collapse}
+.tbl th{text-align:left;font-size:10.5px;font-weight:600;color:var(--ink-4);padding:8px 13px;border-bottom:1px solid var(--border);text-transform:uppercase;letter-spacing:0.05em;background:var(--surface);white-space:nowrap}
+.tbl td{padding:10px 13px;border-bottom:1px solid var(--border);font-size:12.5px;color:var(--ink-2);vertical-align:middle}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:rgba(246,248,246,0.6)}
+.sev-ic{width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sev-ic svg{width:12px;height:12px}
+.ic-h{background:var(--coral-pale);color:var(--coral)}.ic-m{background:var(--amber-xpale);color:var(--amber)}.ic-l{background:var(--forest-xpale);color:var(--forest-2)}
+/* VIDEO LIBRARY */
+.video-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.video-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;transition:box-shadow 0.15s}
+.video-card:hover{box-shadow:var(--sh-md)}
+.video-thumb{background:#0D1810;aspect-ratio:16/9;position:relative;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.video-thumb::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 40% 50%,rgba(62,140,66,0.14) 0%,transparent 60%)}
+.vt-play{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.13);display:flex;align-items:center;justify-content:center;border:1.5px solid rgba(255,255,255,0.25);z-index:1;transition:background 0.13s}
+.video-thumb:hover .vt-play{background:rgba(255,255,255,0.22)}
+.vt-play svg{width:14px;height:14px;color:#fff;margin-left:2px}
+.vt-badge{position:absolute;top:7px;left:7px;font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px;z-index:1}
+.vt-incident{background:rgba(184,68,48,0.85);color:#fff}
+.vt-training{background:rgba(26,74,28,0.82);color:#fff}
+.vt-archived{background:rgba(0,0,0,0.5);color:rgba(255,255,255,0.8)}
+.vt-duration{position:absolute;bottom:7px;right:7px;font-size:9.5px;font-weight:600;color:rgba(255,255,255,0.85);background:rgba(0,0,0,0.5);padding:2px 6px;border-radius:4px;z-index:1}
+.vc-body{padding:12px 14px}
+.vc-title{font-size:12.5px;font-weight:600;color:var(--ink);margin-bottom:3px;line-height:1.3}
+.vc-meta{font-size:11px;color:var(--ink-4);margin-bottom:8px}
+.vc-tags{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:9px}
+.vc-actions{display:flex;gap:5px}
+/* UPLOAD ZONE */
+.upload-zone{border:2px dashed var(--border);border-radius:var(--r-lg);padding:32px 24px;text-align:center;cursor:pointer;transition:all 0.15s;margin-bottom:20px}
+.upload-zone:hover{border-color:var(--forest-light);background:var(--forest-xpale)}
+.upload-zone.drag-over{border-color:var(--forest-2);background:var(--forest-pale)}
+.uz-icon{width:48px;height:48px;border-radius:12px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;margin:0 auto 14px}
+.uz-icon svg{width:22px;height:22px;color:var(--ink-4)}
+.uz-title{font-family:'Syne',sans-serif;font-size:14px;font-weight:600;color:var(--ink);margin-bottom:5px}
+.uz-sub{font-size:12px;color:var(--ink-4);line-height:1.6;margin-bottom:14px}
+.uz-formats{font-size:11px;color:var(--ink-5)}
+/* AI Training section */
+.ai-info-bar{background:var(--forest-xpale);border:1px solid rgba(26,74,28,0.15);border-radius:var(--r-sm);padding:12px 15px;margin-bottom:16px;display:flex;align-items:flex-start;gap:10px}
+.ai-info-bar svg{width:16px;height:16px;color:var(--forest-2);flex-shrink:0;margin-top:1px}
+.ai-info-text{font-size:12.5px;color:var(--forest-2);line-height:1.6}
+.ai-stats-row{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px;margin-bottom:16px}
+.ai-stat{background:var(--card);border:1px solid var(--border);border-radius:var(--r-sm);padding:12px;text-align:center}
+.ai-stat-val{font-family:'Syne',sans-serif;font-size:20px;font-weight:700;color:var(--ink);line-height:1;margin-bottom:3px}
+.ai-stat-lbl{font-size:10.5px;color:var(--ink-4)}
+/* Upload progress */
+.upload-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)}
+.upload-item:last-child{border-bottom:none}
+.ui-ic{width:36px;height:36px;background:#0D1810;border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ui-ic svg{width:16px;height:16px;color:rgba(255,255,255,0.6)}
+.ui-info{flex:1;min-width:0}
+.ui-name{font-size:12.5px;font-weight:500;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ui-meta{font-size:11px;color:var(--ink-4);margin-top:2px}
+.ui-bar{height:3px;background:var(--surface);border-radius:2px;overflow:hidden;margin-top:5px}
+.ui-fill{height:100%;background:var(--forest-3);border-radius:2px;transition:width 0.5s}
+/* MODAL */
+.modal-ov{position:fixed;inset:0;background:rgba(10,20,10,0.45);display:flex;align-items:center;justify-content:center;z-index:200;backdrop-filter:blur(2px)}
+.modal-ov.hidden{display:none}
+.modal{background:var(--card);border-radius:var(--r-lg);width:580px;max-width:94vw;max-height:90vh;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,0.16);border:1px solid var(--border);display:flex;flex-direction:column}
+.modal-lg{width:700px}
+.mhd{padding:15px 19px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.m-title{font-family:'Syne',sans-serif;font-size:14.5px;font-weight:700;color:var(--ink)}
+.m-close{width:24px;height:24px;border-radius:5px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--ink-3);border:none;background:none}
+.m-close:hover{background:var(--surface)}
+.m-close svg{width:13px;height:13px}
+.mb{padding:18px 19px;overflow-y:auto;flex:1}
+.mft{padding:11px 19px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:7px;flex-shrink:0}
+.fg{display:flex;flex-direction:column;gap:4px;margin-bottom:12px}
+.fl{font-size:10.5px;font-weight:700;color:var(--ink-4);text-transform:uppercase;letter-spacing:0.04em}
+.fi,.fss,.fta{border:1px solid var(--border);border-radius:var(--r-sm);padding:7px 10px;font-size:12.5px;font-family:'Inter',sans-serif;color:var(--ink);background:var(--surface);outline:none;width:100%}
+.fi:focus,.fss:focus,.fta:focus{border-color:rgba(26,74,28,0.3);background:var(--card)}
+.fta{resize:vertical;min-height:70px;line-height:1.6}
+.g2f{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.info-box{border-radius:var(--r-sm);padding:10px 12px;font-size:12px;line-height:1.6;margin-bottom:12px;display:flex;align-items:flex-start;gap:8px}
+.info-box svg{width:14px;height:14px;flex-shrink:0;margin-top:1px}
+.info-sky{background:var(--sky-pale);border:1px solid rgba(26,92,138,0.15);color:var(--sky)}
+.info-amber{background:var(--amber-xpale);border:1px solid rgba(184,106,0,0.15);color:var(--amber)}
+.info-green{background:var(--forest-xpale);border:1px solid rgba(26,74,28,0.15);color:var(--forest-2)}
+/* Video player mock in modal */
+.modal-player{background:#0D1810;border-radius:var(--r);aspect-ratio:16/9;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;position:relative;overflow:hidden;margin-bottom:14px;cursor:pointer}
+.modal-player::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 30% 40%,rgba(62,140,66,0.14) 0%,transparent 55%)}
+.mp-badge{position:absolute;top:10px;right:10px;font-size:9.5px;font-weight:700;padding:3px 8px;border-radius:5px;z-index:2;background:rgba(184,68,48,0.88);color:#fff}
+.mp-play{width:50px;height:50px;border-radius:50%;background:rgba(255,255,255,0.13);display:flex;align-items:center;justify-content:center;border:1.5px solid rgba(255,255,255,0.28);z-index:2;transition:background 0.13s}
+.modal-player:hover .mp-play{background:rgba(255,255,255,0.22)}
+.mp-play svg{width:20px;height:20px;color:#fff;margin-left:3px}
+.mp-lbl{font-size:12px;color:rgba(255,255,255,0.5);z-index:2;font-family:'Syne',sans-serif}
+.mp-file{font-size:10.5px;color:rgba(255,255,255,0.3);z-index:2}
+.meta-bar{display:flex;gap:14px;padding:10px 14px;background:var(--surface);border-radius:var(--r-sm);margin-bottom:12px;flex-wrap:wrap}
+.mb-item{display:flex;flex-direction:column;gap:2px}
+.mb-lbl{font-size:9.5px;color:var(--ink-4);text-transform:uppercase;letter-spacing:0.05em;font-weight:500}
+.mb-val{font-size:12.5px;font-weight:500;color:var(--ink)}
+#toast{position:fixed;bottom:22px;right:22px;background:var(--ink);color:#fff;padding:10px 16px;border-radius:var(--r);font-size:12.5px;font-weight:500;z-index:999;opacity:0;transform:translateY(6px);transition:all 0.22s;pointer-events:none;max-width:280px;box-shadow:0 2px 8px rgba(15,26,16,0.2)}
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="logo-wrap"><div class="logo-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3C8 3 5 6.5 5 10c0 4 4 8 7 10 3-2 7-6 7-10 0-3.5-3-7-7-7z"/><circle cx="12" cy="9" r="2" fill="currentColor" stroke="none"/></svg></div><div class="logo-name">SFC Admin</div><div class="logo-sub">Sarawak Forestry Corp</div></div>
+  <div class="nav-sec"><div class="nav-lbl">Overview</div><a class="nav-a" href="sfc_01_dashboard.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>Dashboard</a></div>
+  <div class="nav-sec"><div class="nav-lbl">Digital Learning</div>
+    <a class="nav-a" href="sfc_02_trainees.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Trainees<span class="nb-a">4</span></a>
+    <a class="nav-a" href="sfc_03_courses.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Courses &amp; Modules</a>
+    <a class="nav-a" href="sfc_05_certifications.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>Certifications</a>
+  </div>
+  <hr class="nav-div">
+  <div class="nav-sec"><div class="nav-lbl">Park Monitoring</div>
+    <a class="nav-a" href="sfc_06_park_guides.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Park Guides</a>
+    <a class="nav-a active" href="sfc_07_iot_monitor.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5.636 5.636a9 9 0 1 0 12.728 12.728"/><circle cx="12" cy="12" r="1"/></svg>IoT Monitor<span class="nb">3</span></a>
+    <a class="nav-a" href="sfc_08_notifications.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>Notifications<span class="nb">6</span></a>
+  </div>
+  <hr class="nav-div">
+  <div class="nav-sec"><div class="nav-lbl">System</div><a class="nav-a" href="sfc_09_accounts.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>User Accounts</a></div>
+  <div class="sb-foot"><div class="admin-row"><div class="admin-av">AH</div><div><div class="admin-n">Ahmad Hisham</div><div class="admin-r">Super Admin</div></div></div></div>
+</aside>
+
+<div class="main">
+  <div class="topbar">
+    <div><div class="tb-title">IoT Park Monitor</div><div class="tb-sub">Real-time activity detection · 12 active cameras · 3 alerts</div></div>
+    <div class="tb-right">
+      <span style="display:flex;align-items:center;font-size:11.5px;color:var(--coral);font-weight:600;background:var(--coral-pale);padding:4px 11px;border-radius:18px;border:1px solid rgba(184,68,48,0.2)"><span class="live-dot"></span>3 active alerts</span>
+      <a class="icon-btn" href="sfc_08_notifications.html" style="position:relative"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="ndot"></span></a>
+      <button class="btn btn-p" onclick="toast('Incident report exported.')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Export Report</button>
+    </div>
+  </div>
+
+  <!-- PAGE TABS -->
+  <div class="tab-bar">
+    <div class="tab-item act" onclick="switchTab(this,'live')">Live Monitor</div>
+    <div class="tab-item" onclick="switchTab(this,'incidents')">Incident Log</div>
+    <div class="tab-item" onclick="switchTab(this,'library')">Video Library</div>
+    <div class="tab-item" onclick="switchTab(this,'ai-training')">AI Training Data</div>
+  </div>
+
+  <div class="content">
+
+    <!-- ═══ TAB: LIVE MONITOR ═══ -->
+    <div id="tab-live">
+      <div class="stat-grid">
+        <div class="sc sc-sky"><div class="sc-top"><div class="sc-ic ic-sky"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5.636 5.636a9 9 0 1 0 12.728 12.728"/><circle cx="12" cy="12" r="1"/></svg></div><span class="sc-trend" style="display:flex;align-items:center;gap:3px;color:var(--forest-3)"><span class="live-dot live-dot-g"></span>Live</span></div><div class="sc-val">12</div><div class="sc-lbl">Active Cameras</div><div class="sc-sub">5 guides on tour now</div></div>
+        <div class="sc sc-red"><div class="sc-top"><div class="sc-ic ic-red"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg></div><span class="sc-trend t-dn" style="display:flex;align-items:center"><span class="live-dot"></span>Today</span></div><div class="sc-val">3</div><div class="sc-lbl">Active Alerts</div><div class="sc-sub">2 high · 1 medium</div></div>
+        <div class="sc sc-gr"><div class="sc-top"><div class="sc-ic ic-gr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div><span class="sc-trend t-up">↑ 12%</span></div><div class="sc-val">94%</div><div class="sc-lbl">Compliance Rate</div><div class="sc-sub">This month · All parks</div></div>
+        <div class="sc sc-amb"><div class="sc-top"><div class="sc-ic ic-amb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></div><span class="sc-trend t-neu">—</span></div><div class="sc-val">148</div><div class="sc-lbl">Incidents This Month</div><div class="sc-sub">28 high · 60 med · 60 low</div></div>
+      </div>
+
+      <!-- LIVE CAMERA FEEDS -->
+      <div class="panel" style="margin-bottom:20px">
+        <div class="ph"><span class="ph-title">Live Camera Feeds</span><div style="display:flex;gap:7px;align-items:center"><span style="font-size:11px;color:var(--ink-4)">Auto-refresh every 30s</span><button class="btn btn-sm" onclick="toast('Feeds refreshed.')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.1"/></svg>Refresh</button></div></div>
+        <div class="pb">
+          <div class="cam-grid">
+            <!-- CAM 04 - Alert -->
+            <div class="cam-card alert-cam" onclick="openM('view-footage')">
+              <div class="cam-bg"></div>
+              <div class="cam-overlay-top"><span class="cam-id">CAM-04</span><span class="cam-live-badge badge-alert">⚠ ALERT</span></div>
+              <div class="cam-play"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
+              <div class="cam-overlay-bot"><span class="cam-guide-name">Remy Bulat</span><span class="cam-park-name">Bako N.P.</span></div>
+            </div>
+            <!-- CAM 07 - Live -->
+            <div class="cam-card" onclick="openM('view-footage')">
+              <div class="cam-bg"></div>
+              <div class="cam-overlay-top"><span class="cam-id">CAM-07</span><span class="cam-live-badge badge-live">● LIVE</span></div>
+              <div class="cam-play"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
+              <div class="cam-overlay-bot"><span class="cam-guide-name">Danial Bujang</span><span class="cam-park-name">Semenggoh N.R.</span></div>
+            </div>
+            <!-- CAM 02 - Live -->
+            <div class="cam-card" onclick="openM('view-footage')">
+              <div class="cam-bg"></div>
+              <div class="cam-overlay-top"><span class="cam-id">CAM-02</span><span class="cam-live-badge badge-live">● LIVE</span></div>
+              <div class="cam-play"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
+              <div class="cam-overlay-bot"><span class="cam-guide-name">Siti Rahimah</span><span class="cam-park-name">Niah N.P.</span></div>
+            </div>
+            <!-- CAM 11 - Alert -->
+            <div class="cam-card alert-cam" onclick="openM('view-footage')">
+              <div class="cam-bg"></div>
+              <div class="cam-overlay-top"><span class="cam-id">CAM-11</span><span class="cam-live-badge badge-alert">⚠ ALERT</span></div>
+              <div class="cam-play"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
+              <div class="cam-overlay-bot"><span class="cam-guide-name">Unknown Guide</span><span class="cam-park-name">Niah N.P.</span></div>
+            </div>
+            <!-- CAM 09 - Idle -->
+            <div class="cam-card" onclick="openM('view-footage')">
+              <div class="cam-bg"></div>
+              <div class="cam-overlay-top"><span class="cam-id">CAM-09</span><span class="cam-live-badge badge-idle">IDLE</span></div>
+              <div class="cam-play"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
+              <div class="cam-overlay-bot"><span class="cam-guide-name">Nadia Fitri</span><span class="cam-park-name">Kubah N.P.</span></div>
+            </div>
+            <!-- CAM 06 - Live -->
+            <div class="cam-card" onclick="openM('view-footage')">
+              <div class="cam-bg"></div>
+              <div class="cam-overlay-top"><span class="cam-id">CAM-06</span><span class="cam-live-badge badge-live">● LIVE</span></div>
+              <div class="cam-play"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
+              <div class="cam-overlay-bot"><span class="cam-guide-name">Kadir Ahmad</span><span class="cam-park-name">Lambir Hills N.P.</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ACTIVE ALERTS -->
+      <div class="panel">
+        <div class="ph"><span class="ph-title">Active Alerts — Require Action</span><button class="ph-act" onclick="switchTab(document.querySelector('[onclick*=incidents]'),'incidents')">View full log →</button></div>
+        <div class="pb">
+          <div style="background:var(--coral-pale);border:1px solid rgba(184,68,48,0.2);border-radius:var(--r-sm);padding:12px 14px;margin-bottom:10px">
+            <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:9px">
+              <div class="sev-ic ic-h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+              <div style="flex:1"><div style="font-size:13px;font-weight:600;color:var(--ink);margin-bottom:2px">Wildlife handling detected — orangutan contact</div><div style="font-size:11.5px;color:var(--ink-4)">Remy Bulat · Bako N.P. · CAM-04 · 09:42 AM · HIGH SEVERITY</div></div>
+              <span class="pill p-red">Open</span>
+            </div>
+            <div style="display:flex;gap:6px">
+              <button class="btn btn-sm" onclick="openM('view-footage')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>View footage</button>
+              <button class="btn btn-sm" onclick="toast('Alert escalated to park rangers.')">Escalate to Rangers</button>
+              <button class="btn btn-sm btn-danger" onclick="toast('Alert marked resolved.')">Resolve</button>
+            </div>
+          </div>
+          <div style="background:var(--coral-pale);border:1px solid rgba(184,68,48,0.2);border-radius:var(--r-sm);padding:12px 14px;margin-bottom:10px">
+            <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:9px">
+              <div class="sev-ic ic-h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+              <div style="flex:1"><div style="font-size:13px;font-weight:600;color:var(--ink);margin-bottom:2px">Protected plant disturbance — possible plucking</div><div style="font-size:11.5px;color:var(--ink-4)">Unknown guide · Niah N.P. · CAM-11 · 08:15 AM · HIGH SEVERITY</div></div>
+              <span class="pill p-red">Open</span>
+            </div>
+            <div style="display:flex;gap:6px">
+              <button class="btn btn-sm" onclick="openM('view-footage')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>View footage</button>
+              <button class="btn btn-sm" onclick="toast('Alert escalated.')">Escalate to Rangers</button>
+              <button class="btn btn-sm btn-danger" onclick="toast('Alert resolved.')">Resolve</button>
+            </div>
+          </div>
+          <div style="background:var(--amber-xpale);border:1px solid rgba(184,106,0,0.18);border-radius:var(--r-sm);padding:12px 14px">
+            <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:9px">
+              <div class="sev-ic ic-m"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+              <div style="flex:1"><div style="font-size:13px;font-weight:600;color:var(--ink);margin-bottom:2px">Visitor off designated trail detected</div><div style="font-size:11.5px;color:var(--ink-4)">Danial Bujang · Semenggoh N.R. · CAM-07 · Yesterday · MEDIUM</div></div>
+              <span class="pill p-amb">Pending</span>
+            </div>
+            <div style="display:flex;gap:6px">
+              <button class="btn btn-sm" onclick="openM('view-footage')">View footage</button>
+              <button class="btn btn-sm btn-danger" onclick="toast('Alert resolved.')">Resolve</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ TAB: INCIDENT LOG ═══ -->
+    <div id="tab-incidents" style="display:none">
+      <div style="display:flex;gap:9px;margin-bottom:16px;flex-wrap:wrap">
+        <select style="border:1px solid var(--border);border-radius:18px;padding:5px 22px 5px 10px;font-size:11.5px;font-family:'Inter',sans-serif;color:var(--ink-3);background:var(--card);cursor:pointer;outline:none;appearance:none;background-image:url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%237A8E7C' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E\");background-repeat:no-repeat;background-position:right 7px center"><option>All Severity</option><option>High</option><option>Medium</option><option>Low</option></select>
+        <select style="border:1px solid var(--border);border-radius:18px;padding:5px 22px 5px 10px;font-size:11.5px;font-family:'Inter',sans-serif;color:var(--ink-3);background:var(--card);cursor:pointer;outline:none;appearance:none;background-image:url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%237A8E7C' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E\");background-repeat:no-repeat;background-position:right 7px center"><option>All Status</option><option>Open</option><option>Pending</option><option>Resolved</option><option>Closed</option></select>
+        <select style="border:1px solid var(--border);border-radius:18px;padding:5px 22px 5px 10px;font-size:11.5px;font-family:'Inter',sans-serif;color:var(--ink-3);background:var(--card);cursor:pointer;outline:none;appearance:none;background-image:url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%237A8E7C' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E\");background-repeat:no-repeat;background-position:right 7px center"><option>All Parks</option><option>Bako N.P.</option><option>Niah N.P.</option><option>Semenggoh N.R.</option></select>
+        <button class="btn btn-sm" style="margin-left:auto" onclick="toast('Incident log exported.')">Export Log</button>
+      </div>
+      <div class="panel" style="margin-bottom:0">
+        <table class="tbl">
+          <thead><tr><th>Severity</th><th>Incident</th><th>Guide / Camera</th><th>Park</th><th>Time</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody>
+            <tr><td><div class="sev-ic ic-h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg></div></td><td style="max-width:220px"><div style="font-weight:500;color:var(--ink)">Wildlife handling — orangutan contact</div></td><td><div style="font-size:12px">Remy Bulat</div><div style="font-size:10.5px;color:var(--ink-4)">CAM-04</div></td><td><span class="pill p-sky">Bako N.P.</span></td><td style="color:var(--ink-4);font-size:12px">09:42 AM<br>1 Apr 2026</td><td><span class="pill p-red">Open</span></td><td><div style="display:flex;gap:4px;flex-wrap:wrap"><button class="btn btn-sm" onclick="openM('view-footage')">Footage</button><button class="btn btn-sm" onclick="toast('Escalated.')">Escalate</button><button class="btn btn-sm btn-danger" onclick="toast('Resolved.')">Resolve</button></div></td></tr>
+            <tr><td><div class="sev-ic ic-h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg></div></td><td style="max-width:220px"><div style="font-weight:500;color:var(--ink)">Protected plant disturbance — possible plucking</div></td><td><div style="font-size:12px">Unknown</div><div style="font-size:10.5px;color:var(--ink-4)">CAM-11</div></td><td><span class="pill p-sky">Niah N.P.</span></td><td style="color:var(--ink-4);font-size:12px">08:15 AM<br>1 Apr 2026</td><td><span class="pill p-red">Open</span></td><td><div style="display:flex;gap:4px;flex-wrap:wrap"><button class="btn btn-sm" onclick="openM('view-footage')">Footage</button><button class="btn btn-sm" onclick="toast('Escalated.')">Escalate</button><button class="btn btn-sm btn-danger" onclick="toast('Resolved.')">Resolve</button></div></td></tr>
+            <tr><td><div class="sev-ic ic-m"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/></svg></div></td><td style="max-width:220px"><div style="font-weight:500;color:var(--ink)">Visitor off designated trail</div></td><td><div style="font-size:12px">Danial Bujang</div><div style="font-size:10.5px;color:var(--ink-4)">CAM-07</div></td><td><span class="pill p-sky">Semenggoh N.R.</span></td><td style="color:var(--ink-4);font-size:12px">14:22 PM<br>31 Mar 2026</td><td><span class="pill p-amb">Pending</span></td><td><div style="display:flex;gap:4px"><button class="btn btn-sm" onclick="openM('view-footage')">Footage</button><button class="btn btn-sm btn-danger" onclick="toast('Resolved.')">Resolve</button></div></td></tr>
+            <tr><td><div class="sev-ic ic-l"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div></td><td style="max-width:220px"><div style="font-weight:500;color:var(--ink)">Tour completed — no abnormalities</div></td><td><div style="font-size:12px">Siti Rahimah</div><div style="font-size:10.5px;color:var(--ink-4)">CAM-02, CAM-03</div></td><td><span class="pill p-sky">Niah N.P.</span></td><td style="color:var(--ink-4);font-size:12px">11:00 AM<br>31 Mar 2026</td><td><span class="pill p-gr">Closed</span></td><td><div style="display:flex;gap:4px"><button class="btn btn-sm" onclick="openM('view-footage')">Footage</button><button class="btn btn-sm" onclick="toast('Moved to AI training data.')">Add to Training</button></div></td></tr>
+            <tr><td><div class="sev-ic ic-m"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/></svg></div></td><td style="max-width:220px"><div style="font-weight:500;color:var(--ink)">Visitor handling wildlife (monkey)</div></td><td><div style="font-size:12px">Hassan Mat</div><div style="font-size:10.5px;color:var(--ink-4)">CAM-05</div></td><td><span class="pill p-sky">Bako N.P.</span></td><td style="color:var(--ink-4);font-size:12px">09:10 AM<br>29 Mar 2026</td><td><span class="pill p-gr">Resolved</span></td><td><div style="display:flex;gap:4px"><button class="btn btn-sm" onclick="openM('view-footage')">Footage</button><button class="btn btn-sm" onclick="toast('Moved to AI training data.')">Add to Training</button></div></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ═══ TAB: VIDEO LIBRARY ═══ -->
+    <div id="tab-library" style="display:none">
+      <div style="display:flex;gap:9px;margin-bottom:16px;flex-wrap:wrap;align-items:center">
+        <select style="border:1px solid var(--border);border-radius:18px;padding:5px 22px 5px 10px;font-size:11.5px;font-family:'Inter',sans-serif;color:var(--ink-3);background:var(--card);cursor:pointer;outline:none;appearance:none;background-image:url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%237A8E7C' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E\");background-repeat:no-repeat;background-position:right 7px center"><option>All Types</option><option>Incident Footage</option><option>Training Material</option><option>Archived Tours</option></select>
+        <select style="border:1px solid var(--border);border-radius:18px;padding:5px 22px 5px 10px;font-size:11.5px;font-family:'Inter',sans-serif;color:var(--ink-3);background:var(--card);cursor:pointer;outline:none;appearance:none;background-image:url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%237A8E7C' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E\");background-repeat:no-repeat;background-position:right 7px center"><option>All Parks</option><option>Bako N.P.</option><option>Niah N.P.</option><option>Semenggoh N.R.</option></select>
+        <div style="margin-left:auto;font-size:12px;color:var(--ink-4)">24 recordings · 48.2 GB used</div>
+      </div>
+      <div class="video-grid">
+        <div class="video-card">
+          <div class="video-thumb" onclick="openM('view-footage')"><div class="cam-bg"></div><span class="vt-badge vt-incident">Incident</span><span class="vt-duration">03:18</span><div class="vt-play"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg></div></div>
+          <div class="vc-body"><div class="vc-title">Wildlife handling — orangutan contact</div><div class="vc-meta">Remy Bulat · Bako N.P. · CAM-04 · 1 Apr 2026</div><div class="vc-tags"><span class="pill p-red">High Severity</span><span class="pill p-gray">Open</span></div><div class="vc-actions"><button class="btn btn-sm" onclick="openM('view-footage')">View</button><button class="btn btn-sm" onclick="toast('Downloaded.')">Download</button><button class="btn btn-sm btn-amber" onclick="toast('Moved to AI training library.')">Add to AI Training</button></div></div>
+        </div>
+        <div class="video-card">
+          <div class="video-thumb" onclick="openM('view-footage')"><div class="cam-bg"></div><span class="vt-badge vt-incident">Incident</span><span class="vt-duration">02:44</span><div class="vt-play"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg></div></div>
+          <div class="vc-body"><div class="vc-title">Protected plant disturbance — possible plucking</div><div class="vc-meta">Unknown · Niah N.P. · CAM-11 · 1 Apr 2026</div><div class="vc-tags"><span class="pill p-red">High Severity</span><span class="pill p-gray">Open</span></div><div class="vc-actions"><button class="btn btn-sm" onclick="openM('view-footage')">View</button><button class="btn btn-sm" onclick="toast('Downloaded.')">Download</button><button class="btn btn-sm btn-amber" onclick="toast('Moved to AI training library.')">Add to AI Training</button></div></div>
+        </div>
+        <div class="video-card">
+          <div class="video-thumb" onclick="openM('view-footage')"><div class="cam-bg"></div><span class="vt-badge vt-training">Training</span><span class="vt-duration">18:42</span><div class="vt-play"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg></div></div>
+          <div class="vc-body"><div class="vc-title">Exemplary tour — full compliance run</div><div class="vc-meta">Danial Bujang · Semenggoh N.R. · CAM-07 · 28 Mar 2026</div><div class="vc-tags"><span class="pill p-gr">Training Material</span><span class="pill p-gr">In AI Library</span></div><div class="vc-actions"><button class="btn btn-sm" onclick="openM('view-footage')">View</button><button class="btn btn-sm" onclick="toast('Downloaded.')">Download</button><button class="btn btn-sm btn-danger" onclick="toast('Removed from AI training.')">Remove from AI</button></div></div>
+        </div>
+        <div class="video-card">
+          <div class="video-thumb" onclick="openM('view-footage')"><div class="cam-bg"></div><span class="vt-badge vt-archived">Archived</span><span class="vt-duration">22:11</span><div class="vt-play"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg></div></div>
+          <div class="vc-body"><div class="vc-title">Tour completed — no abnormalities</div><div class="vc-meta">Siti Rahimah · Niah N.P. · CAM-02 · 31 Mar 2026</div><div class="vc-tags"><span class="pill p-gray">Archived</span></div><div class="vc-actions"><button class="btn btn-sm" onclick="openM('view-footage')">View</button><button class="btn btn-sm" onclick="toast('Downloaded.')">Download</button><button class="btn btn-sm btn-amber" onclick="toast('Added to AI training.')">Add to AI Training</button></div></div>
+        </div>
+        <div class="video-card">
+          <div class="video-thumb" onclick="openM('view-footage')"><div class="cam-bg"></div><span class="vt-badge vt-training">Training</span><span class="vt-duration">15:04</span><div class="vt-play"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg></div></div>
+          <div class="vc-body"><div class="vc-title">Correct wildlife encounter response</div><div class="vc-meta">Hassan Mat · Bako N.P. · CAM-05 · 20 Mar 2026</div><div class="vc-tags"><span class="pill p-gr">Training Material</span><span class="pill p-gr">In AI Library</span></div><div class="vc-actions"><button class="btn btn-sm" onclick="openM('view-footage')">View</button><button class="btn btn-sm" onclick="toast('Downloaded.')">Download</button><button class="btn btn-sm btn-danger" onclick="toast('Removed.')">Remove from AI</button></div></div>
+        </div>
+        <div class="video-card">
+          <div class="video-thumb" onclick="openM('view-footage')"><div class="cam-bg"></div><span class="vt-badge vt-incident">Incident</span><span class="vt-duration">05:33</span><div class="vt-play"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg></div></div>
+          <div class="vc-body"><div class="vc-title">Visitor handling wildlife (monkey)</div><div class="vc-meta">Hassan Mat · Bako N.P. · CAM-05 · 29 Mar 2026</div><div class="vc-tags"><span class="pill p-amb">Medium</span><span class="pill p-gr">Resolved</span><span class="pill p-gr">In AI Library</span></div><div class="vc-actions"><button class="btn btn-sm" onclick="openM('view-footage')">View</button><button class="btn btn-sm" onclick="toast('Downloaded.')">Download</button><button class="btn btn-sm btn-danger" onclick="toast('Removed.')">Remove from AI</button></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ TAB: AI TRAINING DATA ═══ -->
+    <div id="tab-ai-training" style="display:none">
+      <div class="ai-info-bar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 1 0 10 10"/><path d="M12 8v4l3 3"/><circle cx="19" cy="5" r="3"/></svg>
+        <div class="ai-info-text"><strong>AI Model Training Library:</strong> Videos uploaded or marked here are used to train the AI abnormal activity detection model. Upload labelled footage — both positive examples (correct behaviour) and negative examples (violations) — to improve detection accuracy. Supported formats: MP4, MOV, AVI up to 2 GB per file.</div>
+      </div>
+
+      <div class="ai-stats-row">
+        <div class="ai-stat"><div class="ai-stat-val">47</div><div class="ai-stat-lbl">Training videos</div></div>
+        <div class="ai-stat"><div class="ai-stat-val">31</div><div class="ai-stat-lbl">Labelled clips</div></div>
+        <div class="ai-stat"><div class="ai-stat-val">12.4 GB</div><div class="ai-stat-lbl">Total size</div></div>
+        <div class="ai-stat"><div class="ai-stat-val" style="color:var(--forest-2)">94.2%</div><div class="ai-stat-lbl">Model accuracy</div></div>
+      </div>
+
+      <!-- UPLOAD ZONE -->
+      <div class="upload-zone" id="upload-zone" onclick="openM('upload-modal')" ondragover="event.preventDefault();this.classList.add('drag-over')" ondragleave="this.classList.remove('drag-over')" ondrop="event.preventDefault();this.classList.remove('drag-over');toast('Video dropped. Opening upload form...');openM('upload-modal')">
+        <div class="uz-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
+        <div class="uz-title">Upload Training Videos</div>
+        <div class="uz-sub">Drag and drop video files here, or click to browse.<br>Label each video as a <strong>violation example</strong> or <strong>correct behaviour example</strong> to train the AI model.</div>
+        <button class="btn btn-p" onclick="event.stopPropagation();openM('upload-modal')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Upload Videos</button>
+        <div class="uz-formats" style="margin-top:12px">Supported: MP4, MOV, AVI · Max 2 GB per file · H.264 recommended</div>
+      </div>
+
+      <!-- TRAINING VIDEO LIST -->
+      <div class="panel">
+        <div class="ph"><span class="ph-title">AI Training Library</span><div style="display:flex;gap:7px"><button class="ph-act" onclick="toast('Training job submitted to AI pipeline.')">Run Training Job</button><button class="ph-act" onclick="toast('Library exported.')">Export</button></div></div>
+        <div class="pb">
+          <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+            <select style="border:1px solid var(--border);border-radius:18px;padding:5px 22px 5px 10px;font-size:11.5px;font-family:'Inter',sans-serif;color:var(--ink-3);background:var(--card);cursor:pointer;outline:none;appearance:none;background-image:url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%237A8E7C' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E\");background-repeat:no-repeat;background-position:right 7px center"><option>All Labels</option><option>Violation</option><option>Correct Behaviour</option><option>Unlabelled</option></select>
+          </div>
+          <div class="upload-item">
+            <div class="ui-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>
+            <div class="ui-info"><div class="ui-name">wildlife_handling_cam04_20260401.mp4</div><div class="ui-meta">3 min 18 sec · 284 MB · Uploaded 1 Apr 2026</div><div style="display:flex;gap:5px;margin-top:5px"><span class="pill p-red">Violation</span><span class="pill p-gray">Wildlife Handling</span></div></div>
+            <div style="display:flex;gap:4px;flex-shrink:0"><button class="btn btn-sm" onclick="openM('view-footage')">View</button><button class="btn btn-sm" onclick="openM('label-modal')">Re-label</button><button class="btn btn-sm btn-danger" onclick="toast('Removed from training library.')">Remove</button></div>
+          </div>
+          <div class="upload-item">
+            <div class="ui-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>
+            <div class="ui-info"><div class="ui-name">plant_disturbance_cam11_20260401.mp4</div><div class="ui-meta">2 min 44 sec · 198 MB · Uploaded 1 Apr 2026</div><div style="display:flex;gap:5px;margin-top:5px"><span class="pill p-red">Violation</span><span class="pill p-gray">Plant Disturbance</span></div></div>
+            <div style="display:flex;gap:4px;flex-shrink:0"><button class="btn btn-sm" onclick="openM('view-footage')">View</button><button class="btn btn-sm" onclick="openM('label-modal')">Re-label</button><button class="btn btn-sm btn-danger" onclick="toast('Removed.')">Remove</button></div>
+          </div>
+          <div class="upload-item">
+            <div class="ui-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>
+            <div class="ui-info"><div class="ui-name">exemplary_tour_cam07_20260328.mp4</div><div class="ui-meta">18 min 42 sec · 1.4 GB · Uploaded 29 Mar 2026</div><div style="display:flex;gap:5px;margin-top:5px"><span class="pill p-gr">Correct Behaviour</span><span class="pill p-gray">Full Tour</span></div></div>
+            <div style="display:flex;gap:4px;flex-shrink:0"><button class="btn btn-sm" onclick="openM('view-footage')">View</button><button class="btn btn-sm" onclick="openM('label-modal')">Re-label</button><button class="btn btn-sm btn-danger" onclick="toast('Removed.')">Remove</button></div>
+          </div>
+          <div class="upload-item">
+            <div class="ui-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>
+            <div class="ui-info"><div class="ui-name">correct_wildlife_response_cam05_20260320.mp4</div><div class="ui-meta">15 min 04 sec · 1.1 GB · Uploaded 21 Mar 2026</div><div style="display:flex;gap:5px;margin-top:5px"><span class="pill p-gr">Correct Behaviour</span><span class="pill p-gray">Wildlife Encounter</span></div></div>
+            <div style="display:flex;gap:4px;flex-shrink:0"><button class="btn btn-sm" onclick="openM('view-footage')">View</button><button class="btn btn-sm" onclick="openM('label-modal')">Re-label</button><button class="btn btn-sm btn-danger" onclick="toast('Removed.')">Remove</button></div>
+          </div>
+          <div class="upload-item">
+            <div class="ui-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>
+            <div class="ui-info">
+              <div class="ui-name">training_upload_new_batch.mp4</div>
+              <div class="ui-meta">Uploading... 67% · 892 MB of 1.3 GB</div>
+              <div class="ui-bar"><div class="ui-fill" id="progress-bar" style="width:67%"></div></div>
+            </div>
+            <div style="flex-shrink:0"><span style="font-size:11.5px;color:var(--ink-4)">67%</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- MODAL: View Footage -->
+<div class="modal-ov hidden" id="view-footage">
+  <div class="modal modal-lg">
+    <div class="mhd"><span class="m-title">Incident Footage — CAM-04 · Bako N.P.</span><button class="m-close" onclick="closeM('view-footage')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+    <div class="mb">
+      <div class="modal-player">
+        <div class="cam-bg"></div>
+        <span class="mp-badge">⚠ ALERT FOOTAGE</span>
+        <div class="mp-play"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
+        <div class="mp-lbl">Wildlife handling — orangutan contact</div>
+        <div class="mp-file">remy_bulat_cam04_20260401_0942.mp4</div>
+      </div>
+      <div class="meta-bar">
+        <div class="mb-item"><div class="mb-lbl">Duration</div><div class="mb-val">3:18</div></div>
+        <div style="width:1px;height:26px;background:var(--border)"></div>
+        <div class="mb-item"><div class="mb-lbl">Camera</div><div class="mb-val">CAM-04</div></div>
+        <div style="width:1px;height:26px;background:var(--border)"></div>
+        <div class="mb-item"><div class="mb-lbl">Guide</div><div class="mb-val">Remy Bulat</div></div>
+        <div style="width:1px;height:26px;background:var(--border)"></div>
+        <div class="mb-item"><div class="mb-lbl">Park</div><div class="mb-val">Bako N.P.</div></div>
+        <div style="width:1px;height:26px;background:var(--border)"></div>
+        <div class="mb-item"><div class="mb-lbl">Date/Time</div><div class="mb-val">1 Apr 2026 · 09:42 AM</div></div>
+      </div>
+      <div class="fg"><div class="fl">Admin Notes</div><textarea class="fta" placeholder="Add investigation notes for this incident..."></textarea></div>
+      <div class="fg"><div class="fl">Incident Classification</div>
+        <select class="fss">
+          <option>Wildlife handling / contact</option>
+          <option>Plant disturbance / plucking</option>
+          <option>Off-trail movement</option>
+          <option>Visitor safety breach</option>
+          <option>Other violation</option>
+          <option>False positive — no violation</option>
+        </select>
+      </div>
+    </div>
+    <div class="mft">
+      <button class="btn" onclick="closeM('view-footage')">Close</button>
+      <button class="btn btn-sm" onclick="toast('Footage downloaded.')">Download</button>
+      <button class="btn btn-sm btn-amber" onclick="toast('Added to AI training library.')">Add to AI Training</button>
+      <button class="btn btn-sm" onclick="toast('Escalated to park rangers.')">Escalate</button>
+      <button class="btn btn-p" onclick="toast('Incident resolved and recorded.');closeM('view-footage')">Mark Resolved</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Upload Video for AI Training -->
+<div class="modal-ov hidden" id="upload-modal">
+  <div class="modal">
+    <div class="mhd"><span class="m-title">Upload AI Training Video</span><button class="m-close" onclick="closeM('upload-modal')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+    <div class="mb">
+      <div class="info-box info-green">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 1 0 10 10"/><path d="M12 8v4l3 3"/><circle cx="19" cy="5" r="3"/></svg>
+        <span>Videos uploaded here are used to train and improve the AI abnormal activity detection model. Label each video correctly — both violation examples and correct behaviour examples are needed.</span>
+      </div>
+      <div class="fg">
+        <div class="fl">Select Video File</div>
+        <div style="border:2px dashed var(--border);border-radius:var(--r-sm);padding:18px;text-align:center;cursor:pointer;background:var(--surface)" onclick="toast('File browser opened.')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--ink-4)" stroke-width="1.5" style="width:24px;height:24px;margin-bottom:7px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          <div style="font-size:12.5px;color:var(--ink-3);margin-bottom:3px">Click to browse or drag &amp; drop</div>
+          <div style="font-size:11px;color:var(--ink-5)">MP4, MOV, AVI · Max 2 GB</div>
+        </div>
+      </div>
+      <div class="fg"><div class="fl">Video Label</div>
+        <select class="fss">
+          <option>Violation Example — Wildlife handling</option>
+          <option>Violation Example — Plant disturbance</option>
+          <option>Violation Example — Off-trail movement</option>
+          <option>Violation Example — Other</option>
+          <option>Correct Behaviour — Compliant tour</option>
+          <option>Correct Behaviour — Wildlife encounter (correct response)</option>
+          <option>Correct Behaviour — Other</option>
+        </select>
+      </div>
+      <div class="g2f">
+        <div class="fg"><div class="fl">Camera ID</div><input class="fi" placeholder="e.g. CAM-04"></div>
+        <div class="fg"><div class="fl">Park</div><select class="fss"><option>Bako N.P.</option><option>Niah N.P.</option><option>Semenggoh N.R.</option><option>Kubah N.P.</option><option>Lambir Hills N.P.</option></select></div>
+      </div>
+      <div class="fg"><div class="fl">Recording Date &amp; Time</div><input class="fi" type="datetime-local"></div>
+      <div class="fg"><div class="fl">Notes (for AI model context)</div><textarea class="fta" placeholder="Describe what happens in this video and why it is labelled as such. This context helps improve model accuracy."></textarea></div>
+    </div>
+    <div class="mft"><button class="btn" onclick="closeM('upload-modal')">Cancel</button><button class="btn btn-p" onclick="toast('Video uploading. Will appear in training library when complete.');closeM('upload-modal')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>Upload to Training Library</button></div>
+  </div>
+</div>
+
+<!-- MODAL: Label Video -->
+<div class="modal-ov hidden" id="label-modal">
+  <div class="modal" style="width:440px">
+    <div class="mhd"><span class="m-title">Re-label Training Video</span><button class="m-close" onclick="closeM('label-modal')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+    <div class="mb">
+      <div style="font-size:12.5px;font-weight:500;color:var(--ink);margin-bottom:12px;padding:10px 12px;background:var(--surface);border-radius:var(--r-sm);border:1px solid var(--border)">wildlife_handling_cam04_20260401.mp4</div>
+      <div class="fg"><div class="fl">Label</div>
+        <select class="fss">
+          <option selected>Violation Example — Wildlife handling</option>
+          <option>Violation Example — Plant disturbance</option>
+          <option>Violation Example — Off-trail movement</option>
+          <option>Correct Behaviour — Compliant tour</option>
+          <option>Correct Behaviour — Wildlife encounter (correct response)</option>
+          <option>False positive — Remove from training</option>
+        </select>
+      </div>
+      <div class="fg"><div class="fl">Activity Tags</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          <div style="padding:5px 10px;border-radius:20px;border:1.5px solid var(--forest-2);background:var(--forest-xpale);color:var(--forest-2);font-size:11.5px;font-weight:500;cursor:pointer">Wildlife Handling</div>
+          <div style="padding:5px 10px;border-radius:20px;border:1px solid var(--border);color:var(--ink-3);font-size:11.5px;cursor:pointer">Plant Disturbance</div>
+          <div style="padding:5px 10px;border-radius:20px;border:1px solid var(--border);color:var(--ink-3);font-size:11.5px;cursor:pointer">Off-trail</div>
+          <div style="padding:5px 10px;border-radius:20px;border:1px solid var(--border);color:var(--ink-3);font-size:11.5px;cursor:pointer">Visitor Contact</div>
+        </div>
+      </div>
+      <div class="fg"><div class="fl">Notes</div><textarea class="fta" placeholder="Update notes for this training video..."></textarea></div>
+    </div>
+    <div class="mft"><button class="btn" onclick="closeM('label-modal')">Cancel</button><button class="btn btn-p" onclick="toast('Label updated.');closeM('label-modal')">Save Label</button></div>
+  </div>
+</div>
+
+<div id="toast"></div>
+<script>
+var tabs = ['live','incidents','library','ai-training'];
+
+function switchTab(el, id) {
+  document.querySelectorAll('.tab-item').forEach(function(t){ t.classList.remove('act'); });
+  el.classList.add('act');
+  tabs.forEach(function(t){
+    var el = document.getElementById('tab-' + t);
+    if (el) el.style.display = (t === id) ? 'block' : 'none';
+  });
+}
+
+function openM(id){ var e=document.getElementById(id); if(e) e.classList.remove('hidden'); }
+function closeM(id){ var e=document.getElementById(id); if(e) e.classList.add('hidden'); }
+document.querySelectorAll('.modal-ov').forEach(function(o){
+  o.addEventListener('click', function(e){ if(e.target===o) o.classList.add('hidden'); });
+});
+
+/* Simulated upload progress */
+var prog = 67;
+setInterval(function(){
+  if(prog < 100){ prog = Math.min(100, prog + 1); }
+  var bar = document.getElementById('progress-bar');
+  if(bar) bar.style.width = prog + '%';
+}, 800);
+
+var _tt;
+function toast(m){
+  var t=document.getElementById('toast');
+  t.textContent=m;
+  t.style.opacity='1';
+  t.style.transform='translateY(0)';
+  clearTimeout(_tt);
+  _tt=setTimeout(function(){ t.style.opacity='0'; t.style.transform='translateY(6px)'; }, 2800);
+}
+</script>
+</body>
+</html>

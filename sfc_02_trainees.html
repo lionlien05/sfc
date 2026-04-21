@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Trainees · SFC Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--forest:#1A4A1C;--forest-2:#2C6B2F;--forest-3:#3E8C42;--forest-light:#6DB870;--forest-pale:#E8F4E8;--forest-xpale:#F2FAF2;--amber:#B86A00;--amber-2:#D4820A;--amber-pale:#FDF3DC;--amber-xpale:#FFFBF0;--coral:#B84430;--coral-pale:#FBF0EC;--sky:#1A5C8A;--sky-2:#2A7BC4;--sky-pale:#E6F2FB;--purple:#5B3FA0;--purple-pale:#F0EAFB;--ink:#0F1A10;--ink-2:#2A3A2C;--ink-3:#4A5E4C;--ink-4:#7A8E7C;--ink-5:#B0BDB2;--surface:#F6F8F6;--card:#FFFFFF;--border:rgba(26,74,28,0.1);--r:12px;--r-sm:8px;--r-lg:16px;--sh:0 1px 3px rgba(15,26,16,0.07),0 4px 16px rgba(15,26,16,0.05);--sh-md:0 2px 8px rgba(15,26,16,0.08),0 8px 32px rgba(15,26,16,0.08)}
+body{font-family:'Inter',sans-serif;background:var(--surface);color:var(--ink);font-size:13px;display:flex;min-height:100vh;line-height:1.5}
+.sidebar{width:230px;min-width:230px;background:var(--forest);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:50;overflow-y:auto}
+.lw{padding:20px 16px 16px;border-bottom:1px solid rgba(255,255,255,0.08)}
+.lm{width:34px;height:34px;background:rgba(255,255,255,0.12);border-radius:9px;display:flex;align-items:center;justify-content:center;margin-bottom:9px}
+.lm svg{width:18px;height:18px;color:#fff}
+.ln{font-family:'Syne',sans-serif;font-size:13.5px;font-weight:700;color:#fff}
+.ls{font-size:9.5px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.07em;margin-top:1px}
+.ns{padding:12px 8px 2px}
+.nl{font-size:9px;color:rgba(255,255,255,0.32);letter-spacing:0.12em;text-transform:uppercase;padding:0 8px;margin-bottom:4px;font-weight:600}
+.na{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:var(--r-sm);color:rgba(255,255,255,0.55);font-size:12.5px;cursor:pointer;transition:all 0.13s;margin-bottom:1px;text-decoration:none}
+.na:hover{background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.9)}
+.na.active{background:rgba(255,255,255,0.15);color:#fff;font-weight:500}
+.na svg{width:14px;height:14px;flex-shrink:0}
+.nb{margin-left:auto;background:var(--coral);color:#fff;font-size:9px;font-weight:700;padding:1px 5px;border-radius:9px;min-width:16px;text-align:center}
+.nba{margin-left:auto;background:var(--amber-2);color:#fff;font-size:9px;font-weight:700;padding:1px 5px;border-radius:9px}
+.nd{margin:5px 8px;border:none;border-top:1px solid rgba(255,255,255,0.07)}
+.sf{margin-top:auto;padding:12px 8px;border-top:1px solid rgba(255,255,255,0.08)}
+.ar{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:var(--r-sm);background:rgba(255,255,255,0.07);cursor:pointer}
+.aa{width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,0.18);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex-shrink:0;font-family:'Syne',sans-serif}
+.an{font-size:11.5px;font-weight:500;color:#fff}
+.as_{font-size:10px;color:rgba(255,255,255,0.4)}
+.main{flex:1;margin-left:230px;display:flex;flex-direction:column;min-width:0}
+.topbar{background:var(--card);border-bottom:1px solid var(--border);padding:0 26px;height:54px;display:flex;align-items:center;position:sticky;top:0;z-index:10;gap:10px}
+.tt{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:var(--ink);letter-spacing:-0.01em}
+.ts{font-size:11px;color:var(--ink-4);margin-top:1px}
+.tr{margin-left:auto;display:flex;align-items:center;gap:7px}
+.ib{width:32px;height:32px;border-radius:50%;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;color:var(--ink-3);transition:all 0.13s;text-decoration:none}
+.ib:hover{background:var(--forest-xpale);color:var(--forest-2)}
+.ib svg{width:14px;height:14px}
+.nd2{position:absolute;top:6px;right:6px;width:6px;height:6px;background:var(--coral);border-radius:50%;border:1.5px solid #fff}
+.sbar{background:var(--card);border-bottom:1px solid var(--border);padding:0 26px;height:50px;display:flex;align-items:center;gap:9px}
+.sw{position:relative;max-width:320px;flex:1}
+.sw svg{position:absolute;left:9px;top:50%;transform:translateY(-50%);width:13px;height:13px;color:var(--ink-4);pointer-events:none}
+.si{width:100%;border:1px solid var(--border);border-radius:var(--r-sm);padding:6px 10px 6px 30px;font-size:12.5px;font-family:'Inter',sans-serif;background:var(--surface);outline:none;color:var(--ink)}
+.si:focus{border-color:rgba(26,74,28,0.25);background:var(--card)}
+.fsel{border:1px solid var(--border);border-radius:18px;padding:5px 22px 5px 10px;font-size:11.5px;font-family:'Inter',sans-serif;color:var(--ink-3);background:var(--card);cursor:pointer;outline:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%237A8E7C' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 7px center}
+.content{padding:22px 26px 48px}
+.panel{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;margin-bottom:18px}
+.ph{padding:13px 17px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.ph-t{font-size:13px;font-weight:600;color:var(--ink)}
+.ph-a{font-size:11.5px;color:var(--forest-2);cursor:pointer;font-weight:500;padding:3px 7px;border-radius:5px;transition:background 0.13s;text-decoration:none;background:none;border:none;font-family:'Inter',sans-serif}
+.ph-a:hover{background:var(--forest-xpale)}
+.pb{padding:13px 17px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-bottom:18px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:15px;margin-bottom:18px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;margin-bottom:20px}
+.g31{display:grid;grid-template-columns:1.8fr 1fr;gap:15px;margin-bottom:18px}
+.g2f{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.g3f{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.btn{padding:6px 13px;border-radius:var(--r-sm);font-size:12px;font-weight:500;cursor:pointer;border:1px solid var(--border);background:var(--surface);color:var(--ink-3);font-family:'Inter',sans-serif;transition:all 0.13s;display:inline-flex;align-items:center;gap:5px;text-decoration:none}
+.btn:hover{background:var(--card);color:var(--ink);border-color:rgba(26,74,28,0.2)}
+.btn svg{width:13px;height:13px}
+.btn-p{background:var(--forest);color:#fff;border-color:var(--forest)}
+.btn-p:hover{background:var(--forest-2);color:#fff}
+.btn-sm{padding:3px 9px;font-size:11px}
+.btn-d{background:var(--coral-pale);color:var(--coral);border-color:rgba(184,68,48,0.18)}
+.btn-d:hover{background:#f9ddd7;color:var(--coral)}
+.btn-apr{background:var(--forest-xpale);color:var(--forest-2);border:1px solid rgba(26,74,28,0.18);font-size:11px;padding:3px 9px;border-radius:6px;cursor:pointer;font-weight:600;transition:all 0.13s;font-family:'Inter',sans-serif}
+.btn-apr:hover{background:var(--forest-pale)}
+.btn-rej{background:var(--coral-pale);color:var(--coral);border:1px solid rgba(184,68,48,0.15);font-size:11px;padding:3px 9px;border-radius:6px;cursor:pointer;font-weight:600;transition:all 0.13s;font-family:'Inter',sans-serif}
+.btn-rej:hover{background:#f9ddd7}
+.pill{font-size:9.5px;font-weight:600;padding:2px 8px;border-radius:9px;white-space:nowrap}
+.p-gr{background:var(--forest-xpale);color:var(--forest-2)}.p-am{background:var(--amber-xpale);color:var(--amber)}.p-re{background:var(--coral-pale);color:var(--coral)}.p-sk{background:var(--sky-pale);color:var(--sky)}.p-gy{background:var(--surface);color:var(--ink-3);border:1px solid var(--border)}.p-pu{background:var(--purple-pale);color:var(--purple)}
+.av{border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;font-family:'Syne',sans-serif}
+.av-s{width:28px;height:28px;font-size:10px}.av-m{width:34px;height:34px;font-size:12px}.av-l{width:44px;height:44px;font-size:14px}
+.av-t{background:var(--sky-pale);color:var(--sky)}.av-g{background:var(--amber-xpale);color:var(--amber)}.av-a{background:var(--forest-xpale);color:var(--forest-2)}
+.tbl{width:100%;border-collapse:collapse}
+.tbl th{text-align:left;font-size:10.5px;font-weight:600;color:var(--ink-4);padding:8px 13px;border-bottom:1px solid var(--border);text-transform:uppercase;letter-spacing:0.05em;background:var(--surface);white-space:nowrap}
+.tbl td{padding:10px 13px;border-bottom:1px solid var(--border);font-size:12.5px;color:var(--ink-2);vertical-align:middle}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:rgba(246,248,246,0.6)}
+.ptrack{height:4px;background:var(--surface);border-radius:3px;overflow:hidden}
+.pfill{height:100%;background:linear-gradient(90deg,var(--forest-3),var(--forest-light));border-radius:3px}
+.pc{display:flex;align-items:center;gap:7px}
+.pc .ptrack{width:54px;flex-shrink:0}
+.pc span{font-size:11.5px;font-weight:600;color:var(--ink-2);white-space:nowrap}
+.sc{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);padding:16px;position:relative;overflow:hidden;transition:box-shadow 0.15s}
+.sc::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:var(--r-lg) var(--r-lg) 0 0}
+.sc-sk::before{background:var(--sky-2)}.sc-gr::before{background:var(--forest-3)}.sc-am::before{background:var(--amber-2)}.sc-re::before{background:var(--coral)}.sc-pu::before{background:var(--purple)}
+.sc:hover{box-shadow:var(--sh-md)}
+.sc-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:9px}
+.sc-ic{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center}
+.sc-ic svg{width:17px;height:17px}
+.ic-sk{background:var(--sky-pale);color:var(--sky-2)}.ic-gr{background:var(--forest-xpale);color:var(--forest-2)}.ic-am{background:var(--amber-xpale);color:var(--amber-2)}.ic-re{background:var(--coral-pale);color:var(--coral)}.ic-pu{background:var(--purple-pale);color:var(--purple)}
+.sc-tr{font-size:10.5px;font-weight:500}
+.t-up{color:var(--forest-3)}.t-dn{color:var(--coral)}.t-ne{color:var(--ink-4)}
+.sc-val{font-family:'Syne',sans-serif;font-size:28px;font-weight:700;color:var(--ink);line-height:1;margin-bottom:3px}
+.sc-lbl{font-size:12px;font-weight:500;color:var(--ink-2)}
+.sc-sub{font-size:11px;color:var(--ink-4);margin-top:2px}
+.tag{font-size:9.5px;font-weight:700;padding:2px 7px;border-radius:6px;text-transform:uppercase;letter-spacing:0.04em}
+.tag-bio{background:var(--forest-xpale);color:var(--forest-2)}.tag-eco{background:var(--sky-pale);color:var(--sky)}.tag-law{background:var(--amber-xpale);color:var(--amber)}.tag-safe{background:var(--coral-pale);color:var(--coral)}.tag-gen{background:var(--surface);color:var(--ink-3);border:1px solid var(--border)}
+.sec-hd{display:flex;align-items:center;gap:10px;margin-bottom:14px;margin-top:4px}
+.sec-b{font-size:9.5px;font-weight:700;padding:3px 9px;border-radius:20px;text-transform:uppercase;letter-spacing:0.07em}
+.sb-sky{background:var(--sky-pale);color:var(--sky)}.sb-coral{background:var(--coral-pale);color:var(--coral)}.sb-forest{background:var(--forest-xpale);color:var(--forest-2)}.sb-amber{background:var(--amber-xpale);color:var(--amber)}
+.sec-line{flex:1;height:1px;background:var(--border)}
+.ph-text .pht{font-family:'Syne',sans-serif;font-size:19px;font-weight:700;color:var(--ink);letter-spacing:-0.02em;margin-bottom:2px}
+.ph-text .phs{font-size:12px;color:var(--ink-4)}
+.urow{display:flex;align-items:center;gap:9px;padding:8px 0;border-bottom:1px solid var(--border)}
+.urow:last-child{border-bottom:none}
+.ui{flex:1;min-width:0}
+.un{font-size:12.5px;font-weight:500;color:var(--ink)}
+.us{font-size:11px;color:var(--ink-4);margin-top:1px}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.35}}
+.ldot{width:6px;height:6px;background:var(--coral);border-radius:50%;display:inline-block;animation:pulse 1.4s infinite;margin-right:3px}
+.ldot-g{background:var(--forest-3)}
+.modal-ov{position:fixed;inset:0;background:rgba(10,20,10,0.45);display:flex;align-items:center;justify-content:center;z-index:200;backdrop-filter:blur(2px)}
+.modal-ov.hidden{display:none}
+.modal{background:var(--card);border-radius:var(--r-lg);width:520px;max-width:94vw;max-height:92vh;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,0.16);border:1px solid var(--border);display:flex;flex-direction:column}
+.mw{width:700px}
+.mhd{padding:15px 19px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.mt{font-family:'Syne',sans-serif;font-size:14.5px;font-weight:700;color:var(--ink)}
+.mc{width:24px;height:24px;border-radius:5px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--ink-3);border:none;background:none}
+.mc:hover{background:var(--surface)}
+.mc svg{width:13px;height:13px}
+.mb{padding:18px 19px;overflow-y:auto;flex:1}
+.mft{padding:11px 19px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:7px;flex-shrink:0}
+.fg{display:flex;flex-direction:column;gap:4px;margin-bottom:12px}
+.fl{font-size:10.5px;font-weight:700;color:var(--ink-4);text-transform:uppercase;letter-spacing:0.04em}
+.fi,.fss,.fta{border:1px solid var(--border);border-radius:var(--r-sm);padding:7px 10px;font-size:12.5px;font-family:'Inter',sans-serif;color:var(--ink);background:var(--surface);outline:none;width:100%}
+.fi:focus,.fss:focus,.fta:focus{border-color:rgba(26,74,28,0.3);background:var(--card)}
+.fta{resize:vertical;min-height:70px;line-height:1.6}
+.fi-pw{padding-right:36px;letter-spacing:0.12em}
+.pw-wrap{position:relative}
+.pw-eye{position:absolute;right:10px;top:50%;transform:translateY(-50%);cursor:pointer;color:var(--ink-4);border:none;background:none;padding:0;display:flex;align-items:center}
+.pw-eye svg{width:14px;height:14px}
+.info-box{border-radius:var(--r-sm);padding:10px 12px;font-size:12px;margin-bottom:12px;display:flex;align-items:flex-start;gap:8px;line-height:1.5}
+.info-box svg{width:14px;height:14px;flex-shrink:0;margin-top:1px}
+.info-sky{background:var(--sky-pale);color:var(--sky);border:1px solid rgba(26,92,138,0.15)}
+.info-amber{background:var(--amber-xpale);color:var(--amber);border:1px solid rgba(184,106,0,0.15)}
+.info-coral{background:var(--coral-pale);color:var(--coral);border:1px solid rgba(184,68,48,0.15)}
+.info-green{background:var(--forest-xpale);color:var(--forest-2);border:1px solid rgba(26,74,28,0.15)}
+/* RTE */
+.rte-wrap{border:1px solid var(--border);border-radius:var(--r-sm);overflow:hidden}
+.rte-bar{display:flex;align-items:center;gap:1px;padding:5px 7px;background:var(--surface);border-bottom:1px solid var(--border);flex-wrap:wrap}
+.rb{width:26px;height:26px;border-radius:4px;display:flex;align-items:center;justify-content:center;cursor:pointer;border:none;background:transparent;color:var(--ink-3);font-size:12px;font-weight:600;font-family:'Inter',sans-serif;transition:all 0.1s;flex-shrink:0}
+.rb:hover{background:var(--card);color:var(--ink)}
+.rb.on{background:var(--forest-pale);color:var(--forest-2)}
+.rb svg{width:12px;height:12px}
+.rsep{width:1px;height:16px;background:var(--border);margin:0 3px;flex-shrink:0}
+.rsel{border:1px solid var(--border);border-radius:5px;padding:3px 6px;font-size:11px;font-family:'Inter',sans-serif;background:var(--card);color:var(--ink-3);outline:none;cursor:pointer;height:26px}
+.rte-ed{min-height:140px;padding:13px 15px;font-size:13.5px;line-height:1.8;color:var(--ink);outline:none;font-family:'Inter',sans-serif}
+.rte-ed:focus{background:var(--card)}
+.rte-ed h1{font-family:'Syne',sans-serif;font-size:20px;font-weight:700;margin:16px 0 8px}
+.rte-ed h2{font-family:'Syne',sans-serif;font-size:17px;font-weight:600;margin:13px 0 7px}
+.rte-ed h3{font-size:14px;font-weight:600;margin:11px 0 5px;color:var(--ink-2)}
+.rte-ed p{margin-bottom:10px;color:var(--ink-2)}
+.rte-ed ul,.rte-ed ol{padding-left:20px;margin-bottom:10px}
+.rte-ed li{margin-bottom:4px;color:var(--ink-2)}
+.rte-ed blockquote{border-left:3px solid var(--forest-3);padding-left:13px;color:var(--ink-3);font-style:italic;margin:11px 0}
+.rte-ed .callout{background:var(--forest-xpale);border-left:3px solid var(--forest-3);border-radius:0 var(--r-sm) var(--r-sm) 0;padding:9px 12px;margin:10px 0}
+/* Toggle */
+.tog{width:36px;height:20px;border-radius:10px;background:var(--ink-5);position:relative;cursor:pointer;transition:background 0.2s;flex-shrink:0;border:none}
+.tog.on{background:var(--forest-3)}
+.tog::after{content:'';position:absolute;width:14px;height:14px;background:#fff;border-radius:50%;top:3px;left:3px;transition:transform 0.2s;box-shadow:0 1px 3px rgba(0,0,0,0.2)}
+.tog.on::after{transform:translateX(16px)}
+#toast{position:fixed;bottom:22px;right:22px;background:var(--ink);color:#fff;padding:10px 16px;border-radius:var(--r);font-size:12.5px;font-weight:500;z-index:9999;opacity:0;transform:translateY(6px);transition:all 0.22s;pointer-events:none;max-width:300px;box-shadow:var(--sh-md)}
+</style></head><body><aside class="sidebar">
+  <div class="lw"><div class="lm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3C8 3 5 6.5 5 10c0 4 4 8 7 10 3-2 7-6 7-10 0-3.5-3-7-7-7z"/><circle cx="12" cy="9" r="2" fill="currentColor" stroke="none"/></svg></div><div class="ln">SFC Admin</div><div class="ls">Sarawak Forestry Corp</div></div>
+  <div class="ns"><div class="nl">Overview</div><a class="na " href="sfc_01_dashboard.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>Dashboard</a></div>
+  <div class="ns"><div class="nl">Digital Learning</div>
+    <a class="na active" href="sfc_02_trainees.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Trainees<span class="nba">4</span></a>
+    <a class="na " href="sfc_03_courses.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Courses &amp; Modules</a>
+    <a class="na " href="sfc_05_certifications.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>Certifications</a>
+  </div>
+  <hr class="nd">
+  <div class="ns"><div class="nl">Park Monitoring</div>
+    <a class="na " href="sfc_06_park_guides.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Park Guides</a>
+    <a class="na " href="sfc_07_iot_monitor.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5.636 5.636a9 9 0 1 0 12.728 12.728"/><circle cx="12" cy="12" r="1"/></svg>IoT Monitor<span class="nb">3</span></a>
+    <a class="na " href="sfc_08_notifications.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>Notifications<span class="nb">6</span></a>
+  </div>
+  <hr class="nd">
+  <div class="ns"><div class="nl">System</div><a class="na " href="sfc_09_accounts.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>User Accounts</a></div>
+  <div class="sf"><div class="ar"><div class="aa">AH</div><div><div class="an">Ahmad Hisham</div><div class="as_">Super Admin</div></div></div></div>
+</aside>
+<div class="main">
+  <div class="topbar">
+    <div><div class="tt">Trainees</div><div class="ts">148 active · 4 pending approval</div></div>
+    <div class="tr">
+      <a class="ib" href="sfc_08_notifications.html" style="position:relative"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="nd2"></span></a>
+      <button class="btn btn-p" onclick="openM('add-trainee')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add Trainee</button>
+    </div>
+  </div>
+  <div class="sbar">
+    <div class="sw"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input class="si" placeholder="Search trainees by name, IC, email..."></div>
+    <select class="fsel"><option>All Parks</option><option>Bako N.P.</option><option>Niah N.P.</option><option>Semenggoh N.R.</option><option>Kubah N.P.</option><option>Lambir Hills N.P.</option></select>
+    <select class="fsel"><option>All Status</option><option>Active</option><option>Pending Approval</option><option>Suspended</option></select>
+    <select class="fsel"><option>All Progress</option><option>0–25%</option><option>25–50%</option><option>50–75%</option><option>75–100%</option></select>
+  </div>
+  <div class="content">
+
+    <!-- Pending Approvals -->
+    <div class="panel">
+      <div class="ph"><span class="ph-t">Pending Approvals</span><span style="font-size:10px;font-weight:700;background:var(--amber-xpale);color:var(--amber);padding:2px 7px;border-radius:7px">4 waiting</span></div>
+      <div class="pb">
+        <div class="g2">
+          <div style="border:1px solid var(--border);border-radius:var(--r);padding:13px;background:var(--surface)">
+            <div style="display:flex;align-items:center;gap:9px;margin-bottom:8px"><div class="av av-m av-t">MH</div><div><div style="font-size:13px;font-weight:600;color:var(--ink)">Muhammad Hazwan</div><div style="font-size:11px;color:var(--ink-4)">Bako N.P. · IC: 980201-13-0011 · Registered 1 Apr 2026</div></div></div>
+            <div style="font-size:12px;color:var(--ink-3);line-height:1.5;margin-bottom:10px">Self-registered via platform. National ID verified. No prior training record.</div>
+            <div class="fg" style="margin-bottom:8px"><div class="fl">Assign courses on approval</div><select class="fss" style="font-size:11.5px"><option>Select course to assign...</option><option>Conservation Fundamentals</option><option>Eco-Tourism Excellence</option><option>Wildlife Laws &amp; Ethics</option><option>Emergency Response</option></select></div>
+            <div style="display:flex;gap:5px"><button class="btn-apr" onclick="toast('Muhammad Hazwan approved. Welcome email sent.')">Approve</button><button class="btn-rej" onclick="toast('Application rejected.')">Reject</button><button class="btn btn-sm" onclick="openM('trainee-detail')">View Profile</button></div>
+          </div>
+          <div style="border:1px solid var(--border);border-radius:var(--r);padding:13px;background:var(--surface)">
+            <div style="display:flex;align-items:center;gap:9px;margin-bottom:8px"><div class="av av-m av-t">NR</div><div><div style="font-size:13px;font-weight:600;color:var(--ink)">Norlia Roslan</div><div style="font-size:11px;color:var(--ink-4)">Niah N.P. · IC: 950314-12-5543 · Registered 31 Mar 2026</div></div></div>
+            <div style="font-size:12px;color:var(--ink-3);line-height:1.5;margin-bottom:10px">Self-registered. National ID verified. Previous eco-tourism experience noted in application.</div>
+            <div class="fg" style="margin-bottom:8px"><div class="fl">Assign courses on approval</div><select class="fss" style="font-size:11.5px"><option>Select course to assign...</option><option>Conservation Fundamentals</option><option>Eco-Tourism Excellence</option><option>Wildlife Laws &amp; Ethics</option></select></div>
+            <div style="display:flex;gap:5px"><button class="btn-apr" onclick="toast('Norlia Roslan approved.')">Approve</button><button class="btn-rej" onclick="toast('Application rejected.')">Reject</button><button class="btn btn-sm" onclick="openM('trainee-detail')">View Profile</button></div>
+          </div>
+          <div style="border:1px solid var(--border);border-radius:var(--r);padding:13px;background:var(--surface)">
+            <div style="display:flex;align-items:center;gap:9px;margin-bottom:8px"><div class="av av-m av-t">AZ</div><div><div style="font-size:13px;font-weight:600;color:var(--ink)">Azhar Zulkifli</div><div style="font-size:11px;color:var(--ink-4)">Kubah N.P. · IC: 001105-13-0088 · Registered 31 Mar 2026</div></div></div>
+            <div style="font-size:12px;color:var(--ink-3);line-height:1.5;margin-bottom:10px">Student applicant, Universiti Malaysia Sarawak. National ID verified.</div>
+            <div class="fg" style="margin-bottom:8px"><div class="fl">Assign courses on approval</div><select class="fss" style="font-size:11.5px"><option>Select course to assign...</option><option>Conservation Fundamentals</option><option>Eco-Tourism Excellence</option><option>Wildlife Laws &amp; Ethics</option></select></div>
+            <div style="display:flex;gap:5px"><button class="btn-apr" onclick="toast('Azhar Zulkifli approved.')">Approve</button><button class="btn-rej" onclick="toast('Application rejected.')">Reject</button><button class="btn btn-sm" onclick="openM('trainee-detail')">View Profile</button></div>
+          </div>
+          <div style="border:1px solid var(--border);border-radius:var(--r);padding:13px;background:var(--surface)">
+            <div style="display:flex;align-items:center;gap:9px;margin-bottom:8px"><div class="av av-m av-t">LB</div><div><div style="font-size:13px;font-weight:600;color:var(--ink)">Lim Boon Kiat</div><div style="font-size:11px;color:var(--ink-4)">Lambir Hills N.P. · IC: 880622-13-7721 · Registered 30 Mar 2026</div></div></div>
+            <div style="font-size:12px;color:var(--ink-3);line-height:1.5;margin-bottom:10px">Returning applicant. Previously suspended for incomplete modules. Re-applying.</div>
+            <div class="fg" style="margin-bottom:8px"><div class="fl">Assign courses on approval</div><select class="fss" style="font-size:11.5px"><option>Select course to assign...</option><option>Conservation Fundamentals</option><option>Eco-Tourism Excellence</option><option>Wildlife Laws &amp; Ethics</option></select></div>
+            <div style="display:flex;gap:5px"><button class="btn-apr" onclick="toast('Lim Boon Kiat approved.')">Approve</button><button class="btn-rej" onclick="toast('Application rejected.')">Reject</button><button class="btn btn-sm" onclick="openM('trainee-detail')">View Profile</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Course Completions awaiting admin contact -->
+    <div class="panel">
+      <div class="ph"><span class="ph-t">Course Completions — Admin Action Required</span><span style="font-size:10px;font-weight:700;background:var(--forest-xpale);color:var(--forest-2);padding:2px 7px;border-radius:7px">2 new</span></div>
+      <div class="pb">
+        <div style="border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-bottom:12px;background:var(--surface)">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px">
+            <div style="display:flex;align-items:center;gap:10px"><div class="av av-s av-t">AH</div><div><div style="font-size:13px;font-weight:600;color:var(--ink)">Ahmad Haziq</div><div style="font-size:11.5px;color:var(--ink-4)">Completed: Conservation Fundamentals · Bako N.P.</div></div></div>
+            <div style="text-align:right"><div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:700;color:var(--forest-2)">91%</div><div style="font-size:10.5px;color:var(--ink-4)">Final score</div></div>
+          </div>
+          <div style="font-size:12.5px;color:var(--ink-3);line-height:1.6;background:var(--card);border:1px solid var(--border);border-radius:var(--r-sm);padding:11px 13px;margin-bottom:11px">
+            <strong style="color:var(--ink)">Admin notes:</strong> Ahmad has demonstrated strong knowledge across all 4 modules of Conservation Fundamentals. All module quizzes passed with scores above 88%. Quiz 2 (Flora Identification) was his highest at 95%. <strong>Recommended for Basic Guide Certificate.</strong> Completed the course within 3 weeks — fastest completion in current cohort. Consider promoting to Park Guide role upon cert issuance.
+          </div>
+          <div style="display:flex;gap:7px;flex-wrap:wrap">
+            <button class="btn btn-p btn-sm" onclick="openM('contact-trainee')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>Contact Trainee</button>
+            <button class="btn btn-sm" style="background:var(--amber-xpale);color:var(--amber);border-color:var(--amber-xpale)" onclick="toast('Certificate issued to Ahmad Haziq.')">Issue Certificate</button>
+            <button class="btn btn-sm" onclick="openM('promote-guide')">Promote to Park Guide</button>
+            <button class="btn btn-sm" onclick="openM('assign-courses')">Assign Next Course</button>
+            <button class="btn btn-sm" onclick="openM('trainee-detail')">Full Profile</button>
+          </div>
+        </div>
+        <div style="border:1px solid var(--border);border-radius:var(--r);padding:14px;background:var(--surface)">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px">
+            <div style="display:flex;align-items:center;gap:10px"><div class="av av-s av-t">LA</div><div><div style="font-size:13px;font-weight:600;color:var(--ink)">Lily Awang</div><div style="font-size:11.5px;color:var(--ink-4)">Completed: Eco-Tourism Excellence · Bako N.P.</div></div></div>
+            <div style="text-align:right"><div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:700;color:var(--forest-2)">88%</div><div style="font-size:10.5px;color:var(--ink-4)">Final score</div></div>
+          </div>
+          <div style="font-size:12.5px;color:var(--ink-3);line-height:1.6;background:var(--card);border:1px solid var(--border);border-radius:var(--r-sm);padding:11px 13px;margin-bottom:11px">
+            <strong style="color:var(--ink)">Admin notes:</strong> Lily has completed all 3 modules of Eco-Tourism Excellence. Strong performance in visitor engagement and sustainability modules. <strong>Eligible for Basic Guide Certificate after completing Conservation Fundamentals.</strong> Assign Conservation Fundamentals as next course.
+          </div>
+          <div style="display:flex;gap:7px;flex-wrap:wrap">
+            <button class="btn btn-p btn-sm" onclick="openM('contact-trainee')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>Contact Trainee</button>
+            <button class="btn btn-sm" onclick="openM('assign-courses')">Assign Next Course</button>
+            <button class="btn btn-sm" onclick="openM('trainee-detail')">Full Profile</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- All Trainees Table -->
+    <div class="panel">
+      <div class="ph"><span class="ph-t">All Trainees</span><button class="ph-a" onclick="toast('CSV exported.')">Export CSV</button></div>
+      <div style="overflow-x:auto">
+        <table class="tbl">
+          <thead><tr><th>Trainee</th><th>Park</th><th>Status</th><th>Assigned Courses</th><th>Progress</th><th>Quiz Avg</th><th>Role</th><th>Actions</th></tr></thead>
+          <tbody>
+            <tr><td><div style="display:flex;align-items:center;gap:8px"><div class="av av-s av-t">AH</div><div><div style="font-weight:500">Ahmad Haziq</div><div style="font-size:10.5px;color:var(--ink-4)">T-1000</div></div></div></td><td><span class="pill p-sk">Bako N.P.</span></td><td><span class="pill p-gr">Active</span></td><td><div style="display:flex;flex-wrap:wrap;gap:3px"><span style="font-size:10px;padding:2px 6px;background:var(--forest-xpale);color:var(--forest-2);border-radius:5px">Conservation Fundamentals</span></div></td><td><div class="pc"><div class="ptrack"><div class="pfill" style="width:91%"></div></div><span>91%</span></div></td><td style="font-weight:600;color:var(--forest-2)">91%</td><td><span class="pill p-sk">Trainee</span></td><td><div style="display:flex;gap:4px"><button class="btn btn-sm" onclick="openM('trainee-detail')">View</button><button class="btn btn-sm" onclick="openM('assign-courses')">Assign</button><button class="btn btn-sm" onclick="openM('contact-trainee')">Contact</button><button class="btn btn-sm" onclick="openM('promote-guide')">→ Guide</button></div></td></tr>
+            <tr><td><div style="display:flex;align-items:center;gap:8px"><div class="av av-s av-t">LA</div><div><div style="font-weight:500">Lily Awang</div><div style="font-size:10.5px;color:var(--ink-4)">T-1001</div></div></div></td><td><span class="pill p-sk">Bako N.P.</span></td><td><span class="pill p-gr">Active</span></td><td><div style="display:flex;flex-wrap:wrap;gap:3px"><span style="font-size:10px;padding:2px 6px;background:var(--sky-pale);color:var(--sky);border-radius:5px">Eco-Tourism Excellence</span></div></td><td><div class="pc"><div class="ptrack"><div class="pfill" style="width:88%"></div></div><span>88%</span></div></td><td style="font-weight:600;color:var(--forest-2)">88%</td><td><span class="pill p-sk">Trainee</span></td><td><div style="display:flex;gap:4px"><button class="btn btn-sm" onclick="openM('trainee-detail')">View</button><button class="btn btn-sm" onclick="openM('assign-courses')">Assign</button><button class="btn btn-sm" onclick="openM('contact-trainee')">Contact</button></div></td></tr>
+            <tr><td><div style="display:flex;align-items:center;gap:8px"><div class="av av-s av-t">SK</div><div><div style="font-weight:500">Suhana Kamaruddin</div><div style="font-size:10.5px;color:var(--ink-4)">T-1002</div></div></div></td><td><span class="pill p-sk">Niah N.P.</span></td><td><span class="pill p-gr">Active</span></td><td><div style="display:flex;flex-wrap:wrap;gap:3px"><span style="font-size:10px;padding:2px 6px;background:var(--forest-xpale);color:var(--forest-2);border-radius:5px">Conservation Fundamentals</span></div></td><td><div class="pc"><div class="ptrack"><div class="pfill" style="width:74%"></div></div><span>74%</span></div></td><td style="font-weight:600;color:var(--amber)">74%</td><td><span class="pill p-sk">Trainee</span></td><td><div style="display:flex;gap:4px"><button class="btn btn-sm" onclick="openM('trainee-detail')">View</button><button class="btn btn-sm" onclick="openM('assign-courses')">Assign</button></div></td></tr>
+            <tr><td><div style="display:flex;align-items:center;gap:8px"><div class="av av-s av-t">HT</div><div><div style="font-weight:500">Hassan Taib</div><div style="font-size:10.5px;color:var(--ink-4)">T-1003</div></div></div></td><td><span class="pill p-sk">Semenggoh N.R.</span></td><td><span class="pill p-gr">Active</span></td><td><div style="display:flex;flex-wrap:wrap;gap:3px"><span style="font-size:10px;padding:2px 6px;background:var(--coral-pale);color:var(--coral);border-radius:5px">Emergency Response</span></div></td><td><div class="pc"><div class="ptrack"><div class="pfill" style="width:52%"></div></div><span>52%</span></div></td><td style="font-weight:600;color:var(--amber)">62%</td><td><span class="pill p-sk">Trainee</span></td><td><div style="display:flex;gap:4px"><button class="btn btn-sm" onclick="openM('trainee-detail')">View</button><button class="btn btn-sm" onclick="openM('assign-courses')">Assign</button></div></td></tr>
+            <tr><td><div style="display:flex;align-items:center;gap:8px"><div class="av av-s av-t">RJ</div><div><div style="font-weight:500">Roslan Jaafar</div><div style="font-size:10.5px;color:var(--ink-4)">T-1004</div></div></div></td><td><span class="pill p-sk">Bako N.P.</span></td><td><span class="pill p-re">Suspended</span></td><td><span style="font-size:11px;color:var(--ink-4)">None</span></td><td><div class="pc"><div class="ptrack"><div class="pfill" style="width:0%"></div></div><span>0%</span></div></td><td style="color:var(--ink-4)">—</td><td><span class="pill p-gy">Suspended</span></td><td><div style="display:flex;gap:4px"><button class="btn btn-sm" onclick="openM('trainee-detail')">View</button><button class="btn btn-sm" style="color:var(--forest-2)" onclick="toast('Account reinstated.')">Reinstate</button></div></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Add Trainee -->
+<div class="modal-ov hidden" id="add-trainee">
+  <div class="modal">
+    <div class="mhd"><span class="mt">Add New Trainee</span><button class="mc" onclick="closeM('add-trainee')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+    <div class="mb">
+      <div class="g2f"><div class="fg"><div class="fl">Full Name</div><input class="fi" placeholder="Full name as per IC"></div><div class="fg"><div class="fl">National IC</div><input class="fi" placeholder="900101-13-1234"></div></div>
+      <div class="fg"><div class="fl">Email Address</div><input class="fi" type="email" placeholder="trainee@email.com"></div>
+      <div class="info-box info-sky"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><span><strong>Password policy:</strong> Trainees set their own password during self-registration. Admin does not assign passwords for trainees.</span></div>
+      <div class="g2f"><div class="fg"><div class="fl">Assigned Park</div><select class="fss"><option>Bako N.P.</option><option>Niah N.P.</option><option>Semenggoh N.R.</option><option>Kubah N.P.</option><option>Lambir Hills N.P.</option></select></div><div class="fg"><div class="fl">Phone</div><input class="fi" placeholder="+60 1X-XXXX XXXX"></div></div>
+      <div class="fg"><div class="fl">Assign Courses</div>
+        <div style="border:1px solid var(--border);border-radius:var(--r-sm);overflow:hidden">
+          <label style="padding:8px 11px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;cursor:pointer"><input type="checkbox" style="accent-color:var(--forest-2)"><span style="font-size:12.5px;color:var(--ink)">Conservation Fundamentals</span><span style="margin-left:auto;font-size:10.5px;color:var(--ink-4)">4 modules</span></label>
+          <label style="padding:8px 11px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;cursor:pointer"><input type="checkbox" style="accent-color:var(--forest-2)"><span style="font-size:12.5px;color:var(--ink)">Eco-Tourism Excellence</span><span style="margin-left:auto;font-size:10.5px;color:var(--ink-4)">3 modules</span></label>
+          <label style="padding:8px 11px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;cursor:pointer"><input type="checkbox" style="accent-color:var(--forest-2)"><span style="font-size:12.5px;color:var(--ink)">Wildlife Laws &amp; Ethics</span><span style="margin-left:auto;font-size:10.5px;color:var(--ink-4)">2 modules</span></label>
+          <label style="padding:8px 11px;display:flex;align-items:center;gap:8px;cursor:pointer"><input type="checkbox" style="accent-color:var(--forest-2)"><span style="font-size:12.5px;color:var(--ink)">Emergency Response Protocols</span><span style="margin-left:auto;font-size:10.5px;color:var(--ink-4)">3 modules</span></label>
+        </div>
+      </div>
+      <div class="fg"><div class="fl">Admin Notes (optional)</div><textarea class="fta" placeholder="Any admin notes about this trainee..."></textarea></div>
+    </div>
+    <div class="mft"><button class="btn" onclick="closeM('add-trainee')">Cancel</button><button class="btn btn-p" onclick="toast('Trainee added. Welcome email sent.');closeM('add-trainee')">Add Trainee</button></div>
+  </div>
+</div>
+
+<!-- MODAL: Trainee Detail -->
+<div class="modal-ov hidden" id="trainee-detail">
+  <div class="modal" style="width:580px">
+    <div class="mhd"><span class="mt">Trainee Profile — Ahmad Haziq</span><button class="mc" onclick="closeM('trainee-detail')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+    <div class="mb">
+      <div style="display:flex;gap:13px;margin-bottom:14px"><div class="av av-l av-t">AH</div><div><div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:var(--ink)">Ahmad Haziq bin Abdullah</div><div style="font-size:11.5px;color:var(--ink-4);margin-top:2px">T-1000 · ahmad.haziq@email.com · +60 12-3456789</div><div style="margin-top:6px;display:flex;gap:5px;flex-wrap:wrap"><span class="pill p-gr">Active</span><span class="pill p-sk">Bako N.P.</span><span class="pill p-sk">Trainee</span></div></div></div>
+      <div class="g3f" style="margin-bottom:14px">
+        <div style="background:var(--surface);border-radius:var(--r-sm);padding:10px;text-align:center;border:1px solid var(--border)"><div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:var(--ink)">91%</div><div style="font-size:10px;color:var(--ink-4);margin-top:2px">Avg Score</div></div>
+        <div style="background:var(--surface);border-radius:var(--r-sm);padding:10px;text-align:center;border:1px solid var(--border)"><div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:var(--ink)">2/3</div><div style="font-size:10px;color:var(--ink-4);margin-top:2px">Courses Done</div></div>
+        <div style="background:var(--surface);border-radius:var(--r-sm);padding:10px;text-align:center;border:1px solid var(--border)"><div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:var(--ink)">1</div><div style="font-size:10px;color:var(--ink-4);margin-top:2px">Certs Earned</div></div>
+      </div>
+      <div style="font-size:11px;font-weight:700;color:var(--ink-4);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px">Assigned Courses &amp; Progress</div>
+      <div style="margin-bottom:6px"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px"><span style="color:var(--ink-2)">Conservation Fundamentals</span><span style="font-weight:600;color:var(--forest-2)">100% ✓</span></div><div class="ptrack" style="height:5px"><div class="pfill" style="width:100%"></div></div></div>
+      <div style="margin-bottom:6px"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px"><span style="color:var(--ink-2)">Eco-Tourism Excellence</span><span style="font-weight:600;color:var(--amber)">65%</span></div><div class="ptrack" style="height:5px"><div class="pfill" style="width:65%"></div></div></div>
+      <div style="margin-bottom:14px"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px"><span style="color:var(--ink-2)">Wildlife Laws &amp; Ethics</span><span style="font-weight:600;color:var(--ink-4)">Not started</span></div><div class="ptrack" style="height:5px"><div class="pfill" style="width:0%"></div></div></div>
+      <div style="font-size:11px;font-weight:700;color:var(--ink-4);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px">Role Management</div>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r-sm);padding:12px;margin-bottom:12px">
+        <div style="font-size:12.5px;color:var(--ink-2);margin-bottom:8px;line-height:1.5">Current role: <span class="pill p-sk" style="vertical-align:middle">Trainee</span> &nbsp; Ahmad has 1 certification and 2 completed courses. Eligible to be promoted to Park Guide.</div>
+        <button class="btn btn-sm" style="background:var(--amber-xpale);color:var(--amber);border-color:var(--amber-xpale)" onclick="openM('promote-guide');closeM('trainee-detail')">Promote to Park Guide →</button>
+      </div>
+    </div>
+    <div class="mft"><button class="btn" onclick="closeM('trainee-detail')">Close</button><button class="btn btn-p" onclick="openM('contact-trainee');closeM('trainee-detail')">Contact Trainee</button></div>
+  </div>
+</div>
+
+<!-- MODAL: Assign Courses -->
+<div class="modal-ov hidden" id="assign-courses">
+  <div class="modal">
+    <div class="mhd"><span class="mt">Assign Courses — Ahmad Haziq</span><button class="mc" onclick="closeM('assign-courses')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+    <div class="mb">
+      <div style="font-size:12.5px;color:var(--ink-3);margin-bottom:12px">Check courses to assign. Checked courses already assigned. Trainee will be notified by email.</div>
+      <div style="border:1px solid var(--border);border-radius:var(--r-sm);overflow:hidden">
+        <label style="padding:10px 13px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:9px;cursor:pointer;background:var(--forest-xpale)"><input type="checkbox" checked style="accent-color:var(--forest-2)"><div style="flex:1"><div style="font-size:13px;font-weight:500;color:var(--ink)">Conservation Fundamentals</div><div style="font-size:11px;color:var(--ink-4)">4 modules · Completed ✓</div></div><span class="pill p-gr">Done</span></label>
+        <label style="padding:10px 13px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:9px;cursor:pointer;background:var(--forest-xpale)"><input type="checkbox" checked style="accent-color:var(--forest-2)"><div style="flex:1"><div style="font-size:13px;font-weight:500;color:var(--ink)">Eco-Tourism Excellence</div><div style="font-size:11px;color:var(--ink-4)">3 modules · In progress 65%</div></div><span class="pill p-am">Active</span></label>
+        <label style="padding:10px 13px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:9px;cursor:pointer"><input type="checkbox" style="accent-color:var(--forest-2)"><div style="flex:1"><div style="font-size:13px;font-weight:500;color:var(--ink)">Wildlife Laws &amp; Ethics</div><div style="font-size:11px;color:var(--ink-4)">2 modules · Not assigned</div></div><span class="pill p-gy">Unassigned</span></label>
+        <label style="padding:10px 13px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:9px;cursor:pointer"><input type="checkbox" style="accent-color:var(--forest-2)"><div style="flex:1"><div style="font-size:13px;font-weight:500;color:var(--ink)">Emergency Response Protocols</div><div style="font-size:11px;color:var(--ink-4)">3 modules · Not assigned</div></div><span class="pill p-gy">Unassigned</span></label>
+        <label style="padding:10px 13px;display:flex;align-items:center;gap:9px;cursor:pointer"><input type="checkbox" style="accent-color:var(--forest-2)"><div style="flex:1"><div style="font-size:13px;font-weight:500;color:var(--ink)">Visitor Engagement Skills</div><div style="font-size:11px;color:var(--ink-4)">2 modules · Not assigned</div></div><span class="pill p-gy">Unassigned</span></label>
+      </div>
+    </div>
+    <div class="mft"><button class="btn" onclick="closeM('assign-courses')">Cancel</button><button class="btn btn-p" onclick="toast('Assignments saved. Trainee notified.');closeM('assign-courses')">Save Assignments</button></div>
+  </div>
+</div>
+
+<!-- MODAL: Contact Trainee -->
+<div class="modal-ov hidden" id="contact-trainee">
+  <div class="modal">
+    <div class="mhd"><span class="mt">Contact Trainee — Ahmad Haziq</span><button class="mc" onclick="closeM('contact-trainee')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+    <div class="mb">
+      <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--surface);border-radius:var(--r-sm);border:1px solid var(--border);margin-bottom:14px"><div class="av av-s av-t">AH</div><div><div style="font-size:13px;font-weight:600;color:var(--ink)">Ahmad Haziq</div><div style="font-size:11.5px;color:var(--ink-4)">ahmad.haziq@email.com · +60 12-3456789</div></div></div>
+      <div class="fg"><div class="fl">Message Subject</div><input class="fi" value="Congratulations on completing Conservation Fundamentals!"></div>
+      <div class="fg"><div class="fl">Message</div>
+        <div class="rte-wrap">
+          <div class="rte-bar">
+            <button class="rb" onclick="rteCmd('ct-rte','bold')"><b>B</b></button>
+            <button class="rb" onclick="rteCmd('ct-rte','italic')"><i>I</i></button>
+            <button class="rb" onclick="rteCmd('ct-rte','underline')"><u>U</u></button>
+            <div class="rsep"></div>
+            <button class="rb" onclick="rteCmd('ct-rte','insertUnorderedList')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><circle cx="3" cy="6" r="1"/><circle cx="3" cy="12" r="1"/><circle cx="3" cy="18" r="1"/></svg></button>
+          </div>
+          <div class="rte-ed" id="ct-rte" contenteditable="true" style="min-height:100px">Dear Ahmad,<br><br>Congratulations on successfully completing Conservation Fundamentals with a score of 91%! You are now eligible for the Basic Guide Certificate.<br><br>Best regards,<br>SFC Admin Team</div>
+        </div>
+      </div>
+      <div class="fg"><div class="fl">Send Via</div><select class="fss"><option>Email + Platform notification</option><option>Email only</option><option>Platform notification only</option></select></div>
+    </div>
+    <div class="mft"><button class="btn" onclick="closeM('contact-trainee')">Cancel</button><button class="btn btn-p" onclick="toast('Message sent to Ahmad Haziq.');closeM('contact-trainee')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>Send Message</button></div>
+  </div>
+</div>
+
+<!-- MODAL: Promote to Park Guide -->
+<div class="modal-ov hidden" id="promote-guide">
+  <div class="modal">
+    <div class="mhd"><span class="mt">Promote to Park Guide — Ahmad Haziq</span><button class="mc" onclick="closeM('promote-guide')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+    <div class="mb">
+      <div class="info-box info-amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg><span>You are promoting Ahmad Haziq from <strong>Trainee</strong> to <strong>Park Guide</strong>. This action will change their role and access level.</span></div>
+      <div class="fg"><div class="fl">Assign to Park</div><select class="fss"><option selected>Bako N.P.</option><option>Niah N.P.</option><option>Semenggoh N.R.</option><option>Kubah N.P.</option><option>Lambir Hills N.P.</option></select></div>
+      <div class="fg"><div class="fl">Assign IoT Camera</div><input class="fi" placeholder="e.g. CAM-15 (leave blank to assign later)"></div>
+      <div class="fg"><div class="fl">Admin-assigned Password</div>
+        <div class="pw-wrap">
+          <input class="fi fi-pw" type="password" id="guide-pw" value="SFC@Bako2026!" placeholder="Temporary password">
+          <button class="pw-eye" onclick="showPw('guide-pw',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+        </div>
+      </div>
+      <div class="info-box info-coral"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><span><strong>Park Guide password rule:</strong> Admin assigns an initial password. The guide <strong>must change it on first login</strong>. This applies exclusively to direct Park Guide registrations and promotions.</span></div>
+      <div class="fg"><div class="fl">Bulk-Assign Courses to New Guide</div>
+        <div style="border:1px solid var(--border);border-radius:var(--r-sm);overflow:hidden">
+          <label style="padding:8px 11px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;cursor:pointer;background:var(--forest-xpale)"><input type="checkbox" checked style="accent-color:var(--forest-2)"><span style="font-size:12.5px;color:var(--ink)">Conservation Fundamentals</span><span style="margin-left:auto;font-size:10.5px;color:var(--forest-2)">Already completed</span></label>
+          <label style="padding:8px 11px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;cursor:pointer"><input type="checkbox" checked style="accent-color:var(--forest-2)"><span style="font-size:12.5px;color:var(--ink)">Emergency Response Protocols</span><span style="margin-left:auto;font-size:10.5px;color:var(--ink-4)">Required for guides</span></label>
+          <label style="padding:8px 11px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;cursor:pointer"><input type="checkbox" checked style="accent-color:var(--forest-2)"><span style="font-size:12.5px;color:var(--ink)">Wildlife Laws &amp; Ethics</span><span style="margin-left:auto;font-size:10.5px;color:var(--ink-4)">Required for guides</span></label>
+          <label style="padding:8px 11px;display:flex;align-items:center;gap:8px;cursor:pointer"><input type="checkbox" style="accent-color:var(--forest-2)"><span style="font-size:12.5px;color:var(--ink)">Visitor Engagement Skills</span><span style="margin-left:auto;font-size:10.5px;color:var(--ink-4)">Optional</span></label>
+        </div>
+      </div>
+    </div>
+    <div class="mft"><button class="btn" onclick="closeM('promote-guide')">Cancel</button><button class="btn btn-p" onclick="toast('Ahmad Haziq promoted to Park Guide. Temporary password sent. Must change on first login.');closeM('promote-guide')">Confirm Promotion</button></div>
+  </div>
+</div>
+<div id="toast"></div>
+<script>
+function openM(id){const e=document.getElementById(id);if(e)e.classList.remove('hidden')}
+function closeM(id){const e=document.getElementById(id);if(e)e.classList.add('hidden')}
+document.addEventListener('DOMContentLoaded',()=>{document.querySelectorAll('.modal-ov').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.add('hidden')}))})
+let _tt;function toast(m){const t=document.getElementById('toast');t.textContent=m;t.style.opacity='1';t.style.transform='translateY(0)';clearTimeout(_tt);_tt=setTimeout(()=>{t.style.opacity='0';t.style.transform='translateY(6px)'},2800)}
+function tog(el){el.classList.toggle('on')}
+function execFmt(c,v){document.execCommand(c,false,v||null)}
+function rteCmd(id,cmd,val){const e=document.getElementById(id);if(e)e.focus();document.execCommand(cmd,false,val||null)}
+function showPw(inputId,btn){const i=document.getElementById(inputId);if(!i)return;const show=i.type==='password';i.type=show?'text':'password';btn.innerHTML=show?'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>':'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>'}
+</script>
+</body></html>

@@ -1,0 +1,1101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Course Editor · SFC Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --forest:#1A4A1C;--forest-2:#2C6B2F;--forest-3:#3E8C42;--forest-light:#6DB870;
+  --forest-pale:#E8F4E8;--forest-xpale:#F2FAF2;
+  --amber:#B86A00;--amber-2:#D4820A;--amber-pale:#FDF3DC;--amber-xpale:#FFFBF0;
+  --coral:#B84430;--coral-pale:#FBF0EC;
+  --sky:#1A5C8A;--sky-2:#2A7BC4;--sky-pale:#E6F2FB;
+  --purple:#5B3FA0;--purple-pale:#F0EAFB;
+  --ink:#0F1A10;--ink-2:#2A3A2C;--ink-3:#4A5E4C;--ink-4:#7A8E7C;--ink-5:#B0BDB2;
+  --surface:#F6F8F6;--card:#FFFFFF;--border:rgba(26,74,28,0.1);
+  --r:12px;--r-sm:8px;--r-lg:16px
+}
+body{font-family:'Inter',sans-serif;background:var(--surface);color:var(--ink);font-size:13px;display:flex;flex-direction:column;height:100vh;overflow:hidden;line-height:1.5}
+
+/* ── TOPBAR ── */
+.topbar{background:var(--card);border-bottom:1px solid var(--border);padding:0 20px;height:52px;display:flex;align-items:center;gap:12px;flex-shrink:0;z-index:20}
+.bc{display:flex;align-items:center;gap:5px;font-size:12px}
+.bc a{color:var(--ink-4);text-decoration:none;padding:2px 4px;border-radius:4px;transition:all 0.12s}
+.bc a:hover{color:var(--forest-2);background:var(--forest-xpale)}
+.bc-sep{color:var(--ink-5)}
+.bc-cur{color:var(--ink-2);font-weight:500}
+.tb-right{margin-left:auto;display:flex;align-items:center;gap:7px}
+.status-btn{display:flex;align-items:center;gap:5px;padding:4px 11px;border-radius:18px;border:1px solid rgba(26,74,28,0.2);font-size:12px;font-weight:500;cursor:pointer;background:var(--forest-xpale);color:var(--forest-2);transition:all 0.13s}
+.status-btn.draft-mode{background:var(--amber-xpale);color:var(--amber);border-color:rgba(184,106,0,0.2)}
+.sdot{width:6px;height:6px;border-radius:50%;background:var(--forest-3);flex-shrink:0}
+.status-btn.draft-mode .sdot{background:var(--amber-2)}
+.btn{padding:6px 13px;border-radius:var(--r-sm);font-size:12px;font-weight:500;cursor:pointer;border:1px solid var(--border);background:var(--surface);color:var(--ink-3);font-family:'Inter',sans-serif;transition:all 0.13s;display:inline-flex;align-items:center;gap:5px;text-decoration:none}
+.btn:hover{background:var(--card);color:var(--ink)}
+.btn svg{width:13px;height:13px}
+.btn-p{background:var(--forest);color:#fff;border-color:var(--forest)}
+.btn-p:hover{background:var(--forest-2);color:#fff}
+.btn-p:disabled{opacity:0.6;cursor:not-allowed}
+.btn-sm{padding:3px 9px;font-size:11px}
+.btn-danger{background:var(--coral-pale);color:var(--coral);border-color:rgba(184,68,48,0.2)}
+
+/* ── SAVE FEEDBACK ── */
+.save-state{font-size:11px;color:var(--ink-4);display:flex;align-items:center;gap:4px}
+.save-state svg{width:11px;height:11px}
+.save-state.saving{color:var(--amber)}
+.save-state.saved{color:var(--forest-3)}
+.save-state.error{color:var(--coral)}
+
+/* ── 3-COL LAYOUT ── */
+.wrap{display:flex;flex:1;overflow:hidden;min-height:0}
+
+/* ── LEFT NAV ── */
+.lnav{width:242px;min-width:242px;background:var(--card);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
+.lnav-hd{padding:14px 14px 11px;border-bottom:1px solid var(--border)}
+.lnav-course{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--ink);line-height:1.3;margin-bottom:2px}
+.lnav-meta{font-size:11px;color:var(--ink-4)}
+.cert-chip{display:flex;align-items:center;gap:5px;margin-top:7px;background:var(--amber-xpale);border-radius:6px;padding:4px 8px;border:1px solid rgba(184,106,0,0.12)}
+.cert-chip svg{width:11px;height:11px;color:var(--amber-2);flex-shrink:0}
+.cert-chip span{font-size:11px;font-weight:500;color:var(--amber)}
+.lnav-scroll{flex:1;overflow-y:auto;padding:7px}
+.mg{margin-bottom:2px}
+.mg-hd{display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:var(--r-sm);cursor:pointer;font-size:12px;font-weight:600;color:var(--ink-3);transition:background 0.12s;user-select:none}
+.mg-hd:hover{background:var(--surface)}
+.mg-hd.open-g.act-g{color:var(--forest-2);background:var(--forest-xpale)}
+.chev{width:11px;height:11px;flex-shrink:0;transition:transform 0.18s;color:var(--ink-4)}
+.mg-hd.open-g .chev{transform:rotate(90deg)}
+.mg-num{width:19px;height:19px;border-radius:4px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:9.5px;font-weight:700;color:var(--ink-3);flex-shrink:0;font-family:'Syne',sans-serif}
+.mg-hd.act-g .mg-num{background:var(--forest-pale);color:var(--forest-2);border-color:rgba(26,74,28,0.2)}
+.mg-name{flex:1;font-size:12px}
+.done-dot{width:5px;height:5px;border-radius:50%;background:var(--forest-3);flex-shrink:0}
+.lesson-list{padding-left:9px;margin-top:1px}
+.li{display:flex;align-items:center;gap:6px;padding:5px 7px;border-radius:var(--r-sm);cursor:pointer;font-size:12px;color:var(--ink-3);transition:background 0.12s}
+.li:hover{background:var(--surface);color:var(--ink-2)}
+.li.act-l{background:var(--forest-xpale);color:var(--forest-2);font-weight:500}
+.li-ic{width:16px;height:16px;border-radius:3px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.li-ic svg{width:9px;height:9px}
+.ic-art{background:var(--forest-pale);color:var(--forest-2)}
+.ic-vid{background:var(--sky-pale);color:var(--sky-2)}
+.ic-quiz{background:var(--amber-xpale);color:var(--amber-2)}
+.ic-img{background:var(--purple-pale);color:var(--purple)}
+.li-name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.li-check{width:13px;height:13px;border-radius:3px;background:var(--forest-pale);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.li-check svg{width:8px;height:8px;color:var(--forest-2)}
+.add-row{padding:6px 7px 4px;display:flex;gap:5px}
+.add-btn{flex:1;display:flex;align-items:center;justify-content:center;gap:5px;padding:6px;border-radius:var(--r-sm);border:1px dashed var(--border);cursor:pointer;font-size:11px;color:var(--forest-2);font-weight:500;transition:all 0.13s;background:transparent}
+.add-btn:hover{background:var(--forest-xpale);border-color:var(--forest-light)}
+.add-btn svg{width:11px;height:11px}
+
+/* ── CENTER ── */
+.center{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+.eh{padding:16px 22px 12px;background:var(--card);border-bottom:1px solid var(--border);flex-shrink:0}
+.ltbadge{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;padding:2px 8px;border-radius:9px;margin-bottom:7px;text-transform:uppercase;letter-spacing:0.05em}
+.ltb-art{background:var(--forest-pale);color:var(--forest-2)}
+.ltb-vid{background:var(--sky-pale);color:var(--sky-2)}
+.ltb-quiz{background:var(--amber-xpale);color:var(--amber-2)}
+.ltb-img{background:var(--purple-pale);color:var(--purple)}
+.ltbadge svg{width:10px;height:10px}
+.lesson-title{font-family:'Syne',sans-serif;font-size:19px;font-weight:700;color:var(--ink);border:none;background:transparent;outline:none;width:100%;margin-bottom:5px;letter-spacing:-0.02em}
+.lesson-title::placeholder{color:var(--ink-5)}
+.mr{display:flex;align-items:center;gap:12px}
+.mi{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--ink-4)}
+.mi svg{width:11px;height:11px}
+.mi input{border:none;background:transparent;font-size:11px;color:var(--ink-4);outline:none;font-family:'Inter',sans-serif;width:50px}
+.ctabs{display:flex;border-bottom:1px solid var(--border);background:var(--card);padding:0 22px;flex-shrink:0}
+.ctab{padding:9px 13px;font-size:12px;font-weight:500;cursor:pointer;color:var(--ink-4);border-bottom:2px solid transparent;margin-bottom:-1px;transition:all 0.13s}
+.ctab.act{color:var(--forest-2);border-bottom-color:var(--forest-2)}
+.ctab:hover:not(.act){color:var(--ink-2)}
+.eb{flex:1;overflow-y:auto;padding:16px 22px 36px}
+
+/* ── RTE ── */
+.rte-wrap{border:1px solid var(--border);border-radius:var(--r-sm);overflow:hidden}
+.rte-bar{display:flex;align-items:center;gap:1px;padding:4px 6px;background:var(--surface);border-bottom:1px solid var(--border);flex-wrap:wrap}
+.rb{width:26px;height:26px;border-radius:4px;display:flex;align-items:center;justify-content:center;cursor:pointer;border:none;background:transparent;color:var(--ink-3);font-size:12px;font-weight:700;font-family:'Inter',sans-serif;transition:all 0.1s;flex-shrink:0}
+.rb:hover{background:var(--card);color:var(--ink)}
+.rb svg{width:12px;height:12px}
+.rte-sep{width:1px;height:15px;background:var(--border);margin:0 2px;flex-shrink:0}
+.rte-sel{border:1px solid var(--border);border-radius:5px;padding:2px 4px;font-size:11px;font-family:'Inter',sans-serif;background:var(--card);color:var(--ink-3);outline:none;cursor:pointer;height:26px}
+.rte-area{min-height:280px;padding:14px 16px;font-size:13.5px;line-height:1.85;color:var(--ink-2);outline:none;background:var(--card)}
+.rte-area:empty:before{content:attr(data-placeholder);color:var(--ink-5);pointer-events:none}
+.rte-area h1{font-family:'Syne',sans-serif;font-size:21px;font-weight:700;margin:16px 0 8px;color:var(--ink);letter-spacing:-0.02em}
+.rte-area h2{font-family:'Syne',sans-serif;font-size:17px;font-weight:600;margin:14px 0 7px;color:var(--ink)}
+.rte-area h3{font-size:14px;font-weight:600;margin:12px 0 6px;color:var(--ink-2)}
+.rte-area p{margin-bottom:10px}
+.rte-area ul,.rte-area ol{padding-left:20px;margin-bottom:10px}
+.rte-area li{margin-bottom:4px}
+.rte-area blockquote{border-left:3px solid var(--forest-3);padding-left:13px;color:var(--ink-3);font-style:italic;margin:12px 0}
+.rte-area .callout{background:var(--forest-xpale);border-left:3px solid var(--forest-3);border-radius:0 var(--r-sm) var(--r-sm) 0;padding:9px 13px;margin:11px 0;font-size:13px}
+.rte-area table{width:100%;border-collapse:collapse;margin:11px 0;font-size:13px}
+.rte-area table td,.rte-area table th{border:1px solid var(--border);padding:6px 9px}
+.rte-area table th{background:var(--surface);font-weight:600}
+
+/* ── VIDEO ── */
+.vid-mock{background:#0F1A10;border-radius:var(--r);aspect-ratio:16/9;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;position:relative;overflow:hidden;margin-bottom:12px;cursor:pointer}
+.vid-mock::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 30% 40%,rgba(62,140,66,0.14) 0%,transparent 60%)}
+.play-ring{width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,0.12);display:flex;align-items:center;justify-content:center;border:1.5px solid rgba(255,255,255,0.25);z-index:1;transition:background 0.13s}
+.vid-mock:hover .play-ring{background:rgba(255,255,255,0.2)}
+.play-ring svg{width:18px;height:18px;color:#fff;margin-left:3px}
+.vid-lbl{font-size:12px;color:rgba(255,255,255,0.5);z-index:1;font-family:'Syne',sans-serif}
+.vid-fname{font-size:10.5px;color:rgba(255,255,255,0.3);z-index:1}
+.vid-meta-bar{display:flex;align-items:center;gap:13px;padding:10px 14px;background:var(--card);border:1px solid var(--border);border-radius:var(--r-sm);margin-bottom:11px}
+.vmi{display:flex;flex-direction:column;gap:2px}
+.vmi-l{font-size:9.5px;color:var(--ink-4);text-transform:uppercase;letter-spacing:0.05em;font-weight:500}
+.vmi-v{font-size:12.5px;font-weight:500;color:var(--ink)}
+.vmi-sep{width:1px;height:26px;background:var(--border)}
+
+/* ── IMAGE GALLERY with caption ── */
+.img-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:10px}
+.img-item{border-radius:var(--r-sm);border:1px solid var(--border);overflow:hidden;background:var(--surface);transition:border-color 0.13s;position:relative}
+.img-item:hover{border-color:rgba(26,74,28,0.3)}
+.img-item.active-img{border-color:var(--forest-2);border-width:2px}
+.img-thumb-wrap{aspect-ratio:16/10;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:4px;cursor:pointer;position:relative;overflow:hidden;background:var(--surface)}
+.img-thumb-wrap svg{width:20px;height:20px;color:var(--ink-4)}
+.img-thumb-wrap span{font-size:10px;color:var(--ink-4)}
+/* Hover overlay showing description */
+.img-desc-overlay{position:absolute;inset:0;background:rgba(15,26,16,0.78);display:flex;align-items:flex-end;padding:8px;opacity:0;transition:opacity 0.18s;pointer-events:none}
+.img-item:hover .img-desc-overlay{opacity:1}
+.img-desc-text{font-size:11px;color:rgba(255,255,255,0.9);line-height:1.45;font-weight:500}
+/* Caption editor below thumb */
+.img-caption-editor{padding:7px 8px;border-top:1px solid var(--border);background:var(--card)}
+.img-caption-editor input{border:none;background:transparent;font-size:11px;color:var(--ink-3);outline:none;width:100%;font-family:'Inter',sans-serif}
+.img-caption-editor input::placeholder{color:var(--ink-5)}
+.img-caption-editor input:focus{color:var(--ink)}
+.img-add-card{border-radius:var(--r-sm);border:1.5px dashed var(--border);aspect-ratio:16/10;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:5px;cursor:pointer;transition:all 0.13s;background:transparent}
+.img-add-card:hover{background:var(--forest-xpale);border-color:var(--forest-light)}
+.img-add-card svg{width:18px;height:18px;color:var(--ink-4)}
+.img-add-card span{font-size:10.5px;color:var(--forest-2);font-weight:500}
+.upload-zone{border:1.5px dashed var(--border);border-radius:var(--r-sm);padding:18px;text-align:center;cursor:pointer;transition:all 0.13s;margin-top:4px}
+.upload-zone:hover{border-color:var(--forest-light);background:var(--forest-xpale)}
+.upload-zone svg{width:20px;height:20px;color:var(--ink-4);margin-bottom:5px}
+.upload-zone p{font-size:12px;color:var(--ink-3);margin-bottom:2px}
+.upload-zone span{font-size:10.5px;color:var(--ink-5)}
+
+/* ── QUIZ ── */
+.quiz-cfg{display:flex;gap:9px;padding:10px 13px;background:var(--card);border:1px solid var(--border);border-radius:var(--r-sm);margin-bottom:12px;flex-wrap:wrap}
+.qc-item{display:flex;flex-direction:column;gap:3px}
+.qc-lbl{font-size:10px;color:var(--ink-4);text-transform:uppercase;letter-spacing:0.05em;font-weight:600}
+.qc-inp{border:1px solid var(--border);border-radius:6px;padding:4px 7px;font-size:12px;font-family:'Inter',sans-serif;color:var(--ink);background:var(--surface);outline:none;width:70px}
+.qc-inp:focus{border-color:rgba(26,74,28,0.28);background:var(--card)}
+.q-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:10px}
+.q-head{display:flex;align-items:center;gap:8px;padding:10px 13px;border-bottom:1px solid var(--border);background:var(--surface)}
+.q-num{width:23px;height:23px;border-radius:5px;background:var(--forest-xpale);display:flex;align-items:center;justify-content:center;font-size:10.5px;font-weight:700;color:var(--forest-2);flex-shrink:0;font-family:'Syne',sans-serif}
+.q-type-sel{border:1px solid var(--border);border-radius:5px;padding:3px 7px;font-size:11px;font-family:'Inter',sans-serif;color:var(--ink-3);background:var(--card);outline:none;margin-left:auto}
+.q-del{width:23px;height:23px;border-radius:5px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--coral);border:none;background:transparent;transition:background 0.13s}
+.q-del:hover{background:var(--coral-pale)}
+.q-del svg{width:12px;height:12px}
+.q-body{padding:11px 13px;display:flex;flex-direction:column;gap:8px}
+.q-input{border:1px solid var(--border);border-radius:var(--r-sm);padding:7px 10px;font-size:12.5px;font-family:'Inter',sans-serif;color:var(--ink);background:var(--surface);outline:none;width:100%}
+.q-input:focus{border-color:rgba(26,74,28,0.25);background:var(--card)}
+.q-opts{display:flex;flex-direction:column;gap:6px}
+.q-opt{display:flex;align-items:center;gap:6px}
+.q-opt-ltr{width:22px;height:22px;border-radius:5px;background:var(--surface);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;color:var(--ink-3);flex-shrink:0;border:1px solid var(--border)}
+.q-opt.correct .q-opt-ltr{background:var(--forest-pale);color:var(--forest-2);border-color:rgba(26,74,28,0.2)}
+.q-opt input[type=text]{flex:1;border:1px solid var(--border);border-radius:6px;padding:6px 9px;font-size:12px;font-family:'Inter',sans-serif;background:var(--surface);outline:none;color:var(--ink)}
+.q-opt.correct input[type=text]{border-color:rgba(26,74,28,0.2);background:var(--forest-xpale)}
+.q-opt input[type=text]:focus{background:var(--card);border-color:rgba(26,74,28,0.25)}
+.ctog{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;background:transparent;transition:all 0.13s}
+.ctog svg{width:10px;height:10px;color:var(--ink-5)}
+.q-opt.correct .ctog{background:var(--forest-2);border-color:var(--forest-2)}
+.q-opt.correct .ctog svg{color:#fff}
+.q-explain{display:flex;flex-direction:column;gap:3px}
+.q-explain label{font-size:10px;font-weight:600;color:var(--ink-4);text-transform:uppercase;letter-spacing:0.04em}
+.q-explain textarea{border:1px solid var(--border);border-radius:var(--r-sm);padding:6px 9px;font-size:12px;font-family:'Inter',sans-serif;color:var(--ink-3);background:var(--surface);outline:none;resize:none;min-height:44px;line-height:1.5}
+.q-explain textarea:focus{border-color:rgba(26,74,28,0.25);background:var(--card)}
+.add-q-btn{display:flex;align-items:center;justify-content:center;gap:7px;padding:11px;border:1.5px dashed var(--border);border-radius:var(--r);cursor:pointer;font-size:12px;font-weight:500;color:var(--forest-2);transition:all 0.13s;background:transparent;width:100%;font-family:'Inter',sans-serif}
+.add-q-btn:hover{background:var(--forest-xpale);border-color:var(--forest-light)}
+.add-q-btn svg{width:13px;height:13px}
+
+/* ── RIGHT PANEL ── */
+.rp{width:224px;min-width:224px;background:var(--card);border-left:1px solid var(--border);overflow-y:auto;padding:13px}
+.rp-sec{margin-bottom:16px}
+.rp-title{font-size:10px;font-weight:700;color:var(--ink-4);text-transform:uppercase;letter-spacing:0.09em;margin-bottom:8px}
+.rp-item{display:flex;flex-direction:column;gap:3px;margin-bottom:8px}
+.rp-lbl{font-size:11px;color:var(--ink-4)}
+.rp-sel,.rp-inp{border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:12px;font-family:'Inter',sans-serif;color:var(--ink);background:var(--surface);outline:none;width:100%}
+.rp-sel:focus,.rp-inp:focus{border-color:rgba(26,74,28,0.25);background:var(--card)}
+.rp-div{border:none;border-top:1px solid var(--border);margin:0 0 13px}
+.rp-stat{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border)}
+.rp-stat:last-child{border-bottom:none}
+.rp-stat-l{font-size:11.5px;color:var(--ink-3)}
+.rp-stat-v{font-size:12px;font-weight:600;color:var(--ink)}
+.prereq-tag{display:flex;align-items:center;gap:5px;padding:4px 7px;background:var(--surface);border-radius:6px;font-size:11px;color:var(--ink-3);margin-bottom:4px;border:1px solid var(--border)}
+.prereq-tag button{width:14px;height:14px;border-radius:3px;border:none;background:transparent;cursor:pointer;color:var(--coral);display:flex;align-items:center;justify-content:center;padding:0}
+.prereq-tag button svg{width:9px;height:9px}
+.rp-note{font-size:11px;color:var(--ink-4);line-height:1.6;background:var(--surface);border-radius:6px;padding:8px 9px;border:1px solid var(--border)}
+
+/* ── PARK MULTI-SELECT ── */
+.park-select-wrap{border:1px solid var(--border);border-radius:var(--r-sm);overflow:hidden}
+.park-opt{display:flex;align-items:center;gap:7px;padding:6px 9px;border-bottom:1px solid var(--border);cursor:pointer;font-size:12px;color:var(--ink-2);transition:background 0.1s}
+.park-opt:last-child{border-bottom:none}
+.park-opt:hover{background:var(--forest-xpale)}
+.park-opt input[type=checkbox]{accent-color:var(--forest-2);width:13px;height:13px;cursor:pointer;flex-shrink:0}
+.park-opt.checked{background:var(--forest-xpale);color:var(--forest-2)}
+
+/* ── SETTINGS TAB ── */
+.type-pill-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:4px}
+.type-pill{display:flex;align-items:center;gap:5px;padding:6px 10px;border-radius:var(--r-sm);border:1.5px solid var(--border);cursor:pointer;font-size:11.5px;font-weight:500;color:var(--ink-3);transition:all 0.13s}
+.type-pill:hover{border-color:var(--forest-light);color:var(--forest-2)}
+.type-pill.sel{border-color:var(--forest-2);background:var(--forest-xpale);color:var(--forest-2)}
+.type-pill svg{width:12px;height:12px}
+.fg{display:flex;flex-direction:column;gap:4px;margin-bottom:11px}
+.fl{font-size:10.5px;font-weight:700;color:var(--ink-4);text-transform:uppercase;letter-spacing:0.04em}
+.fi,.fss,.fta{border:1px solid var(--border);border-radius:var(--r-sm);padding:7px 9px;font-size:12.5px;font-family:'Inter',sans-serif;color:var(--ink);background:var(--surface);outline:none;width:100%}
+.fi:focus,.fss:focus,.fta:focus{border-color:rgba(26,74,28,0.25);background:var(--card)}
+.fta{resize:vertical;min-height:60px;line-height:1.6}
+.g2f{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.cat-pills{display:flex;flex-wrap:wrap;gap:5px}
+.cat-pill{padding:4px 10px;border-radius:18px;font-size:11.5px;font-weight:500;cursor:pointer;border:1.5px solid var(--border);color:var(--ink-3);transition:all 0.13s}
+.cat-pill:hover{border-color:var(--forest-light);color:var(--forest-2)}
+.cat-pill.sel{background:var(--forest-2);border-color:var(--forest-2);color:#fff}
+
+/* ── JSON PREVIEW MODAL ── */
+.json-pre{background:#0F1A10;color:#6DB870;font-family:'Courier New',monospace;font-size:11.5px;line-height:1.7;padding:14px 16px;border-radius:var(--r-sm);overflow-x:auto;white-space:pre;max-height:380px;overflow-y:auto}
+.json-key{color:#9FE1CB}
+.json-str{color:#FAC775}
+.json-num{color:#F09595}
+.json-bool{color:#AFA9EC}
+
+/* ── MODAL ── */
+.modal-ov{position:fixed;inset:0;background:rgba(10,20,10,0.45);display:flex;align-items:center;justify-content:center;z-index:200;backdrop-filter:blur(2px)}
+.modal-ov.hidden{display:none}
+.modal{background:var(--card);border-radius:var(--r-lg);width:480px;max-width:93vw;max-height:90vh;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,0.16);border:1px solid var(--border);display:flex;flex-direction:column}
+.modal-lg{width:620px}
+.mhd{padding:14px 17px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.m-title{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--ink)}
+.m-close{width:24px;height:24px;border-radius:5px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--ink-3);border:none;background:none}
+.m-close:hover{background:var(--surface)}
+.m-close svg{width:13px;height:13px}
+.mb{padding:16px 17px;overflow-y:auto;flex:1}
+.mft{padding:10px 17px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:7px;flex-shrink:0}
+.info-note{background:var(--forest-xpale);border:1px solid rgba(26,74,28,0.15);border-radius:var(--r-sm);padding:9px 11px;font-size:12px;color:var(--forest-2);line-height:1.6;margin-bottom:12px}
+.info-amber{background:var(--amber-xpale);border-color:rgba(184,106,0,0.15);color:var(--amber)}
+
+/* ── TOAST ── */
+#toast{position:fixed;bottom:20px;right:20px;background:var(--ink);color:#fff;padding:9px 15px;border-radius:var(--r);font-size:12.5px;font-weight:500;z-index:999;opacity:0;transform:translateY(6px);transition:all 0.22s;pointer-events:none;max-width:300px;box-shadow:0 2px 8px rgba(15,26,16,0.2)}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="bc">
+    <a href="sfc_03_courses.html">Courses</a>
+    <span class="bc-sep">/</span>
+    <a href="sfc_03_courses.html">Conservation Fundamentals</a>
+    <span class="bc-sep">/</span>
+    <span class="bc-cur" id="bc-cur">Flora Identification Techniques</span>
+  </div>
+  <div class="tb-right">
+    <div class="save-state" id="save-state">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      Auto-saved
+    </div>
+    <div class="status-btn" id="status-btn" onclick="toggleStatus()">
+      <div class="sdot"></div>
+      <span id="status-lbl">Published</span>
+    </div>
+    <button class="btn btn-sm" onclick="toast('Preview opened in new tab.')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+      Preview
+    </button>
+    <button class="btn btn-sm" onclick="openM('json-preview-modal')" title="Show JSON payload">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+      JSON
+    </button>
+    <button class="btn btn-p btn-sm" id="save-btn" onclick="saveChanges()">Save Changes</button>
+  </div>
+</div>
+
+<div class="wrap">
+
+<!-- ══ LEFT NAV ══ -->
+<div class="lnav">
+  <div class="lnav-hd">
+    <div class="lnav-course">Conservation Fundamentals</div>
+    <div class="lnav-meta">General · 4 modules · 2h 30m</div>
+    <div class="cert-chip">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>
+      <span>Basic Guide Certificate</span>
+    </div>
+  </div>
+  <div class="lnav-scroll">
+    <div class="mg">
+      <div class="mg-hd" onclick="toggleMod(this)">
+        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+        <div class="mg-num">1</div><span class="mg-name">Intro to Sarawak Ecosystems</span>
+        <div class="done-dot"></div>
+      </div>
+    </div>
+    <div class="mg">
+      <div class="mg-hd open-g act-g" onclick="toggleMod(this)">
+        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+        <div class="mg-num">2</div><span class="mg-name">Flora Identification</span>
+      </div>
+      <div class="lesson-list">
+        <div class="li" onclick="switchLesson(this,'article','Introduction to Sarawak Flora')">
+          <div class="li-ic ic-art"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5z"/></svg></div>
+          <span class="li-name">Introduction to Flora</span>
+          <div class="li-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div>
+        </div>
+        <div class="li" onclick="switchLesson(this,'image','Plant Image Gallery')">
+          <div class="li-ic ic-img"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>
+          <span class="li-name">Plant Image Gallery</span>
+          <div class="li-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div>
+        </div>
+        <div class="li act-l" onclick="switchLesson(this,'article','Flora Identification Techniques')">
+          <div class="li-ic ic-art"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5z"/></svg></div>
+          <span class="li-name">Identification Techniques</span>
+        </div>
+        <div class="li" onclick="switchLesson(this,'video','Field Identification Video')">
+          <div class="li-ic ic-vid"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>
+          <span class="li-name">Field Identification Video</span>
+        </div>
+        <div class="li" onclick="switchLesson(this,'quiz','Flora Identification Quiz')">
+          <div class="li-ic ic-quiz"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+          <span class="li-name">Flora Identification Quiz</span>
+        </div>
+      </div>
+    </div>
+    <div class="mg">
+      <div class="mg-hd" onclick="toggleMod(this)">
+        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+        <div class="mg-num">3</div><span class="mg-name">Fauna of Sarawak's Parks</span>
+      </div>
+    </div>
+    <div class="mg">
+      <div class="mg-hd" onclick="toggleMod(this)">
+        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+        <div class="mg-num">4</div><span class="mg-name">Conservation Ethics</span>
+      </div>
+    </div>
+    <div class="add-row">
+      <div class="add-btn" onclick="openM('add-lesson-modal')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add lesson
+      </div>
+      <div class="add-btn" onclick="toast('Add modules from the Courses page.')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><line x1="17.5" y1="17" x2="17.5" y2="21"/><line x1="15.5" y1="19" x2="19.5" y2="19"/></svg>Module
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ CENTER ══ -->
+<div class="center">
+
+  <!-- ─ ARTICLE VIEW ─ -->
+  <div id="v-article" style="display:flex;flex-direction:column;flex:1;overflow:hidden;min-height:0">
+    <div class="eh">
+      <div class="ltbadge ltb-art"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5z"/></svg>Article</div>
+      <input class="lesson-title" id="art-title" value="Identification Techniques for Sarawak Flora" placeholder="Lesson title...">
+      <div class="mr">
+        <div class="mi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><input value="12 min" id="art-dur"> read</div>
+        <div class="mi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5z"/></svg>Module 2 · Flora Identification</div>
+      </div>
+    </div>
+    <div class="ctabs" id="art-ctabs">
+      <div class="ctab act" onclick="switchCtab('art',this,0)">Content</div>
+      <div class="ctab" onclick="switchCtab('art',this,1)">Settings</div>
+      <div class="ctab" onclick="switchCtab('art',this,2)">Prerequisites</div>
+    </div>
+    <div class="eb">
+      <!-- Content tab -->
+      <div id="art-tab-0">
+        <div class="rte-wrap">
+          <div class="rte-bar">
+            <select class="rte-sel" onchange="rteBlock(this.value);this.value=''">
+              <option value="">Style</option><option value="h1">Heading 1</option><option value="h2">Heading 2</option><option value="h3">Heading 3</option><option value="p">Paragraph</option><option value="blockquote">Quote</option>
+            </select>
+            <select class="rte-sel" onchange="rteSz(this.value);this.value=''" style="width:62px">
+              <option value="">Size</option><option value="1">Small</option><option value="3">Normal</option><option value="4">Large</option><option value="5">X-Large</option>
+            </select>
+            <div class="rte-sep"></div>
+            <button class="rb" title="Bold" onclick="rte('bold')"><b>B</b></button>
+            <button class="rb" title="Italic" onclick="rte('italic')"><i style="font-style:italic">I</i></button>
+            <button class="rb" title="Underline" onclick="rte('underline')"><u>U</u></button>
+            <button class="rb" title="Strikethrough" onclick="rte('strikeThrough')"><s>S</s></button>
+            <div class="rte-sep"></div>
+            <button class="rb" onclick="rte('justifyLeft')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="21" y1="10" x2="3" y2="10"/><line x1="15" y1="6" x2="3" y2="6"/><line x1="17" y1="14" x2="3" y2="14"/><line x1="11" y1="18" x2="3" y2="18"/></svg></button>
+            <button class="rb" onclick="rte('justifyCenter')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="21" y1="10" x2="3" y2="10"/><line x1="18" y1="6" x2="6" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="16" y1="18" x2="8" y2="18"/></svg></button>
+            <button class="rb" onclick="rte('justifyRight')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="21" y1="10" x2="3" y2="10"/><line x1="21" y1="6" x2="9" y2="6"/><line x1="21" y1="14" x2="7" y2="14"/><line x1="21" y1="18" x2="13" y2="18"/></svg></button>
+            <div class="rte-sep"></div>
+            <button class="rb" onclick="rte('insertUnorderedList')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><circle cx="3" cy="6" r="1"/><circle cx="3" cy="12" r="1"/><circle cx="3" cy="18" r="1"/></svg></button>
+            <button class="rb" onclick="rte('insertOrderedList')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="10" y1="6" x2="21" y2="6"/><line x1="10" y1="12" x2="21" y2="12"/><line x1="10" y1="18" x2="21" y2="18"/><path d="M4 6h1v4"/><path d="M4 10h2"/><path d="M6 18H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg></button>
+            <div class="rte-sep"></div>
+            <button class="rb" onclick="rte('indent')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 8 7 12 3 16"/><line x1="21" y1="12" x2="11" y2="12"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="18" x2="3" y2="18"/></svg></button>
+            <button class="rb" onclick="rte('outdent')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="7 8 3 12 7 16"/><line x1="21" y1="12" x2="11" y2="12"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="18" x2="3" y2="18"/></svg></button>
+            <div class="rte-sep"></div>
+            <button class="rb" onclick="rteLink()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></button>
+            <button class="rb" onclick="toast('Image picker opened.')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></button>
+            <div class="rte-sep"></div>
+            <button class="rb" onclick="rteColor()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20h16"/><path d="M5 17L12 4l7 13"/><path d="M7.5 13h9"/></svg></button>
+            <button class="rb" onclick="rte('removeFormat')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3h12"/><line x1="4" y1="21" x2="10" y2="9"/><line x1="20" y1="21" x2="14" y2="9"/><line x1="2" y1="21" x2="22" y2="21"/></svg></button>
+            <div class="rte-sep"></div>
+            <button class="rb" onclick="rteCallout()" style="font-size:9px;font-weight:700;width:32px">NOTE</button>
+            <button class="rb" onclick="rteTable()" style="font-size:9px;font-weight:700;width:34px">TABLE</button>
+          </div>
+          <div class="rte-area" id="rte-main" contenteditable="true" data-placeholder="Start writing lesson content...">
+            <h2>Identification Techniques for Sarawak Flora</h2>
+            <p>Sarawak is home to one of the world's most diverse rainforest ecosystems, with over <strong>8,000 species of flowering plants</strong> documented across its national parks and nature reserves.</p>
+            <div class="callout"><strong>Key Learning Objective:</strong> By the end of this lesson, you should be able to identify at least 10 protected plant species within your assigned park.</div>
+            <h3>1. Visual Identification</h3>
+            <ul>
+              <li><strong>Leaf shape and arrangement</strong> — alternate, opposite, whorled, or basal</li>
+              <li><strong>Bark texture and colour</strong> — smooth, furrowed, scaly, or fibrous</li>
+              <li><strong>Flower structure</strong> — number of petals, colour patterns, inflorescence type</li>
+            </ul>
+            <h3>2. Contextual Clues</h3>
+            <p>The <em>Rafflesia</em> is exclusively found parasitising the roots of <em>Tetrastigma</em> vines in lowland forests.</p>
+            <blockquote>Never touch or disturb any plant without authorisation. Collection is prohibited under the Wildlife Protection Ordinance 1998.</blockquote>
+          </div>
+        </div>
+      </div>
+      <!-- Settings tab — NO visibility (removed per Q6) -->
+      <div id="art-tab-1" style="display:none">
+        <div class="fg"><div class="fl">Lesson Type</div>
+          <div class="type-pill-row">
+            <div class="type-pill sel" onclick="selType(this,'article')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5z"/></svg>Article</div>
+            <div class="type-pill" onclick="selType(this,'image')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>Images</div>
+            <div class="type-pill" onclick="selType(this,'video')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>Video</div>
+            <div class="type-pill" onclick="selType(this,'quiz')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/></svg>Quiz</div>
+          </div>
+        </div>
+        <div class="g2f">
+          <div class="fg"><div class="fl">Module</div><select class="fss" id="art-module"><option>Module 1</option><option selected>Module 2</option><option>Module 3</option><option>Module 4</option></select></div>
+          <div class="fg"><div class="fl">Duration</div><input class="fi" value="12 min" id="art-dur2"></div>
+        </div>
+        <div class="fg"><div class="fl">Status</div><select class="fss" id="art-status"><option>Published</option><option>Draft</option></select></div>
+        <div class="info-note" style="margin-top:4px">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;display:inline;margin-right:4px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          Visibility (which parks see this lesson) is managed at the course level, not per lesson.
+        </div>
+      </div>
+      <!-- Prerequisites tab — lesson-level -->
+      <div id="art-tab-2" style="display:none">
+        <p style="font-size:12.5px;color:var(--ink-3);margin-bottom:12px;line-height:1.6">Trainees must complete these lessons before accessing this one.</p>
+        <div id="lesson-prereq-list">
+          <div class="prereq-tag">Introduction to Sarawak Flora<button onclick="this.parentElement.remove()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+          <div class="prereq-tag">Plant Image Gallery<button onclick="this.parentElement.remove()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+        </div>
+        <div class="add-btn" style="margin-top:8px" onclick="openM('pick-lesson-prereq')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add lesson prerequisite
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─ VIDEO VIEW ─ -->
+  <div id="v-video" style="display:none;flex-direction:column;flex:1;overflow:hidden;min-height:0">
+    <div class="eh">
+      <div class="ltbadge ltb-vid"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>Video</div>
+      <input class="lesson-title" value="Field Identification Video" placeholder="Lesson title...">
+      <div class="mr"><div class="mi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><input value="18 min"> watch</div></div>
+    </div>
+    <div class="ctabs"><div class="ctab act">Content</div><div class="ctab">Settings</div></div>
+    <div class="eb">
+      <div class="vid-mock" onclick="toast('Video playback preview.')">
+        <div class="play-ring"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
+        <div class="vid-lbl">Field Identification — Module 2</div>
+        <div class="vid-fname">flora_id_field_guide_v2.mp4</div>
+      </div>
+      <div class="vid-meta-bar">
+        <div class="vmi"><div class="vmi-l">Duration</div><div class="vmi-v">18:24</div></div>
+        <div class="vmi-sep"></div>
+        <div class="vmi"><div class="vmi-l">Size</div><div class="vmi-v">284 MB</div></div>
+        <div class="vmi-sep"></div>
+        <div class="vmi"><div class="vmi-l">Format</div><div class="vmi-v">MP4 · 1080p</div></div>
+        <div class="vmi-sep"></div>
+        <div class="vmi"><div class="vmi-l">Uploaded</div><div class="vmi-v">28 Mar 2026</div></div>
+      </div>
+      <div style="display:flex;gap:6px">
+        <button class="btn btn-sm" onclick="toast('Select replacement file.')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.1"/></svg>Replace</button>
+        <button class="btn btn-sm" onclick="toast('Downloading video.')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Download</button>
+        <button class="btn btn-sm btn-p" onclick="toast('Browse for video file.')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>Upload new video</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─ IMAGE VIEW with captions (Q7) ─ -->
+  <div id="v-image" style="display:none;flex-direction:column;flex:1;overflow:hidden;min-height:0">
+    <div class="eh">
+      <div class="ltbadge ltb-img"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>Images</div>
+      <input class="lesson-title" value="Plant Image Gallery" placeholder="Lesson title...">
+      <div class="mr"><div class="mi">6 images · Hover to preview description</div></div>
+    </div>
+    <div class="ctabs"><div class="ctab act">Content</div><div class="ctab">Settings</div></div>
+    <div class="eb">
+      <p style="font-size:12px;color:var(--ink-3);font-weight:500;margin-bottom:8px">Images — <span style="color:var(--ink-4);font-weight:400">hover to preview description, click caption field below each image to edit</span></p>
+      <div class="img-grid">
+        <!-- Each img-item has thumb + caption editor + hover overlay -->
+        <div class="img-item">
+          <div class="img-thumb-wrap" onclick="toast('Click to replace image.')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            <div class="img-desc-overlay"><div class="img-desc-text" id="desc-overlay-0">Rafflesia sp. — the world's largest flower, a protected holoparasite found in Sarawak's lowland forests.</div></div>
+          </div>
+          <div class="img-caption-editor"><input type="text" value="Rafflesia sp." placeholder="Add caption..." oninput="updateOverlay(0,this.value)" id="cap-0"></div>
+        </div>
+        <div class="img-item">
+          <div class="img-thumb-wrap" onclick="toast('Click to replace image.')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            <div class="img-desc-overlay"><div class="img-desc-text" id="desc-overlay-1">Nepenthes rajah — giant pitcher plant, highland species found above 1,500m.</div></div>
+          </div>
+          <div class="img-caption-editor"><input type="text" value="Nepenthes rajah" placeholder="Add caption..." oninput="updateOverlay(1,this.value)" id="cap-1"></div>
+        </div>
+        <div class="img-item">
+          <div class="img-thumb-wrap" onclick="toast('Click to replace image.')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            <div class="img-desc-overlay"><div class="img-desc-text" id="desc-overlay-2">Dipterocarp species — dominant tree family in Sarawak's primary forests.</div></div>
+          </div>
+          <div class="img-caption-editor"><input type="text" value="Dipterocarp species" placeholder="Add caption..." oninput="updateOverlay(2,this.value)" id="cap-2"></div>
+        </div>
+        <div class="img-item">
+          <div class="img-thumb-wrap" onclick="toast('Click to replace image.')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            <div class="img-desc-overlay"><div class="img-desc-text" id="desc-overlay-3">Mangrove roots — distinctive prop roots of coastal mangrove forest systems.</div></div>
+          </div>
+          <div class="img-caption-editor"><input type="text" value="Mangrove roots" placeholder="Add caption..." oninput="updateOverlay(3,this.value)" id="cap-3"></div>
+        </div>
+        <div class="img-item">
+          <div class="img-thumb-wrap" onclick="toast('Click to replace image.')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            <div class="img-desc-overlay"><div class="img-desc-text" id="desc-overlay-4">Pitcher plant variants — several Nepenthes species showing range of pitcher forms.</div></div>
+          </div>
+          <div class="img-caption-editor"><input type="text" value="Pitcher plant variants" placeholder="Add caption..." oninput="updateOverlay(4,this.value)" id="cap-4"></div>
+        </div>
+        <div class="img-add-card" onclick="toast('Browse for image to upload.')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          <span>Add image</span>
+        </div>
+      </div>
+      <div class="upload-zone" onclick="toast('Browse for images to upload.')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        <p>Drop images here or click to upload</p>
+        <span>PNG, JPG up to 10 MB each</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─ QUIZ VIEW ─ -->
+  <div id="v-quiz" style="display:none;flex-direction:column;flex:1;overflow:hidden;min-height:0">
+    <div class="eh">
+      <div class="ltbadge ltb-quiz"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/></svg>Quiz</div>
+      <input class="lesson-title" value="Flora Identification Quiz" placeholder="Quiz title...">
+      <div class="mr"><div class="mi">Module 2 · Pass required to unlock next lesson</div></div>
+    </div>
+    <div class="ctabs"><div class="ctab act" onclick="switchCtab('quiz',this,0)">Questions</div><div class="ctab" onclick="switchCtab('quiz',this,1)">Settings</div><div class="ctab" onclick="switchCtab('quiz',this,2)">Results</div></div>
+    <div class="eb">
+      <div id="quiz-tab-0">
+        <div class="quiz-cfg">
+          <div class="qc-item"><div class="qc-lbl">Pass (%)</div><input class="qc-inp" type="number" value="70" id="q-pass"></div>
+          <div class="qc-item"><div class="qc-lbl">Time (min)</div><input class="qc-inp" type="number" value="15" id="q-time"></div>
+          <div class="qc-item"><div class="qc-lbl">Attempts</div><input class="qc-inp" type="number" value="3" id="q-attempts"></div>
+          <div class="qc-item"><div class="qc-lbl">Shuffle</div><select class="qc-inp" style="width:70px" id="q-shuffle"><option>Yes</option><option>No</option></select></div>
+          <div class="qc-item"><div class="qc-lbl">Unlock next on</div><select class="qc-inp" style="width:90px" id="q-unlock"><option value="pass_quiz">Pass quiz</option><option value="view_only">View only</option></select></div>
+        </div>
+        <div id="quiz-section">
+          <div class="q-card">
+            <div class="q-head">
+              <div class="q-num">Q1</div>
+              <span style="font-size:11.5px;font-weight:500;color:var(--ink-3);flex:1">Multiple Choice</span>
+              <select class="q-type-sel"><option>Multiple Choice</option><option>True / False</option><option>Short Answer</option></select>
+              <button class="q-del" onclick="this.closest('.q-card').remove()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg></button>
+            </div>
+            <div class="q-body">
+              <input class="q-input" value="Which scientific name correctly identifies the Giant Pitcher Plant of Sarawak's highlands?">
+              <div class="q-opts">
+                <div class="q-opt"><div class="q-opt-ltr">A</div><input type="text" value="Nepenthes rajah"><button class="ctog" onclick="toggleCorrect(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></button></div>
+                <div class="q-opt correct"><div class="q-opt-ltr">B</div><input type="text" value="Nepenthes lowii"><button class="ctog" onclick="toggleCorrect(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></button></div>
+                <div class="q-opt"><div class="q-opt-ltr">C</div><input type="text" value="Rafflesia arnoldii"><button class="ctog" onclick="toggleCorrect(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></button></div>
+                <div class="q-opt"><div class="q-opt-ltr">D</div><input type="text" value="Drosera spatulata"><button class="ctog" onclick="toggleCorrect(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></button></div>
+              </div>
+              <div class="q-explain"><label>Explanation</label><textarea>Nepenthes lowii is the large highland pitcher plant native to Sarawak and Sabah. N. rajah is found primarily in Sabah.</textarea></div>
+            </div>
+          </div>
+          <div class="q-card">
+            <div class="q-head">
+              <div class="q-num">Q2</div>
+              <span style="font-size:11.5px;font-weight:500;color:var(--ink-3);flex:1">True / False</span>
+              <select class="q-type-sel"><option>Multiple Choice</option><option selected>True / False</option><option>Short Answer</option></select>
+              <button class="q-del" onclick="this.closest('.q-card').remove()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg></button>
+            </div>
+            <div class="q-body">
+              <input class="q-input" value="Rafflesia is a holoparasite with no leaves, stems, or roots of its own.">
+              <div class="q-opts">
+                <div class="q-opt correct"><div class="q-opt-ltr">T</div><input type="text" value="True"><button class="ctog" onclick="toggleCorrect(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></button></div>
+                <div class="q-opt"><div class="q-opt-ltr">F</div><input type="text" value="False"><button class="ctog" onclick="toggleCorrect(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></button></div>
+              </div>
+              <div class="q-explain"><label>Explanation</label><textarea>Rafflesia lives entirely within its Tetrastigma host vine — it has no chlorophyll and no vegetative structures.</textarea></div>
+            </div>
+          </div>
+          <button class="add-q-btn" onclick="addQuestion()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Add question
+          </button>
+        </div>
+      </div>
+      <div id="quiz-tab-1" style="display:none">
+        <div class="fg">
+          <div class="fl">Module</div>
+          <select class="fss"><option>Module 1</option><option selected>Module 2</option><option>Module 3</option><option>Module 4</option></select>
+        </div>
+        <div class="fg">
+          <div class="fl">Status</div>
+          <select class="fss"><option>Published</option><option>Draft</option></select>
+        </div>
+        <div class="info-note info-amber" style="margin-top:4px">
+          Certificate completion is triggered at course level (all modules done + all quizzes passed). Manage this in Course Settings.
+        </div>
+      </div>
+      <div id="quiz-tab-2" style="display:none">
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;margin-bottom:14px">
+          <div style="background:var(--surface);border-radius:var(--r-sm);padding:11px;text-align:center;border:1px solid var(--border)"><div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:700;color:var(--ink)">86</div><div style="font-size:10.5px;color:var(--ink-4);margin-top:2px">Attempts</div></div>
+          <div style="background:var(--surface);border-radius:var(--r-sm);padding:11px;text-align:center;border:1px solid var(--border)"><div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:700;color:var(--forest-2)">78%</div><div style="font-size:10.5px;color:var(--ink-4);margin-top:2px">Avg. score</div></div>
+          <div style="background:var(--surface);border-radius:var(--r-sm);padding:11px;text-align:center;border:1px solid var(--border)"><div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:700;color:var(--ink)">92%</div><div style="font-size:10.5px;color:var(--ink-4);margin-top:2px">Pass rate</div></div>
+        </div>
+        <p style="font-size:12px;color:var(--ink-4)">Detailed results available in the Reports section.</p>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /center -->
+
+<!-- ══ RIGHT PANEL ══ -->
+<div class="rp">
+  <div class="rp-sec">
+    <div class="rp-title">Lesson</div>
+    <div class="rp-item"><div class="rp-lbl">Type</div>
+      <select class="rp-sel" id="rp-type" onchange="switchType(this.value)">
+        <option value="article">Article</option>
+        <option value="image">Images</option>
+        <option value="video">Video</option>
+        <option value="quiz">Quiz</option>
+      </select>
+    </div>
+    <div class="rp-item"><div class="rp-lbl">Module</div>
+      <select class="rp-sel"><option>Module 1</option><option selected>Module 2</option><option>Module 3</option><option>Module 4</option></select>
+    </div>
+  </div>
+  <hr class="rp-div">
+  <!-- Lesson-level prerequisites (Q3) -->
+  <div class="rp-sec">
+    <div class="rp-title">Lesson prerequisites</div>
+    <div id="rp-prereq-list">
+      <div class="prereq-tag">Intro to Flora<button onclick="this.parentElement.remove()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+      <div class="prereq-tag">Plant Image Gallery<button onclick="this.parentElement.remove()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+    </div>
+    <div class="add-btn" style="margin-top:5px;font-size:11px" onclick="openM('pick-lesson-prereq')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add
+    </div>
+  </div>
+  <hr class="rp-div">
+  <div class="rp-sec">
+    <div class="rp-title">Stats</div>
+    <div class="rp-stat"><span class="rp-stat-l">Completions</span><span class="rp-stat-v">86</span></div>
+    <div class="rp-stat"><span class="rp-stat-l">Avg. score</span><span class="rp-stat-v">78%</span></div>
+    <div class="rp-stat"><span class="rp-stat-l">Avg. time</span><span class="rp-stat-v">14 min</span></div>
+    <div class="rp-stat"><span class="rp-stat-l">Last edited</span><span class="rp-stat-v">26 Mar</span></div>
+  </div>
+  <hr class="rp-div">
+  <div class="rp-note">Auto-saved every 30 s. "Save Changes" publishes immediately.</div>
+</div>
+
+</div><!-- /wrap -->
+
+<!-- ══ MODAL: Add Lesson ══ -->
+<div class="modal-ov hidden" id="add-lesson-modal">
+  <div class="modal">
+    <div class="mhd"><span class="m-title">Add New Lesson</span><button class="m-close" onclick="closeM('add-lesson-modal')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+    <div class="mb">
+      <div class="fg"><div class="fl">Lesson Title</div><input class="fi" placeholder="e.g. Introduction to Sarawak Flora"></div>
+      <div class="fg"><div class="fl">Lesson Type</div>
+        <div class="type-pill-row">
+          <div class="type-pill sel" onclick="selModalPill(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5z"/></svg>Article</div>
+          <div class="type-pill" onclick="selModalPill(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>Images</div>
+          <div class="type-pill" onclick="selModalPill(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>Video</div>
+          <div class="type-pill" onclick="selModalPill(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/></svg>Quiz</div>
+        </div>
+      </div>
+      <div class="fg"><div class="fl">Add to Module</div>
+        <select class="fss"><option>Module 1</option><option selected>Module 2</option><option>Module 3</option><option>Module 4</option></select>
+      </div>
+    </div>
+    <div class="mft">
+      <button class="btn" onclick="closeM('add-lesson-modal')">Cancel</button>
+      <button class="btn btn-p" onclick="toast('Lesson created!');closeM('add-lesson-modal')">Create Lesson</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MODAL: Pick Lesson Prerequisite ══ -->
+<div class="modal-ov hidden" id="pick-lesson-prereq">
+  <div class="modal">
+    <div class="mhd"><span class="m-title">Add Lesson Prerequisite</span><button class="m-close" onclick="closeM('pick-lesson-prereq')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+    <div class="mb">
+      <div class="info-note">Select lessons that must be completed before this lesson unlocks.</div>
+      <div style="border:1px solid var(--border);border-radius:var(--r-sm);overflow:hidden">
+        <div style="padding:8px 12px;border-bottom:1px solid var(--border);font-size:10px;font-weight:700;color:var(--ink-4);text-transform:uppercase;letter-spacing:0.06em;background:var(--surface)">Module 2 — Flora Identification</div>
+        <div style="display:flex;align-items:center;gap:8px;padding:9px 12px;border-bottom:1px solid var(--border);cursor:pointer" onclick="addLessonPrereq('Introduction to Sarawak Flora')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px;flex-shrink:0;color:var(--forest-2)"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5z"/></svg><span style="font-size:12.5px;color:var(--ink)">Introduction to Sarawak Flora</span><span style="margin-left:auto;font-size:10px;color:var(--forest-2);font-weight:600">DONE</span></div>
+        <div style="display:flex;align-items:center;gap:8px;padding:9px 12px;border-bottom:1px solid var(--border);cursor:pointer" onclick="addLessonPrereq('Plant Image Gallery')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px;flex-shrink:0;color:var(--purple)"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><span style="font-size:12.5px;color:var(--ink)">Plant Image Gallery</span><span style="margin-left:auto;font-size:10px;color:var(--forest-2);font-weight:600">DONE</span></div>
+        <div style="display:flex;align-items:center;gap:8px;padding:9px 12px;cursor:pointer" onclick="addLessonPrereq('Field Identification Video')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px;flex-shrink:0;color:var(--sky-2)"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg><span style="font-size:12.5px;color:var(--ink)">Field Identification Video</span></div>
+      </div>
+    </div>
+    <div class="mft"><button class="btn" onclick="closeM('pick-lesson-prereq')">Done</button></div>
+  </div>
+</div>
+
+<!-- ══ MODAL: JSON Preview ══ -->
+<div class="modal-ov hidden" id="json-preview-modal">
+  <div class="modal modal-lg">
+    <div class="mhd">
+      <span class="m-title">Save Changes — JSON Payload</span>
+      <div style="display:flex;align-items:center;gap:6px">
+        <span style="font-size:11px;color:var(--ink-4)">POST to /api/lessons/:lessonId</span>
+        <button class="m-close" onclick="closeM('json-preview-modal')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+      </div>
+    </div>
+    <div class="mb">
+      <pre class="json-pre" id="json-output"></pre>
+    </div>
+    <div class="mft">
+      <button class="btn" onclick="closeM('json-preview-modal')">Close</button>
+      <button class="btn btn-sm" onclick="copyJSON()">Copy JSON</button>
+      <button class="btn btn-p" onclick="saveChanges();closeM('json-preview-modal')">Send to Backend</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+var qCount = 2;
+var API_BASE = 'http://backend.borneoprotects.app';
+var currentType = 'article';
+
+/* ── Module toggle ── */
+function toggleMod(hd) {
+  var isOpen = hd.classList.contains('open-g');
+  hd.classList.toggle('open-g', !isOpen);
+  var list = hd.nextElementSibling;
+  if (list && list.classList.contains('lesson-list')) {
+    list.style.display = isOpen ? 'none' : 'block';
+  }
+}
+
+/* ── Lesson switch ── */
+var allViews = ['article','video','image','quiz'];
+function switchLesson(el, type, title) {
+  document.querySelectorAll('.li').forEach(function(l){ l.classList.remove('act-l'); });
+  el.classList.add('act-l');
+  document.getElementById('bc-cur').textContent = title;
+  currentType = type;
+  switchType(type);
+  var rp = document.getElementById('rp-type');
+  if (rp) rp.value = type;
+}
+
+function switchType(type) {
+  currentType = type;
+  allViews.forEach(function(v) {
+    var el = document.getElementById('v-' + v);
+    if (el) el.style.display = (v === type) ? 'flex' : 'none';
+  });
+}
+
+/* ── Content tabs ── */
+function switchCtab(prefix, el, idx) {
+  var tabs = el.parentElement.querySelectorAll('.ctab');
+  tabs.forEach(function(t){ t.classList.remove('act'); });
+  el.classList.add('act');
+  for (var i = 0; i < 3; i++) {
+    var tab = document.getElementById(prefix + '-tab-' + i);
+    if (tab) tab.style.display = (i === idx) ? 'block' : 'none';
+  }
+}
+
+/* ── Status toggle ── */
+function toggleStatus() {
+  var lbl = document.getElementById('status-lbl');
+  var btn = document.getElementById('status-btn');
+  if (lbl.textContent.trim() === 'Published') {
+    lbl.textContent = 'Draft';
+    btn.classList.add('draft-mode');
+  } else {
+    lbl.textContent = 'Published';
+    btn.classList.remove('draft-mode');
+  }
+}
+
+/* ── Type pills ── */
+function selType(el, type) {
+  el.closest('.type-pill-row').querySelectorAll('.type-pill').forEach(function(p){ p.classList.remove('sel'); });
+  el.classList.add('sel');
+  switchType(type);
+  var rp = document.getElementById('rp-type');
+  if (rp) rp.value = type;
+}
+function selModalPill(el) {
+  el.closest('.type-pill-row').querySelectorAll('.type-pill').forEach(function(p){ p.classList.remove('sel'); });
+  el.classList.add('sel');
+}
+
+/* ── RTE ── */
+function rte(cmd){ var ed=document.getElementById('rte-main'); if(ed) ed.focus(); document.execCommand(cmd,false,null); }
+function rteBlock(val){ if(!val) return; var ed=document.getElementById('rte-main'); if(ed) ed.focus(); document.execCommand('formatBlock',false,'<'+val+'>'); }
+function rteSz(val){ if(!val) return; var ed=document.getElementById('rte-main'); if(ed) ed.focus(); document.execCommand('fontSize',false,val); }
+function rteLink(){ var url=prompt('Enter URL (include https://):'); if(url){ var ed=document.getElementById('rte-main'); if(ed) ed.focus(); document.execCommand('createLink',false,url); } }
+function rteColor(){ var c=prompt('Text color hex (e.g. #2C6B2F):'); if(c){ var ed=document.getElementById('rte-main'); if(ed) ed.focus(); document.execCommand('foreColor',false,c); } }
+function rteCallout(){ var ed=document.getElementById('rte-main'); if(ed) ed.focus(); document.execCommand('insertHTML',false,'<div class="callout"><strong>Note:</strong> Add callout text here.</div><p></p>'); }
+function rteTable(){ var ed=document.getElementById('rte-main'); if(ed) ed.focus(); document.execCommand('insertHTML',false,'<table><tr><th>Header 1</th><th>Header 2</th></tr><tr><td>Cell 1</td><td>Cell 2</td></tr></table><p></p>'); }
+
+/* ── Image caption overlay sync (Q7) ── */
+function updateOverlay(idx, val) {
+  var el = document.getElementById('desc-overlay-' + idx);
+  if (el) el.textContent = val || '(No description)';
+}
+
+/* ── Quiz ── */
+function toggleCorrect(btn) {
+  var opt = btn.closest('.q-opt');
+  var was = opt.classList.contains('correct');
+  opt.closest('.q-opts').querySelectorAll('.q-opt').forEach(function(o){ o.classList.remove('correct'); });
+  if (!was) opt.classList.add('correct');
+}
+function addQuestion() {
+  qCount++;
+  var section = document.getElementById('quiz-section');
+  var addBtn = section.querySelector('.add-q-btn');
+  var card = document.createElement('div');
+  card.className = 'q-card';
+  var letters = ['A','B','C','D'];
+  var opts = letters.map(function(l){
+    return '<div class="q-opt"><div class="q-opt-ltr">'+l+'</div><input type="text" placeholder="Option '+l+'"><button class="ctog" onclick="toggleCorrect(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></button></div>';
+  }).join('');
+  card.innerHTML = '<div class="q-head"><div class="q-num">Q'+qCount+'</div><span style="font-size:11.5px;font-weight:500;color:var(--ink-3);flex:1">Multiple Choice</span><select class="q-type-sel"><option>Multiple Choice</option><option>True / False</option><option>Short Answer</option></select><button class="q-del" onclick="this.closest(\'.q-card\').remove()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg></button></div><div class="q-body"><input class="q-input" placeholder="Type question here..."><div class="q-opts">'+opts+'</div><div class="q-explain"><label>Explanation</label><textarea placeholder="Explain the correct answer..."></textarea></div></div>';
+  section.insertBefore(card, addBtn);
+}
+
+/* ── Lesson prerequisite picker ── */
+function addLessonPrereq(name) {
+  var list = document.getElementById('rp-prereq-list');
+  var exists = false;
+  list.querySelectorAll('.prereq-tag').forEach(function(t){
+    if (t.textContent.replace('×','').trim() === name) exists = true;
+  });
+  if (exists) { toast('Already added.'); return; }
+  var div = document.createElement('div');
+  div.className = 'prereq-tag';
+  div.innerHTML = name + '<button onclick="this.parentElement.remove()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>';
+  list.appendChild(div);
+  toast('"' + name + '" added as prerequisite.');
+}
+
+/* ══════════════════════════════════════════════
+   BUILD JSON PAYLOAD
+   This is the exact object sent to the backend
+   on "Save Changes".
+══════════════════════════════════════════════ */
+function buildPayload() {
+  var type = currentType;
+  var titleEl = document.getElementById('art-title');
+  var title = (type === 'article' && titleEl) ? titleEl.value : document.querySelector('#v-' + type + ' .lesson-title') ? document.querySelector('#v-' + type + ' .lesson-title').value : '';
+  var statusEl = document.getElementById('art-status');
+  var status = (statusEl && statusEl.value) ? statusEl.value.toLowerCase() : document.getElementById('status-lbl').textContent.trim().toLowerCase();
+  var moduleEl = document.getElementById('art-module');
+  var moduleId = moduleEl ? 'module_00' + moduleEl.selectedIndex : 'module_002';
+
+  /* Collect lesson-level prerequisites from right panel */
+  var prereqs = [];
+  document.querySelectorAll('#rp-prereq-list .prereq-tag').forEach(function(t){
+    var name = t.textContent.replace('×','').trim();
+    if (name) prereqs.push(name);
+  });
+
+  var lesson = {
+    courseId: 'course_001',
+    moduleId: moduleId,
+    lessonId: 'lesson_003',
+    lesson: {
+      title: title,
+      type: type,
+      status: status,
+      modulePosition: 3,
+      prerequisites: prereqs
+    }
+  };
+
+  /* Content per type */
+  if (type === 'article') {
+    var ed = document.getElementById('rte-main');
+    lesson.lesson.content = { html: ed ? ed.innerHTML.trim() : '' };
+    var dur = document.getElementById('art-dur');
+    if (dur) lesson.lesson.duration = dur.value;
+  }
+
+  if (type === 'video') {
+    lesson.lesson.content = {
+      fileUrl: 'https://r2.borneoprotects.app/sfc/lessons/flora_id_field_guide_v2.mp4',
+      duration: '18:24',
+      format: 'mp4',
+      resolution: '1080p',
+      fileSizeMb: 284
+    };
+  }
+
+  if (type === 'image') {
+    var images = [];
+    for (var i = 0; i < 5; i++) {
+      var capEl = document.getElementById('cap-' + i);
+      var descEl = document.getElementById('desc-overlay-' + i);
+      if (capEl) {
+        images.push({
+          imageId: 'img_00' + (i+1),
+          order: i + 1,
+          fileUrl: 'https://r2.borneoprotects.app/sfc/lessons/gallery/img_' + String(i+1).padStart(3,'0') + '.jpg',
+          caption: capEl.value,
+          altText: descEl ? descEl.textContent : capEl.value,
+          description: descEl ? descEl.textContent : ''
+        });
+      }
+    }
+    lesson.lesson.content = { images: images, displayMode: 'slideshow' };
+  }
+
+  if (type === 'quiz') {
+    var passEl = document.getElementById('q-pass');
+    var timeEl = document.getElementById('q-time');
+    var attEl = document.getElementById('q-attempts');
+    var shuffleEl = document.getElementById('q-shuffle');
+    var unlockEl = document.getElementById('q-unlock');
+    var questions = [];
+    document.querySelectorAll('#quiz-section .q-card').forEach(function(card, idx) {
+      var qText = card.querySelector('.q-input');
+      var typeEl = card.querySelector('.q-type-sel');
+      var opts = [];
+      card.querySelectorAll('.q-opt').forEach(function(opt, oi) {
+        var ltrEl = opt.querySelector('.q-opt-ltr');
+        var txtEl = opt.querySelector('input[type=text]');
+        opts.push({
+          label: ltrEl ? ltrEl.textContent.trim() : String.fromCharCode(65+oi),
+          text: txtEl ? txtEl.value : '',
+          isCorrect: opt.classList.contains('correct')
+        });
+      });
+      var expEl = card.querySelector('.q-explain textarea');
+      questions.push({
+        questionId: 'q_00' + (idx+1),
+        type: typeEl ? typeEl.value.toLowerCase().replace(' / ','_').replace(' ','_') : 'multiple_choice',
+        text: qText ? qText.value : '',
+        options: opts,
+        explanation: expEl ? expEl.value : ''
+      });
+    });
+    lesson.lesson.quiz = {
+      passScore: passEl ? parseInt(passEl.value) : 70,
+      timeLimitMinutes: timeEl ? parseInt(timeEl.value) : 15,
+      maxAttempts: attEl ? parseInt(attEl.value) : 3,
+      shuffleQuestions: shuffleEl ? (shuffleEl.value === 'Yes') : true,
+      unlockNextOn: unlockEl ? unlockEl.value : 'pass_quiz',
+      questions: questions
+    };
+  }
+
+  return lesson;
+}
+
+/* ── Save Changes → POST to backend ── */
+function saveChanges() {
+  var payload = buildPayload();
+  setSaveState('saving');
+
+  /* Update JSON preview if modal is open */
+  var pre = document.getElementById('json-output');
+  if (pre) pre.textContent = JSON.stringify(payload, null, 2);
+
+  var token = localStorage.getItem('sfc_token') || '';
+  fetch(API_BASE + '/api/lessons/' + payload.lessonId, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + token
+    },
+    body: JSON.stringify(payload)
+  })
+  .then(function(res) {
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    return res.json();
+  })
+  .then(function() {
+    setSaveState('saved');
+    toast('Changes saved and published.');
+    setTimeout(function(){ setSaveState('idle'); }, 4000);
+  })
+  .catch(function(err) {
+    /* In design/mockup mode the backend may not be reachable yet — show payload anyway */
+    setSaveState('error');
+    toast('Backend not reachable. JSON built — use the JSON button to inspect.');
+    setTimeout(function(){ setSaveState('idle'); }, 5000);
+    console.log('[SFC] Save payload:', JSON.stringify(payload, null, 2));
+  });
+}
+
+function setSaveState(state) {
+  var el = document.getElementById('save-state');
+  if (!el) return;
+  el.className = 'save-state ' + state;
+  var icons = {
+    idle:   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>',
+    saving: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.1"/></svg>',
+    saved:  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>',
+    error:  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>'
+  };
+  var labels = { idle:'Auto-saved', saving:'Saving…', saved:'Saved!', error:'Save failed' };
+  el.innerHTML = (icons[state]||icons.idle) + labels[state];
+}
+
+/* ── JSON preview button ── */
+function openJsonPreview() {
+  var payload = buildPayload();
+  var pre = document.getElementById('json-output');
+  if (pre) pre.textContent = JSON.stringify(payload, null, 2);
+  openM('json-preview-modal');
+}
+
+function copyJSON() {
+  var pre = document.getElementById('json-output');
+  if (pre && navigator.clipboard) {
+    navigator.clipboard.writeText(pre.textContent).then(function(){ toast('JSON copied to clipboard!'); });
+  }
+}
+
+/* Auto-save every 30s */
+setInterval(function(){
+  if (document.visibilityState === 'visible') {
+    setSaveState('saving');
+    setTimeout(function(){ setSaveState('saved'); setTimeout(function(){ setSaveState('idle'); }, 3000); }, 600);
+  }
+}, 30000);
+
+/* ── Modal ── */
+function openM(id) {
+  if (id === 'json-preview-modal') { openJsonPreview(); return; }
+  var e = document.getElementById(id);
+  if (e) e.classList.remove('hidden');
+}
+function closeM(id) { var e=document.getElementById(id); if(e) e.classList.add('hidden'); }
+document.querySelectorAll('.modal-ov').forEach(function(o){
+  o.addEventListener('click', function(e){ if(e.target===o) o.classList.add('hidden'); });
+});
+
+/* ── Toast ── */
+var _tt;
+function toast(m) {
+  var t = document.getElementById('toast');
+  t.textContent = m;
+  t.style.opacity = '1';
+  t.style.transform = 'translateY(0)';
+  clearTimeout(_tt);
+  _tt = setTimeout(function(){ t.style.opacity='0'; t.style.transform='translateY(6px)'; }, 3000);
+}
+</script>
+</body>
+</html>

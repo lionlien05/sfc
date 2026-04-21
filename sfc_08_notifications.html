@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Notifications · SFC Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--forest:#1A4A1C;--forest-2:#2C6B2F;--forest-3:#3E8C42;--forest-light:#6DB870;--forest-pale:#E8F4E8;--forest-xpale:#F2FAF2;--amber:#B86A00;--amber-2:#D4820A;--amber-pale:#FDF3DC;--amber-xpale:#FFFBF0;--coral:#B84430;--coral-pale:#FBF0EC;--sky:#1A5C8A;--sky-2:#2A7BC4;--sky-pale:#E6F2FB;--purple:#5B3FA0;--purple-pale:#F0EAFB;--ink:#0F1A10;--ink-2:#2A3A2C;--ink-3:#4A5E4C;--ink-4:#7A8E7C;--ink-5:#B0BDB2;--surface:#F6F8F6;--card:#FFFFFF;--border:rgba(26,74,28,0.1);--r:12px;--r-sm:8px;--r-lg:16px;--sh:0 1px 3px rgba(15,26,16,0.07),0 4px 16px rgba(15,26,16,0.05);--sh-md:0 2px 8px rgba(15,26,16,0.08),0 8px 32px rgba(15,26,16,0.08)}
+body{font-family:'Inter',sans-serif;background:var(--surface);color:var(--ink);font-size:13px;display:flex;min-height:100vh;line-height:1.5}
+/* SIDEBAR */
+.sidebar{width:230px;min-width:230px;background:var(--forest);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:50;overflow-y:auto}
+.logo-wrap{padding:20px 16px 16px;border-bottom:1px solid rgba(255,255,255,0.08)}
+.logo-mark{width:34px;height:34px;background:rgba(255,255,255,0.12);border-radius:9px;display:flex;align-items:center;justify-content:center;margin-bottom:9px}
+.logo-mark svg{width:18px;height:18px;color:#fff}
+.logo-name{font-family:'Syne',sans-serif;font-size:13.5px;font-weight:700;color:#fff}
+.logo-sub{font-size:9.5px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.07em;margin-top:1px}
+.nav-sec{padding:12px 8px 2px}
+.nav-lbl{font-size:9px;color:rgba(255,255,255,0.32);letter-spacing:0.12em;text-transform:uppercase;padding:0 8px;margin-bottom:4px;font-weight:600}
+.nav-a{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:var(--r-sm);color:rgba(255,255,255,0.55);font-size:12.5px;cursor:pointer;transition:all 0.13s;margin-bottom:1px;text-decoration:none}
+.nav-a:hover{background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.9)}
+.nav-a.active{background:rgba(255,255,255,0.15);color:#fff;font-weight:500}
+.nav-a svg{width:14px;height:14px;flex-shrink:0}
+.nb{margin-left:auto;background:var(--coral);color:#fff;font-size:9px;font-weight:700;padding:1px 5px;border-radius:9px;min-width:16px;text-align:center}
+.nb-a{margin-left:auto;background:var(--amber-2);color:#fff;font-size:9px;font-weight:700;padding:1px 5px;border-radius:9px}
+.nav-div{margin:5px 8px;border:none;border-top:1px solid rgba(255,255,255,0.07)}
+.sb-foot{margin-top:auto;padding:12px 8px;border-top:1px solid rgba(255,255,255,0.08)}
+.admin-row{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:var(--r-sm);background:rgba(255,255,255,0.07);cursor:pointer}
+.admin-av{width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,0.18);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex-shrink:0;font-family:'Syne',sans-serif}
+.admin-n{font-size:11.5px;font-weight:500;color:#fff}
+.admin-r{font-size:10px;color:rgba(255,255,255,0.4)}
+/* MAIN */
+.main{flex:1;margin-left:230px;display:flex;flex-direction:column;min-width:0}
+.topbar{background:var(--card);border-bottom:1px solid var(--border);padding:0 26px;height:54px;display:flex;align-items:center;position:sticky;top:0;z-index:10;gap:10px}
+.tb-title{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:var(--ink);letter-spacing:-0.01em}
+.tb-sub{font-size:11px;color:var(--ink-4);margin-top:1px}
+.tb-right{margin-left:auto;display:flex;align-items:center;gap:7px}
+.icon-btn{width:32px;height:32px;border-radius:50%;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;color:var(--ink-3);transition:all 0.13s;text-decoration:none}
+.icon-btn:hover{background:var(--forest-xpale);color:var(--forest-2)}
+.icon-btn svg{width:14px;height:14px}
+.content{padding:22px 26px 48px}
+/* BUTTONS */
+.btn{padding:6px 13px;border-radius:var(--r-sm);font-size:12px;font-weight:500;cursor:pointer;border:1px solid var(--border);background:var(--surface);color:var(--ink-3);font-family:'Inter',sans-serif;transition:all 0.13s;display:inline-flex;align-items:center;gap:5px;text-decoration:none}
+.btn:hover{background:var(--card);color:var(--ink);border-color:rgba(26,74,28,0.2)}
+.btn svg{width:13px;height:13px}
+.btn-p{background:var(--forest);color:#fff;border-color:var(--forest)}
+.btn-p:hover{background:var(--forest-2);color:#fff}
+.btn-sm{padding:3px 9px;font-size:11px}
+.btn-danger{background:var(--coral-pale);color:var(--coral);border-color:rgba(184,68,48,0.18)}
+.btn-danger:hover{background:#f9ddd7}
+/* PILLS */
+.pill{font-size:9.5px;font-weight:600;padding:2px 8px;border-radius:9px;white-space:nowrap}
+.p-gr{background:var(--forest-xpale);color:var(--forest-2)}.p-amb{background:var(--amber-xpale);color:var(--amber)}.p-red{background:var(--coral-pale);color:var(--coral)}.p-sky{background:var(--sky-pale);color:var(--sky)}.p-gray{background:var(--surface);color:var(--ink-3);border:1px solid var(--border)}.p-pur{background:var(--purple-pale);color:var(--purple)}
+/* LAYOUT */
+.page-layout{display:grid;grid-template-columns:1fr 340px;gap:20px;align-items:start}
+/* PANEL */
+.panel{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;margin-bottom:20px}
+.panel:last-child{margin-bottom:0}
+.ph{padding:13px 17px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:8px}
+.ph-title{font-size:13px;font-weight:600;color:var(--ink)}
+.ph-act{font-size:11.5px;color:var(--forest-2);cursor:pointer;font-weight:500;padding:3px 7px;border-radius:5px;transition:background 0.13s;background:none;border:none;font-family:'Inter',sans-serif}
+.ph-act:hover{background:var(--forest-xpale)}
+.pb{padding:13px 17px}
+/* FILTER BAR */
+.filter-bar{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap;align-items:center}
+.filter-btn{padding:5px 12px;border-radius:18px;font-size:11.5px;font-weight:500;cursor:pointer;color:var(--ink-3);background:var(--card);border:1px solid var(--border);transition:all 0.13s}
+.filter-btn:hover{border-color:rgba(26,74,28,0.2);color:var(--ink)}
+.filter-btn.act{background:var(--forest);color:#fff;border-color:var(--forest)}
+/* NOTIFICATION ROW */
+.notif-row{display:flex;gap:12px;padding:13px 0;border-bottom:1px solid var(--border);cursor:pointer;transition:background 0.12s;border-radius:var(--r-sm);margin:0 -4px;padding-left:4px;padding-right:4px}
+.notif-row:last-child{border-bottom:none}
+.notif-row:hover{background:var(--surface)}
+.notif-row.unread{background:rgba(242,250,242,0.6)}
+.notif-row.unread:hover{background:var(--forest-xpale)}
+.notif-ic{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.notif-ic svg{width:17px;height:17px}
+.ni-alert{background:var(--coral-pale);color:var(--coral)}
+.ni-cert{background:var(--amber-xpale);color:var(--amber-2)}
+.ni-progress{background:var(--sky-pale);color:var(--sky-2)}
+.ni-system{background:var(--surface);color:var(--ink-3);border:1px solid var(--border)}
+.ni-guide{background:var(--forest-xpale);color:var(--forest-2)}
+.ni-approval{background:var(--purple-pale);color:var(--purple)}
+.notif-body{flex:1;min-width:0}
+.notif-title{font-size:13px;color:var(--ink-2);line-height:1.4;margin-bottom:3px}
+.notif-row.unread .notif-title{font-weight:600;color:var(--ink)}
+.notif-meta{font-size:11.5px;color:var(--ink-4);line-height:1.5}
+.notif-right{margin-left:auto;display:flex;flex-direction:column;align-items:flex-end;gap:5px;flex-shrink:0}
+.notif-time{font-size:11px;color:var(--ink-5)}
+.unread-dot{width:7px;height:7px;border-radius:50%;background:var(--forest-3);flex-shrink:0}
+.notif-actions{display:flex;gap:4px;margin-top:5px}
+/* SEND NOTIFICATION FORM */
+.fg{display:flex;flex-direction:column;gap:4px;margin-bottom:12px}
+.fl{font-size:10.5px;font-weight:700;color:var(--ink-4);text-transform:uppercase;letter-spacing:0.04em}
+.fi,.fss,.fta{border:1px solid var(--border);border-radius:var(--r-sm);padding:7px 10px;font-size:12.5px;font-family:'Inter',sans-serif;color:var(--ink);background:var(--surface);outline:none;width:100%}
+.fi:focus,.fss:focus,.fta:focus{border-color:rgba(26,74,28,0.3);background:var(--card)}
+.fta{resize:vertical;min-height:100px;line-height:1.6}
+.g2f{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+/* STATS */
+.stat-mini-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
+.stat-mini{background:var(--surface);border-radius:var(--r-sm);padding:10px;border:1px solid var(--border)}
+.sm-val{font-family:'Syne',sans-serif;font-size:20px;font-weight:700;color:var(--ink);line-height:1;margin-bottom:2px}
+.sm-lbl{font-size:10.5px;color:var(--ink-4)}
+/* PRIORITY TOGGLE */
+.priority-row{display:flex;gap:6px;margin-bottom:2px}
+.prio-opt{flex:1;padding:8px 10px;border:2px solid var(--border);border-radius:var(--r-sm);cursor:pointer;text-align:center;transition:all 0.13s}
+.prio-opt:hover{border-color:var(--forest-light)}
+.prio-opt.sel{border-color:var(--forest-2);background:var(--forest-xpale)}
+.prio-opt.sel-red{border-color:var(--coral);background:var(--coral-pale)}
+.prio-name{font-size:12px;font-weight:600;color:var(--ink);margin-bottom:1px}
+.prio-desc{font-size:10.5px;color:var(--ink-4)}
+.prio-opt.sel .prio-name{color:var(--forest-2)}
+.prio-opt.sel-red .prio-name{color:var(--coral)}
+/* RECIPIENT TAG */
+.recipient-tags{display:flex;flex-wrap:wrap;gap:5px;padding:8px 10px;border:1px solid var(--border);border-radius:var(--r-sm);background:var(--surface);min-height:38px;cursor:text}
+.rtag{display:flex;align-items:center;gap:4px;padding:3px 8px;background:var(--forest-xpale);border-radius:20px;font-size:11.5px;color:var(--forest-2);font-weight:500}
+.rtag button{border:none;background:transparent;color:var(--ink-4);cursor:pointer;font-size:12px;line-height:1;padding:0;display:flex;align-items:center}
+.rtag button:hover{color:var(--coral)}
+/* SCHEDULE PREVIEW */
+.sched-item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)}
+.sched-item:last-child{border-bottom:none}
+.sched-time{font-size:11.5px;font-weight:600;color:var(--ink-2);min-width:60px}
+.sched-title{font-size:12px;color:var(--ink-3);flex:1}
+/* MODAL */
+.modal-ov{position:fixed;inset:0;background:rgba(10,20,10,0.45);display:flex;align-items:center;justify-content:center;z-index:200;backdrop-filter:blur(2px)}
+.modal-ov.hidden{display:none}
+.modal{background:var(--card);border-radius:var(--r-lg);width:520px;max-width:92vw;max-height:90vh;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,0.16);border:1px solid var(--border);display:flex;flex-direction:column}
+.mhd{padding:15px 19px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.m-title{font-family:'Syne',sans-serif;font-size:14.5px;font-weight:700;color:var(--ink)}
+.m-close{width:24px;height:24px;border-radius:5px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--ink-3);border:none;background:none}
+.m-close:hover{background:var(--surface)}
+.m-close svg{width:13px;height:13px}
+.mb{padding:18px 19px;overflow-y:auto;flex:1}
+.mft{padding:11px 19px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:7px;flex-shrink:0}
+/* Toast */
+#toast{position:fixed;bottom:22px;right:22px;background:var(--ink);color:#fff;padding:10px 16px;border-radius:var(--r);font-size:12.5px;font-weight:500;z-index:999;opacity:0;transform:translateY(6px);transition:all 0.22s;pointer-events:none;max-width:280px;box-shadow:0 2px 8px rgba(15,26,16,0.2)}
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="logo-wrap"><div class="logo-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3C8 3 5 6.5 5 10c0 4 4 8 7 10 3-2 7-6 7-10 0-3.5-3-7-7-7z"/><circle cx="12" cy="9" r="2" fill="currentColor" stroke="none"/></svg></div><div class="logo-name">SFC Admin</div><div class="logo-sub">Sarawak Forestry Corp</div></div>
+  <div class="nav-sec"><div class="nav-lbl">Overview</div><a class="nav-a" href="sfc_01_dashboard.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>Dashboard</a></div>
+  <div class="nav-sec"><div class="nav-lbl">Digital Learning</div>
+    <a class="nav-a" href="sfc_02_trainees.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Trainees<span class="nb-a">4</span></a>
+    <a class="nav-a" href="sfc_03_courses.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Courses &amp; Modules</a>
+    <a class="nav-a" href="sfc_05_certifications.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>Certifications</a>
+  </div>
+  <hr class="nav-div">
+  <div class="nav-sec"><div class="nav-lbl">Park Monitoring</div>
+    <a class="nav-a" href="sfc_06_park_guides.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Park Guides</a>
+    <a class="nav-a" href="sfc_07_iot_monitor.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5.636 5.636a9 9 0 1 0 12.728 12.728"/><circle cx="12" cy="12" r="1"/></svg>IoT Monitor<span class="nb">3</span></a>
+    <a class="nav-a active" href="sfc_08_notifications.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>Notifications<span class="nb">6</span></a>
+  </div>
+  <hr class="nav-div">
+  <div class="nav-sec"><div class="nav-lbl">System</div><a class="nav-a" href="sfc_09_accounts.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>User Accounts</a></div>
+  <div class="sb-foot"><div class="admin-row"><div class="admin-av">AH</div><div><div class="admin-n">Ahmad Hisham</div><div class="admin-r">Super Admin</div></div></div></div>
+</aside>
+
+<div class="main">
+  <div class="topbar">
+    <div><div class="tb-title">Notifications</div><div class="tb-sub">6 unread · 142 sent this month</div></div>
+    <div class="tb-right">
+      <button class="btn" onclick="markAllRead()">Mark all read</button>
+      <button class="btn btn-p" onclick="openM('send-notif')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>Send Notification</button>
+    </div>
+  </div>
+
+  <div class="content">
+    <div class="page-layout">
+
+      <!-- LEFT: NOTIFICATION FEED -->
+      <div>
+        <!-- FILTER BAR -->
+        <div class="filter-bar">
+          <div class="filter-btn act" onclick="filterNotifs(this,'all')">All <span style="font-size:10px;background:var(--ink);color:#fff;padding:1px 6px;border-radius:9px;margin-left:3px" id="badge-all">18</span></div>
+          <div class="filter-btn" onclick="filterNotifs(this,'unread')">Unread <span style="font-size:10px;background:var(--coral);color:#fff;padding:1px 6px;border-radius:9px;margin-left:3px" id="badge-unread">6</span></div>
+          <div class="filter-btn" onclick="filterNotifs(this,'alert')">IoT Alerts</div>
+          <div class="filter-btn" onclick="filterNotifs(this,'cert')">Certificates</div>
+          <div class="filter-btn" onclick="filterNotifs(this,'progress')">Progress</div>
+          <div class="filter-btn" onclick="filterNotifs(this,'approval')">Approvals</div>
+          <div class="filter-btn" onclick="filterNotifs(this,'system')">System</div>
+          <button class="btn btn-sm" style="margin-left:auto" onclick="toast('Notification history exported.')">Export</button>
+        </div>
+
+        <!-- NOTIFICATIONS LIST -->
+        <div class="panel" style="margin-bottom:0">
+          <div class="ph">
+            <span class="ph-title">All Notifications</span>
+            <span style="font-size:10px;font-weight:700;background:var(--forest-xpale);color:var(--forest-2);padding:2px 8px;border-radius:7px" id="unread-badge">6 unread</span>
+          </div>
+          <div class="pb" id="notif-list">
+
+            <!-- TODAY -->
+            <div style="font-size:10.5px;font-weight:700;color:var(--ink-4);text-transform:uppercase;letter-spacing:0.06em;padding:4px 0 8px">Today — 1 April 2026</div>
+
+            <div class="notif-row unread" data-type="alert" onclick="openM('notif-detail');markRead(this)">
+              <div class="notif-ic ni-alert"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+              <div class="notif-body">
+                <div class="notif-title">IoT Alert — Wildlife handling detected at Bako N.P.</div>
+                <div class="notif-meta">Remy Bulat · CAM-04 · High severity · Requires immediate review</div>
+                <div class="notif-actions">
+                  <a href="sfc_07_iot_monitor.html" class="btn btn-sm" style="background:var(--coral-pale);color:var(--coral);border-color:var(--coral-pale)">View footage</a>
+                  <button class="btn btn-sm" onclick="event.stopPropagation();toast('Escalated to rangers.')">Escalate</button>
+                </div>
+              </div>
+              <div class="notif-right"><span class="notif-time">09:42 AM</span><div class="unread-dot"></div></div>
+            </div>
+
+            <div class="notif-row unread" data-type="cert" onclick="openM('notif-detail');markRead(this)">
+              <div class="notif-ic ni-cert"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg></div>
+              <div class="notif-body">
+                <div class="notif-title">Certificate ready — Ahmad Haziq completed Conservation Fundamentals</div>
+                <div class="notif-meta">Trainee · Bako N.P. · Score: 91% · Eligible for Basic Guide Certificate</div>
+                <div class="notif-actions">
+                  <button class="btn btn-sm btn-p" onclick="event.stopPropagation();toast('Certificate issued.')">Issue Certificate</button>
+                  <a href="sfc_02_trainees.html" class="btn btn-sm">View Profile</a>
+                </div>
+              </div>
+              <div class="notif-right"><span class="notif-time">08:30 AM</span><div class="unread-dot"></div></div>
+            </div>
+
+            <div class="notif-row unread" data-type="cert" onclick="openM('notif-detail');markRead(this)">
+              <div class="notif-ic ni-cert"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg></div>
+              <div class="notif-body">
+                <div class="notif-title">Certificate ready — Lily Awang completed Eco-Tourism Excellence</div>
+                <div class="notif-meta">Trainee · Bako N.P. · Score: 88% · Eligible for Basic Guide Certificate</div>
+                <div class="notif-actions">
+                  <button class="btn btn-sm btn-p" onclick="event.stopPropagation();toast('Certificate issued.')">Issue Certificate</button>
+                  <a href="sfc_02_trainees.html" class="btn btn-sm">View Profile</a>
+                </div>
+              </div>
+              <div class="notif-right"><span class="notif-time">07:15 AM</span><div class="unread-dot"></div></div>
+            </div>
+
+            <div class="notif-row unread" data-type="approval" onclick="openM('notif-detail');markRead(this)">
+              <div class="notif-ic ni-approval"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="17" y1="11" x2="23" y2="11"/><line x1="20" y1="8" x2="20" y2="14"/></svg></div>
+              <div class="notif-body">
+                <div class="notif-title">New trainee registration — Muhammad Hazwan pending approval</div>
+                <div class="notif-meta">Bako N.P. · National IC verified · Awaiting admin review</div>
+                <div class="notif-actions">
+                  <button class="btn btn-sm btn-p" onclick="event.stopPropagation();toast('Trainee approved.')">Approve</button>
+                  <button class="btn btn-sm btn-danger" onclick="event.stopPropagation();toast('Application rejected.')">Reject</button>
+                </div>
+              </div>
+              <div class="notif-right"><span class="notif-time">06:50 AM</span><div class="unread-dot"></div></div>
+            </div>
+
+            <!-- YESTERDAY -->
+            <div style="font-size:10.5px;font-weight:700;color:var(--ink-4);text-transform:uppercase;letter-spacing:0.06em;padding:12px 0 8px">Yesterday — 31 March 2026</div>
+
+            <div class="notif-row unread" data-type="progress" onclick="openM('notif-detail');markRead(this)">
+              <div class="notif-ic ni-progress"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+              <div class="notif-body">
+                <div class="notif-title">Suhana Kamaruddin reached 75% on Conservation Fundamentals</div>
+                <div class="notif-meta">Trainee · Niah N.P. · Eligible for Basic Guide Certificate upon completion</div>
+              </div>
+              <div class="notif-right"><span class="notif-time">3:22 PM</span><div class="unread-dot"></div></div>
+            </div>
+
+            <div class="notif-row unread" data-type="alert" onclick="openM('notif-detail');markRead(this)">
+              <div class="notif-ic ni-alert"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg></div>
+              <div class="notif-body">
+                <div class="notif-title">Quiz deadline missed — Remy Bulat, Wildlife Laws &amp; Ethics</div>
+                <div class="notif-meta">Park Guide · Kubah N.P. · Reminder #3 sent automatically</div>
+                <div class="notif-actions">
+                  <button class="btn btn-sm" onclick="event.stopPropagation();toast('Reminder sent.')">Send Reminder</button>
+                </div>
+              </div>
+              <div class="notif-right"><span class="notif-time">11:00 AM</span><div class="unread-dot"></div></div>
+            </div>
+
+            <!-- EARLIER -->
+            <div style="font-size:10.5px;font-weight:700;color:var(--ink-4);text-transform:uppercase;letter-spacing:0.06em;padding:12px 0 8px">Earlier</div>
+
+            <div class="notif-row" data-type="progress" onclick="openM('notif-detail')">
+              <div class="notif-ic ni-progress"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+              <div class="notif-body">
+                <div class="notif-title">Hassan Taib completed Emergency Response Protocols — Score 84%</div>
+                <div class="notif-meta">Trainee · Semenggoh N.R. · Module quiz passed</div>
+              </div>
+              <div class="notif-right"><span class="notif-time">29 Mar</span></div>
+            </div>
+
+            <div class="notif-row" data-type="cert" onclick="openM('notif-detail')">
+              <div class="notif-ic ni-cert"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg></div>
+              <div class="notif-body">
+                <div class="notif-title">Siti Rahimah awarded Biodiversity Specialist certificate</div>
+                <div class="notif-meta">Park Guide · Niah N.P. · Score: 92% · Issued by Ahmad Hisham</div>
+              </div>
+              <div class="notif-right"><span class="notif-time">28 Mar</span></div>
+            </div>
+
+            <div class="notif-row" data-type="approval" onclick="openM('notif-detail')">
+              <div class="notif-ic ni-approval"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="17" y1="11" x2="23" y2="11"/><line x1="20" y1="8" x2="20" y2="14"/></svg></div>
+              <div class="notif-body">
+                <div class="notif-title">Kamal Bahrin approved as Park Guide — courses bulk assigned</div>
+                <div class="notif-meta">Direct guide registration · Bako N.P. · Temporary password sent</div>
+              </div>
+              <div class="notif-right"><span class="notif-time">27 Mar</span></div>
+            </div>
+
+            <div class="notif-row" data-type="system" onclick="openM('notif-detail')">
+              <div class="notif-ic ni-system"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div>
+              <div class="notif-body">
+                <div class="notif-title">Platform updated to v2.3.1 — AI model retrained with 47 videos</div>
+                <div class="notif-meta">System · Detection accuracy improved to 94.2%</div>
+              </div>
+              <div class="notif-right"><span class="notif-time">26 Mar</span></div>
+            </div>
+
+            <div class="notif-row" data-type="guide" onclick="openM('notif-detail')">
+              <div class="notif-ic ni-guide"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+              <div class="notif-body">
+                <div class="notif-title">Danial Bujang awarded Senior Park Guide certificate</div>
+                <div class="notif-meta">Park Guide · Semenggoh N.R. · All courses completed · 0 violations</div>
+              </div>
+              <div class="notif-right"><span class="notif-time">25 Mar</span></div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: SEND + STATS -->
+      <div>
+        <!-- QUICK SEND -->
+        <div class="panel">
+          <div class="ph"><span class="ph-title">Send Notification</span></div>
+          <div class="pb">
+            <div class="fg">
+              <div class="fl">Recipients</div>
+              <div class="recipient-tags" id="recipient-tags">
+                <div class="rtag">All Trainees<button onclick="this.parentElement.remove()">×</button></div>
+              </div>
+              <div style="display:flex;gap:5px;margin-top:5px;flex-wrap:wrap">
+                <button class="btn btn-sm" onclick="addRecipient('All Trainees')">All Trainees</button>
+                <button class="btn btn-sm" onclick="addRecipient('All Park Guides')">All Guides</button>
+                <button class="btn btn-sm" onclick="addRecipient('Bako N.P.')">Bako N.P.</button>
+                <button class="btn btn-sm" onclick="addRecipient('Niah N.P.')">Niah N.P.</button>
+                <button class="btn btn-sm" onclick="openM('pick-recipients')">+ Custom</button>
+              </div>
+            </div>
+            <div class="fg">
+              <div class="fl">Priority</div>
+              <div class="priority-row">
+                <div class="prio-opt sel" onclick="selPrio(this,'normal')">
+                  <div class="prio-name">Normal</div>
+                  <div class="prio-desc">Standard inbox</div>
+                </div>
+                <div class="prio-opt" onclick="selPrio(this,'high')">
+                  <div class="prio-name">High</div>
+                  <div class="prio-desc">Push alert</div>
+                </div>
+              </div>
+            </div>
+            <div class="fg"><div class="fl">Subject</div><input class="fi" placeholder="e.g. New course available: Wildlife Laws"></div>
+            <div class="fg"><div class="fl">Message</div><textarea class="fta" placeholder="Write your notification message here..."></textarea></div>
+            <div class="fg">
+              <div class="fl">Delivery Channel</div>
+              <select class="fss">
+                <option>Platform notification only</option>
+                <option>Email only</option>
+                <option>Email + Platform notification</option>
+              </select>
+            </div>
+            <div class="fg">
+              <div class="fl">Schedule (optional)</div>
+              <input class="fi" type="datetime-local">
+            </div>
+            <button class="btn btn-p" style="width:100%" onclick="toast('Notification sent to all trainees.')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>Send Notification</button>
+          </div>
+        </div>
+
+        <!-- STATS -->
+        <div class="panel">
+          <div class="ph"><span class="ph-title">This Month's Stats</span></div>
+          <div class="pb">
+            <div class="stat-mini-grid">
+              <div class="stat-mini"><div class="sm-val">142</div><div class="sm-lbl">Total sent</div></div>
+              <div class="stat-mini"><div class="sm-val">87%</div><div class="sm-lbl">Read rate</div></div>
+              <div class="stat-mini"><div class="sm-val">23</div><div class="sm-lbl">IoT alerts</div></div>
+              <div class="stat-mini"><div class="sm-val">14</div><div class="sm-lbl">Cert notices</div></div>
+            </div>
+            <div style="font-size:11px;font-weight:600;color:var(--ink-4);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px">Breakdown by Type</div>
+            <div style="margin-bottom:6px"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px"><span style="color:var(--ink-3)">IoT Alerts</span><span style="font-weight:600;color:var(--ink-2)">23</span></div><div style="height:5px;background:var(--surface);border-radius:3px;overflow:hidden;border:1px solid var(--border)"><div style="height:100%;width:16%;background:var(--coral);border-radius:3px"></div></div></div>
+            <div style="margin-bottom:6px"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px"><span style="color:var(--ink-3)">Certificates</span><span style="font-weight:600;color:var(--ink-2)">14</span></div><div style="height:5px;background:var(--surface);border-radius:3px;overflow:hidden;border:1px solid var(--border)"><div style="height:100%;width:10%;background:var(--amber-2);border-radius:3px"></div></div></div>
+            <div style="margin-bottom:6px"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px"><span style="color:var(--ink-3)">Progress Updates</span><span style="font-weight:600;color:var(--ink-2)">58</span></div><div style="height:5px;background:var(--surface);border-radius:3px;overflow:hidden;border:1px solid var(--border)"><div style="height:100%;width:41%;background:var(--sky-2);border-radius:3px"></div></div></div>
+            <div style="margin-bottom:6px"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px"><span style="color:var(--ink-3)">Approvals</span><span style="font-weight:600;color:var(--ink-2)">31</span></div><div style="height:5px;background:var(--surface);border-radius:3px;overflow:hidden;border:1px solid var(--border)"><div style="height:100%;width:22%;background:var(--purple);border-radius:3px"></div></div></div>
+            <div><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px"><span style="color:var(--ink-3)">System</span><span style="font-weight:600;color:var(--ink-2)">16</span></div><div style="height:5px;background:var(--surface);border-radius:3px;overflow:hidden;border:1px solid var(--border)"><div style="height:100%;width:11%;background:var(--ink-4);border-radius:3px"></div></div></div>
+          </div>
+        </div>
+
+        <!-- SCHEDULED -->
+        <div class="panel">
+          <div class="ph"><span class="ph-title">Scheduled Notifications</span><button class="ph-act" onclick="toast('Schedule manager opened.')">Manage</button></div>
+          <div class="pb">
+            <div class="sched-item">
+              <div class="sched-time">2 Apr · 9 AM</div>
+              <div class="sched-title">Monthly quiz reminder — all active trainees</div>
+              <button class="btn btn-sm btn-danger" onclick="this.closest('.sched-item').remove();toast('Scheduled notification cancelled.')">Cancel</button>
+            </div>
+            <div class="sched-item">
+              <div class="sched-time">5 Apr · 8 AM</div>
+              <div class="sched-title">New course reminder — Wildlife Laws &amp; Ethics</div>
+              <button class="btn btn-sm btn-danger" onclick="this.closest('.sched-item').remove();toast('Scheduled notification cancelled.')">Cancel</button>
+            </div>
+            <div class="sched-item">
+              <div class="sched-time">15 Apr · 10 AM</div>
+              <div class="sched-title">Mid-month progress check — park guides</div>
+              <button class="btn btn-sm btn-danger" onclick="this.closest('.sched-item').remove();toast('Scheduled notification cancelled.')">Cancel</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Notification Detail -->
+<div class="modal-ov hidden" id="notif-detail">
+  <div class="modal">
+    <div class="mhd"><span class="m-title">Notification Detail</span><button class="m-close" onclick="closeM('notif-detail')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+    <div class="mb">
+      <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:14px">
+        <div class="notif-ic ni-alert" style="width:42px;height:42px;flex-shrink:0"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+        <div>
+          <div style="font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--ink);margin-bottom:4px;line-height:1.3">IoT Alert — Wildlife handling detected at Bako N.P.</div>
+          <div style="display:flex;gap:5px;flex-wrap:wrap"><span class="pill p-red">IoT Alert</span><span class="pill p-red">High Severity</span><span class="pill p-gray">Auto-generated</span></div>
+        </div>
+      </div>
+      <div style="background:var(--surface);border-radius:var(--r-sm);padding:12px 14px;font-size:12.5px;color:var(--ink-2);line-height:1.7;margin-bottom:14px;border:1px solid var(--border)">
+        The IoT body-worn camera (CAM-04) assigned to Park Guide Remy Bulat detected a potential wildlife handling incident at Bako National Park at 09:42 AM on 1 April 2026.<br><br>
+        <strong>Detected activity:</strong> Direct physical contact with protected wildlife (orangutan).<br>
+        <strong>Regulation:</strong> This may constitute a violation of the Wildlife Protection Ordinance 1998, Section 12(a).<br><br>
+        Immediate review of the footage is recommended. If confirmed, escalate to park rangers and document in the incident report.
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px">
+        <div style="background:var(--surface);border-radius:var(--r-sm);padding:9px 11px;border:1px solid var(--border)"><div style="font-size:10px;color:var(--ink-4);text-transform:uppercase;letter-spacing:0.05em;font-weight:600;margin-bottom:3px">Generated</div><div style="font-size:12.5px;font-weight:500;color:var(--ink)">1 Apr 2026 · 09:42 AM</div></div>
+        <div style="background:var(--surface);border-radius:var(--r-sm);padding:9px 11px;border:1px solid var(--border)"><div style="font-size:10px;color:var(--ink-4);text-transform:uppercase;letter-spacing:0.05em;font-weight:600;margin-bottom:3px">Type</div><div style="font-size:12.5px;font-weight:500;color:var(--ink)">Auto-generated · IoT</div></div>
+        <div style="background:var(--surface);border-radius:var(--r-sm);padding:9px 11px;border:1px solid var(--border)"><div style="font-size:10px;color:var(--ink-4);text-transform:uppercase;letter-spacing:0.05em;font-weight:600;margin-bottom:3px">Sent To</div><div style="font-size:12.5px;font-weight:500;color:var(--ink)">All Admins</div></div>
+        <div style="background:var(--surface);border-radius:var(--r-sm);padding:9px 11px;border:1px solid var(--border)"><div style="font-size:10px;color:var(--ink-4);text-transform:uppercase;letter-spacing:0.05em;font-weight:600;margin-bottom:3px">Status</div><div style="font-size:12.5px;font-weight:500;color:var(--coral)">Unresolved</div></div>
+      </div>
+    </div>
+    <div class="mft">
+      <button class="btn" onclick="closeM('notif-detail')">Close</button>
+      <a href="sfc_07_iot_monitor.html" class="btn btn-sm" style="background:var(--coral-pale);color:var(--coral);border-color:var(--coral-pale)">View Footage</a>
+      <button class="btn btn-p" onclick="toast('Notification archived.');closeM('notif-detail')">Mark as Read</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Send Notification (full) -->
+<div class="modal-ov hidden" id="send-notif">
+  <div class="modal">
+    <div class="mhd"><span class="m-title">Send Notification</span><button class="m-close" onclick="closeM('send-notif')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+    <div class="mb">
+      <div class="fg">
+        <div class="fl">Recipient Group</div>
+        <select class="fss">
+          <option>All Trainees (148)</option>
+          <option>All Park Guides (34)</option>
+          <option>All Users (186)</option>
+          <option>Specific Park — Bako N.P.</option>
+          <option>Specific Park — Niah N.P.</option>
+          <option>Specific Park — Semenggoh N.R.</option>
+          <option>Specific Park — Kubah N.P.</option>
+          <option>Individual Trainee</option>
+          <option>Individual Park Guide</option>
+        </select>
+      </div>
+      <div class="fg">
+        <div class="fl">Priority</div>
+        <div class="priority-row">
+          <div class="prio-opt sel" onclick="selPrioModal(this,'normal')">
+            <div class="prio-name">Normal</div>
+            <div class="prio-desc">Appears in inbox</div>
+          </div>
+          <div class="prio-opt" onclick="selPrioModal(this,'high')">
+            <div class="prio-name">High</div>
+            <div class="prio-desc">Push + inbox alert</div>
+          </div>
+        </div>
+      </div>
+      <div class="fg"><div class="fl">Subject</div><input class="fi" placeholder="Notification subject..."></div>
+      <div class="fg"><div class="fl">Message</div><textarea class="fta" style="min-height:120px" placeholder="Write your message here..."></textarea></div>
+      <div class="g2f">
+        <div class="fg"><div class="fl">Delivery Channel</div><select class="fss"><option>Platform + Email</option><option>Platform only</option><option>Email only</option></select></div>
+        <div class="fg"><div class="fl">Schedule (optional)</div><input class="fi" type="datetime-local"></div>
+      </div>
+    </div>
+    <div class="mft">
+      <button class="btn" onclick="closeM('send-notif')">Cancel</button>
+      <button class="btn btn-sm" onclick="toast('Saved as draft.');closeM('send-notif')">Save Draft</button>
+      <button class="btn btn-p" onclick="toast('Notification sent successfully.');closeM('send-notif')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>Send</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Pick Recipients -->
+<div class="modal-ov hidden" id="pick-recipients">
+  <div class="modal">
+    <div class="mhd"><span class="m-title">Select Recipients</span><button class="m-close" onclick="closeM('pick-recipients')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+    <div class="mb">
+      <div class="fg"><div class="fl">Search</div><input class="fi" placeholder="Search by name or park..."></div>
+      <div style="border:1px solid var(--border);border-radius:var(--r-sm);overflow:hidden;max-height:300px;overflow-y:auto">
+        <div style="padding:9px 12px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:9px;cursor:pointer;background:var(--surface)" onclick="this.querySelector('input').click()"><input type="checkbox" style="accent-color:var(--forest-2)" onclick="event.stopPropagation();this.checked=!this.checked"><span style="font-size:12.5px;font-weight:600;color:var(--ink)">All Trainees (148)</span></div>
+        <div style="padding:9px 12px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:9px;cursor:pointer;background:var(--surface)" onclick="this.querySelector('input').click()"><input type="checkbox" style="accent-color:var(--forest-2)" onclick="event.stopPropagation();this.checked=!this.checked"><span style="font-size:12.5px;font-weight:600;color:var(--ink)">All Park Guides (34)</span></div>
+        <div style="padding:8px 12px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:9px;cursor:pointer" onclick="this.querySelector('input').click()"><input type="checkbox" style="accent-color:var(--forest-2)" onclick="event.stopPropagation();this.checked=!this.checked"><span style="font-size:12px;color:var(--ink)">Ahmad Haziq — Trainee · Bako N.P.</span></div>
+        <div style="padding:8px 12px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:9px;cursor:pointer" onclick="this.querySelector('input').click()"><input type="checkbox" style="accent-color:var(--forest-2)" onclick="event.stopPropagation();this.checked=!this.checked"><span style="font-size:12px;color:var(--ink)">Lily Awang — Trainee · Bako N.P.</span></div>
+        <div style="padding:8px 12px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:9px;cursor:pointer" onclick="this.querySelector('input').click()"><input type="checkbox" style="accent-color:var(--forest-2)" onclick="event.stopPropagation();this.checked=!this.checked"><span style="font-size:12px;color:var(--ink)">Danial Bujang — Park Guide · Semenggoh N.R.</span></div>
+        <div style="padding:8px 12px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:9px;cursor:pointer" onclick="this.querySelector('input').click()"><input type="checkbox" style="accent-color:var(--forest-2)" onclick="event.stopPropagation();this.checked=!this.checked"><span style="font-size:12px;color:var(--ink)">Siti Rahimah — Park Guide · Niah N.P.</span></div>
+        <div style="padding:8px 12px;display:flex;align-items:center;gap:9px;cursor:pointer" onclick="this.querySelector('input').click()"><input type="checkbox" style="accent-color:var(--forest-2)" onclick="event.stopPropagation();this.checked=!this.checked"><span style="font-size:12px;color:var(--ink)">Remy Bulat — Park Guide · Bako N.P.</span></div>
+      </div>
+    </div>
+    <div class="mft"><button class="btn" onclick="closeM('pick-recipients')">Cancel</button><button class="btn btn-p" onclick="toast('Recipients added.');closeM('pick-recipients')">Add Selected</button></div>
+  </div>
+</div>
+
+<div id="toast"></div>
+<script>
+var unreadCount = 6;
+
+function markRead(row) {
+  if (row.classList.contains('unread')) {
+    row.classList.remove('unread');
+    unreadCount = Math.max(0, unreadCount - 1);
+    updateUnreadBadge();
+  }
+}
+
+function markAllRead() {
+  document.querySelectorAll('.notif-row.unread').forEach(function(r){ r.classList.remove('unread'); });
+  unreadCount = 0;
+  updateUnreadBadge();
+  toast('All notifications marked as read.');
+}
+
+function updateUnreadBadge() {
+  var b1 = document.getElementById('unread-badge');
+  var b2 = document.getElementById('badge-unread');
+  if (b1) b1.textContent = unreadCount > 0 ? unreadCount + ' unread' : '0 unread';
+  if (b2) b2.textContent = unreadCount;
+  var navBadge = document.querySelector('.nav-a.active .nb');
+  if (navBadge) navBadge.textContent = unreadCount;
+}
+
+function filterNotifs(el, type) {
+  document.querySelectorAll('.filter-btn').forEach(function(b){ b.classList.remove('act'); });
+  el.classList.add('act');
+  var rows = document.querySelectorAll('.notif-row');
+  rows.forEach(function(r){
+    if (type === 'all' || type === 'unread') {
+      r.style.display = (type === 'unread' && !r.classList.contains('unread')) ? 'none' : 'flex';
+    } else {
+      r.style.display = (r.dataset.type === type) ? 'flex' : 'none';
+    }
+  });
+}
+
+function addRecipient(name) {
+  var tags = document.getElementById('recipient-tags');
+  var exists = false;
+  tags.querySelectorAll('.rtag').forEach(function(t){ if (t.textContent.trim().replace('×','').trim() === name) exists = true; });
+  if (exists) { toast('Already added.'); return; }
+  var div = document.createElement('div');
+  div.className = 'rtag';
+  div.innerHTML = name + '<button onclick="this.parentElement.remove()">×</button>';
+  tags.appendChild(div);
+}
+
+function selPrio(el, type) {
+  document.querySelectorAll('.priority-row .prio-opt').forEach(function(o){ o.classList.remove('sel','sel-red'); });
+  el.classList.add(type === 'high' ? 'sel-red' : 'sel');
+}
+
+function selPrioModal(el, type) {
+  el.closest('.priority-row').querySelectorAll('.prio-opt').forEach(function(o){ o.classList.remove('sel','sel-red'); });
+  el.classList.add(type === 'high' ? 'sel-red' : 'sel');
+}
+
+function openM(id){ var e=document.getElementById(id); if(e) e.classList.remove('hidden'); }
+function closeM(id){ var e=document.getElementById(id); if(e) e.classList.add('hidden'); }
+document.querySelectorAll('.modal-ov').forEach(function(o){
+  o.addEventListener('click', function(e){ if(e.target===o) o.classList.add('hidden'); });
+});
+
+var _tt;
+function toast(m){
+  var t=document.getElementById('toast');
+  t.textContent=m;
+  t.style.opacity='1';
+  t.style.transform='translateY(0)';
+  clearTimeout(_tt);
+  _tt=setTimeout(function(){ t.style.opacity='0'; t.style.transform='translateY(6px)'; }, 2800);
+}
+</script>
+</body>
+</html>

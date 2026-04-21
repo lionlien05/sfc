@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Park Guides · SFC Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--forest:#1A4A1C;--forest-2:#2C6B2F;--forest-3:#3E8C42;--forest-light:#6DB870;--forest-pale:#E8F4E8;--forest-xpale:#F2FAF2;--amber:#B86A00;--amber-2:#D4820A;--amber-pale:#FDF3DC;--amber-xpale:#FFFBF0;--coral:#B84430;--coral-pale:#FBF0EC;--sky:#1A5C8A;--sky-2:#2A7BC4;--sky-pale:#E6F2FB;--purple:#5B3FA0;--purple-pale:#F0EAFB;--ink:#0F1A10;--ink-2:#2A3A2C;--ink-3:#4A5E4C;--ink-4:#7A8E7C;--ink-5:#B0BDB2;--surface:#F6F8F6;--card:#FFFFFF;--border:rgba(26,74,28,0.1);--r:12px;--r-sm:8px;--r-lg:16px;--sh:0 1px 3px rgba(15,26,16,0.07),0 4px 16px rgba(15,26,16,0.05);--sh-md:0 2px 8px rgba(15,26,16,0.08),0 8px 32px rgba(15,26,16,0.08)}
+body{font-family:'Inter',sans-serif;background:var(--surface);color:var(--ink);font-size:13px;display:flex;min-height:100vh;line-height:1.5}
+.sidebar{width:230px;min-width:230px;background:var(--forest);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:50;overflow-y:auto}
+.logo-wrap{padding:20px 16px 16px;border-bottom:1px solid rgba(255,255,255,0.08)}
+.logo-mark{width:34px;height:34px;background:rgba(255,255,255,0.12);border-radius:9px;display:flex;align-items:center;justify-content:center;margin-bottom:9px}
+.logo-mark svg{width:18px;height:18px;color:#fff}
+.logo-name{font-family:'Syne',sans-serif;font-size:13.5px;font-weight:700;color:#fff}
+.logo-sub{font-size:9.5px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.07em;margin-top:1px}
+.nav-sec{padding:12px 8px 2px}
+.nav-lbl{font-size:9px;color:rgba(255,255,255,0.32);letter-spacing:0.12em;text-transform:uppercase;padding:0 8px;margin-bottom:4px;font-weight:600}
+.nav-a{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:var(--r-sm);color:rgba(255,255,255,0.55);font-size:12.5px;cursor:pointer;transition:all 0.13s;margin-bottom:1px;text-decoration:none}
+.nav-a:hover{background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.9)}
+.nav-a.active{background:rgba(255,255,255,0.15);color:#fff;font-weight:500}
+.nav-a svg{width:14px;height:14px;flex-shrink:0}
+.nb{margin-left:auto;background:var(--coral);color:#fff;font-size:9px;font-weight:700;padding:1px 5px;border-radius:9px;min-width:16px;text-align:center}
+.nb-a{margin-left:auto;background:var(--amber-2);color:#fff;font-size:9px;font-weight:700;padding:1px 5px;border-radius:9px}
+.nav-div{margin:5px 8px;border:none;border-top:1px solid rgba(255,255,255,0.07)}
+.sb-foot{margin-top:auto;padding:12px 8px;border-top:1px solid rgba(255,255,255,0.08)}
+.admin-row{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:var(--r-sm);background:rgba(255,255,255,0.07);cursor:pointer}
+.admin-av{width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,0.18);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex-shrink:0;font-family:'Syne',sans-serif}
+.admin-n{font-size:11.5px;font-weight:500;color:#fff}
+.admin-r{font-size:10px;color:rgba(255,255,255,0.4)}
+.main{flex:1;margin-left:230px;display:flex;flex-direction:column;min-width:0}
+.topbar{background:var(--card);border-bottom:1px solid var(--border);padding:0 26px;height:54px;display:flex;align-items:center;position:sticky;top:0;z-index:10;gap:10px}
+.tb-title{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:var(--ink);letter-spacing:-0.01em}
+.tb-sub{font-size:11px;color:var(--ink-4);margin-top:1px}
+.tb-right{margin-left:auto;display:flex;align-items:center;gap:7px}
+.icon-btn{width:32px;height:32px;border-radius:50%;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;color:var(--ink-3);transition:all 0.13s;text-decoration:none}
+.icon-btn:hover{background:var(--forest-xpale);color:var(--forest-2)}
+.icon-btn svg{width:14px;height:14px}
+.ndot{position:absolute;top:6px;right:6px;width:6px;height:6px;background:var(--coral);border-radius:50%;border:1.5px solid #fff}
+.search-bar{background:var(--card);border-bottom:1px solid var(--border);padding:0 26px;height:50px;display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.sw{position:relative;max-width:280px;flex:1}
+.sw svg{position:absolute;left:9px;top:50%;transform:translateY(-50%);width:13px;height:13px;color:var(--ink-4);pointer-events:none}
+.si{width:100%;border:1px solid var(--border);border-radius:var(--r-sm);padding:6px 10px 6px 30px;font-size:12.5px;font-family:'Inter',sans-serif;background:var(--surface);outline:none;color:var(--ink)}
+.si:focus{border-color:rgba(26,74,28,0.25);background:var(--card)}
+.fsel{border:1px solid var(--border);border-radius:18px;padding:5px 22px 5px 10px;font-size:11.5px;font-family:'Inter',sans-serif;color:var(--ink-3);background:var(--card);cursor:pointer;outline:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%237A8E7C' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 7px center}
+.content{padding:22px 26px 48px}
+.btn{padding:6px 13px;border-radius:var(--r-sm);font-size:12px;font-weight:500;cursor:pointer;border:1px solid var(--border);background:var(--surface);color:var(--ink-3);font-family:'Inter',sans-serif;transition:all 0.13s;display:inline-flex;align-items:center;gap:5px;text-decoration:none}
+.btn:hover{background:var(--card);color:var(--ink);border-color:rgba(26,74,28,0.2)}
+.btn svg{width:13px;height:13px}
+.btn-p{background:var(--forest);color:#fff;border-color:var(--forest)}
+.btn-p:hover{background:var(--forest-2);color:#fff}
+.btn-sm{padding:3px 9px;font-size:11px}
+.btn-danger{background:var(--coral-pale);color:var(--coral);border-color:rgba(184,68,48,0.18)}
+.btn-danger:hover{background:#f9ddd7}
+.pill{font-size:9.5px;font-weight:600;padding:2px 8px;border-radius:9px;white-space:nowrap}
+.p-gr{background:var(--forest-xpale);color:var(--forest-2)}.p-amb{background:var(--amber-xpale);color:var(--amber)}.p-red{background:var(--coral-pale);color:var(--coral)}.p-sky{background:var(--sky-pale);color:var(--sky)}.p-gray{background:var(--surface);color:var(--ink-3);border:1px solid var(--border)}.p-pur{background:var(--purple-pale);color:var(--purple)}
+.av{border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;font-family:'Syne',sans-serif}
+.av-s{width:28px;height:28px;font-size:10px}.av-m{width:36px;height:36px;font-size:12px}.av-lg{width:46px;height:46px;font-size:15px}
+.av-g{background:var(--amber-xpale);color:var(--amber)}.av-t{background:var(--sky-pale);color:var(--sky)}.av-a{background:var(--forest-xpale);color:var(--forest-2)}
+.panel{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;margin-bottom:20px}
+.ph{padding:13px 17px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:8px}
+.ph-title{font-size:13px;font-weight:600;color:var(--ink)}
+.ph-act{font-size:11.5px;color:var(--forest-2);cursor:pointer;font-weight:500;padding:3px 7px;border-radius:5px;transition:background 0.13s;text-decoration:none;background:none;border:none;font-family:'Inter',sans-serif}
+.ph-act:hover{background:var(--forest-xpale)}
+.pb{padding:13px 17px}
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;margin-bottom:22px}
+.sc{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);padding:16px 16px 14px;position:relative;overflow:hidden;transition:box-shadow 0.15s}
+.sc::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:var(--r-lg) var(--r-lg) 0 0}
+.sc-gr::before{background:var(--forest-3)}.sc-amb::before{background:var(--amber-2)}.sc-sky::before{background:var(--sky-2)}.sc-red::before{background:var(--coral)}
+.sc:hover{box-shadow:var(--sh-md)}
+.sc-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:9px}
+.sc-ic{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center}
+.sc-ic svg{width:17px;height:17px}
+.ic-gr{background:var(--forest-xpale);color:var(--forest-2)}.ic-amb{background:var(--amber-xpale);color:var(--amber-2)}.ic-sky{background:var(--sky-pale);color:var(--sky-2)}.ic-red{background:var(--coral-pale);color:var(--coral)}
+.sc-trend{font-size:10.5px;font-weight:500}.t-up{color:var(--forest-3)}.t-dn{color:var(--coral)}.t-neu{color:var(--ink-4)}
+.sc-val{font-family:'Syne',sans-serif;font-size:28px;font-weight:700;color:var(--ink);line-height:1;margin-bottom:3px}
+.sc-lbl{font-size:12px;font-weight:500;color:var(--ink-2)}.sc-sub{font-size:11px;color:var(--ink-4);margin-top:2px}
+.tbl{width:100%;border-collapse:collapse}
+.tbl th{text-align:left;font-size:10.5px;font-weight:600;color:var(--ink-4);padding:8px 13px;border-bottom:1px solid var(--border);text-transform:uppercase;letter-spacing:0.05em;background:var(--surface);white-space:nowrap}
+.tbl td{padding:10px 13px;border-bottom:1px solid var(--border);font-size:12.5px;color:var(--ink-2);vertical-align:middle}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:rgba(246,248,246,0.6)}
+.ptrack{height:4px;background:var(--surface);border-radius:3px;overflow:hidden;border:1px solid var(--border)}
+.pfill{height:100%;background:linear-gradient(90deg,var(--forest-3),var(--forest-light));border-radius:3px}
+.prog-c{display:flex;align-items:center;gap:7px}
+.prog-c .ptrack{width:52px;flex-shrink:0}
+.prog-c span{font-size:11.5px;font-weight:600;color:var(--ink-2);white-space:nowrap}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.35}}
+.live-dot{width:6px;height:6px;background:var(--coral);border-radius:50%;display:inline-block;animation:pulse 1.4s infinite;margin-right:3px}
+.modal-ov{position:fixed;inset:0;background:rgba(10,20,10,0.45);display:flex;align-items:center;justify-content:center;z-index:200;backdrop-filter:blur(2px)}
+.modal-ov.hidden{display:none}
+.modal{background:var(--card);border-radius:var(--r-lg);width:540px;max-width:94vw;max-height:90vh;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,0.16);border:1px solid var(--border);display:flex;flex-direction:column}
+.modal-lg{width:660px}
+.mhd{padding:15px 19px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.m-title{font-family:'Syne',sans-serif;font-size:14.5px;font-weight:700;color:var(--ink)}
+.m-close{width:24px;height:24px;border-radius:5px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--ink-3);border:none;background:none}
+.m-close:hover{background:var(--surface)}
+.m-close svg{width:13px;height:13px}
+.mb{padding:18px 19px;overflow-y:auto;flex:1}
+.mft{padding:11px 19px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:7px;flex-shrink:0}
+.fg{display:flex;flex-direction:column;gap:4px;margin-bottom:12px}
+.fl{font-size:10.5px;font-weight:700;color:var(--ink-4);text-transform:uppercase;letter-spacing:0.04em}
+.fi,.fss,.fta{border:1px solid var(--border);border-radius:var(--r-sm);padding:7px 10px;font-size:12.5px;font-family:'Inter',sans-serif;color:var(--ink);background:var(--surface);outline:none;width:100%}
+.fi:focus,.fss:focus,.fta:focus{border-color:rgba(26,74,28,0.3);background:var(--card)}
+.fta{resize:vertical;min-height:70px;line-height:1.6}
+.g2f{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.pw-wrap{position:relative}
+.pw-wrap .fi{padding-right:36px}
+.pw-eye{position:absolute;right:9px;top:50%;transform:translateY(-50%);cursor:pointer;color:var(--ink-4);border:none;background:none;padding:0;display:flex;align-items:center}
+.pw-eye svg{width:14px;height:14px}
+.info-box{border-radius:var(--r-sm);padding:10px 12px;font-size:12px;line-height:1.6;margin-bottom:12px}
+.info-sky{background:var(--sky-pale);border:1px solid rgba(26,92,138,0.15);color:var(--sky)}
+.info-amber{background:var(--amber-xpale);border:1px solid rgba(184,106,0,0.15);color:var(--amber)}
+.info-coral{background:var(--coral-pale);border:1px solid rgba(184,68,48,0.15);color:var(--coral)}
+.info-green{background:var(--forest-xpale);border:1px solid rgba(26,74,28,0.15);color:var(--forest-2)}
+.section-label{font-size:11px;font-weight:700;color:var(--ink-4);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:9px;margin-top:4px}
+.course-check-list{border:1px solid var(--border);border-radius:var(--r-sm);overflow:hidden;margin-bottom:12px}
+.cc-item{padding:9px 12px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:9px;cursor:pointer;transition:background 0.12s}
+.cc-item:last-child{border-bottom:none}
+.cc-item:hover{background:var(--forest-xpale)}
+.cc-item input[type=checkbox]{accent-color:var(--forest-2);width:14px;height:14px;flex-shrink:0;cursor:pointer}
+.cc-info{flex:1}
+.cc-name{font-size:12.5px;font-weight:500;color:var(--ink)}
+.cc-meta{font-size:11px;color:var(--ink-4);margin-top:1px}
+.tl-item{display:flex;gap:12px;padding-bottom:14px;position:relative}
+.tl-item::before{content:'';position:absolute;left:10px;top:20px;bottom:0;width:1px;background:var(--border)}
+.tl-item:last-child::before{display:none}
+.tl-dot{width:22px;height:22px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;z-index:1;border:2px solid var(--border);background:var(--card)}
+.tl-dot svg{width:10px;height:10px;color:var(--ink-4)}
+.tl-dot.done{background:var(--forest-3);border-color:var(--forest-3)}
+.tl-dot.done svg{color:#fff}
+.tl-body{flex:1;padding-top:1px}
+.tl-title{font-size:12.5px;font-weight:500;color:var(--ink);margin-bottom:2px}
+.tl-time{font-size:11px;color:var(--ink-4)}
+.role-toggle-row{display:flex;gap:6px;margin-bottom:12px}
+.role-opt{flex:1;padding:10px 12px;border:2px solid var(--border);border-radius:var(--r-sm);cursor:pointer;transition:all 0.13s;text-align:center}
+.role-opt:hover{border-color:var(--forest-light)}
+.role-opt.sel{border-color:var(--forest-2);background:var(--forest-xpale)}
+.role-opt-name{font-size:12.5px;font-weight:600;color:var(--ink);margin-bottom:2px}
+.role-opt-desc{font-size:11px;color:var(--ink-4)}
+.role-opt.sel .role-opt-name{color:var(--forest-2)}
+#toast{position:fixed;bottom:22px;right:22px;background:var(--ink);color:#fff;padding:10px 16px;border-radius:var(--r);font-size:12.5px;font-weight:500;z-index:999;opacity:0;transform:translateY(6px);transition:all 0.22s;pointer-events:none;max-width:280px;box-shadow:0 2px 8px rgba(15,26,16,0.2)}
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="logo-wrap"><div class="logo-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3C8 3 5 6.5 5 10c0 4 4 8 7 10 3-2 7-6 7-10 0-3.5-3-7-7-7z"/><circle cx="12" cy="9" r="2" fill="currentColor" stroke="none"/></svg></div><div class="logo-name">SFC Admin</div><div class="logo-sub">Sarawak Forestry Corp</div></div>
+  <div class="nav-sec"><div class="nav-lbl">Overview</div><a class="nav-a" href="sfc_01_dashboard.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>Dashboard</a></div>
+  <div class="nav-sec"><div class="nav-lbl">Digital Learning</div>
+    <a class="nav-a" href="sfc_02_trainees.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Trainees<span class="nb-a">4</span></a>
+    <a class="nav-a" href="sfc_03_courses.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Courses &amp; Modules</a>
+    <a class="nav-a" href="sfc_05_certifications.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>Certifications</a>
+  </div>
+  <hr class="nav-div">
+  <div class="nav-sec"><div class="nav-lbl">Park Monitoring</div>
+    <a class="nav-a active" href="sfc_06_park_guides.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Park Guides</a>
+    <a class="nav-a" href="sfc_07_iot_monitor.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5.636 5.636a9 9 0 1 0 12.728 12.728"/><circle cx="12" cy="12" r="1"/></svg>IoT Monitor<span class="nb">3</span></a>
+    <a class="nav-a" href="sfc_08_notifications.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>Notifications<span class="nb">6</span></a>
+  </div>
+  <hr class="nav-div">
+  <div class="nav-sec"><div class="nav-lbl">System</div><a class="nav-a" href="sfc_09_accounts.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>User Accounts</a></div>
+  <div class="sb-foot"><div class="admin-row"><div class="admin-av">AH</div><div><div class="admin-n">Ahmad Hisham</div><div class="admin-r">Super Admin</div></div></div></div>
+</aside>
+
+<div class="main">
+  <div class="topbar">
+    <div><div class="tb-title">Park Guides</div><div class="tb-sub">34 active guides · 6 parks · 3 active IoT alerts</div></div>
+    <div class="tb-right">
+      <a class="icon-btn" href="sfc_08_notifications.html" style="position:relative"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="ndot"></span></a>
+      <button class="btn" onclick="openM('register-guide')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Register Guide</button>
+    </div>
+  </div>
+  <div class="search-bar">
+    <div class="sw"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input class="si" placeholder="Search by name, IC, camera ID..."></div>
+    <select class="fsel"><option>All Parks</option><option>Bako N.P.</option><option>Niah N.P.</option><option>Semenggoh N.R.</option><option>Kubah N.P.</option><option>Lambir Hills N.P.</option></select>
+    <select class="fsel"><option>All Status</option><option>On Tour</option><option>Available</option><option>Alert</option><option>Off-duty</option></select>
+    <select class="fsel"><option>All Certs</option><option>Basic Guide</option><option>Biodiversity Specialist</option><option>Senior Guide</option></select>
+    <select class="fsel"><option>All Roles</option><option>Park Guide</option><option>Trainee (downgraded)</option></select>
+  </div>
+
+  <div class="content">
+    <!-- STATS -->
+    <div class="stat-grid">
+      <div class="sc sc-gr"><div class="sc-top"><div class="sc-ic ic-gr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div><span class="sc-trend t-neu">—</span></div><div class="sc-val">34</div><div class="sc-lbl">Active Guides</div><div class="sc-sub">Across 6 national parks</div></div>
+      <div class="sc sc-sky"><div class="sc-top"><div class="sc-ic ic-sky"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5.636 5.636a9 9 0 1 0 12.728 12.728"/><circle cx="12" cy="12" r="1"/></svg></div><span class="sc-trend" style="display:flex;align-items:center;gap:3px;color:var(--forest-3)"><span class="live-dot" style="background:var(--forest-3)"></span>5 on tour</span></div><div class="sc-val">12</div><div class="sc-lbl">Active Cameras</div><div class="sc-sub">IoT body-worn devices</div></div>
+      <div class="sc sc-amb"><div class="sc-top"><div class="sc-ic ic-amb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg></div><span class="sc-trend t-up">↑ 3 this month</span></div><div class="sc-val">28</div><div class="sc-lbl">Certified Guides</div><div class="sc-sub">82% certification rate</div></div>
+      <div class="sc sc-red"><div class="sc-top"><div class="sc-ic ic-red"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg></div><span class="sc-trend t-dn" style="display:flex;align-items:center"><span class="live-dot"></span>Live</span></div><div class="sc-val">3</div><div class="sc-lbl">Active Alerts</div><div class="sc-sub">Requires immediate review</div></div>
+    </div>
+
+    <!-- GUIDES TABLE -->
+    <div class="panel">
+      <div class="ph">
+        <span class="ph-title">All Park Guides</span>
+        <div style="display:flex;align-items:center;gap:7px">
+          <button class="ph-act" onclick="openM('bulk-assign')">Bulk Assign Courses</button>
+          <button class="ph-act" onclick="toast('Guide list exported.')">Export</button>
+        </div>
+      </div>
+      <div style="overflow-x:auto">
+        <table class="tbl">
+          <thead>
+            <tr>
+              <th>Guide</th>
+              <th>Park</th>
+              <th>IoT / Camera</th>
+              <th>Status</th>
+              <th>Certifications</th>
+              <th>Training</th>
+              <th>Role</th>
+              <th>Password</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><div style="display:flex;align-items:center;gap:8px"><div class="av av-s av-g">DB</div><div><div style="font-weight:500">Danial Bujang</div><div style="font-size:10.5px;color:var(--ink-4)">G-2001 · IC: 870514</div></div></div></td>
+              <td><span class="pill p-sky">Semenggoh N.R.</span></td>
+              <td><span style="font-size:11.5px;font-weight:500;color:var(--forest-2)">CAM-07</span></td>
+              <td><span class="pill p-gr">On Tour</span></td>
+              <td><span class="pill p-pur" style="font-size:9px">Senior Guide</span></td>
+              <td><div class="prog-c"><div class="ptrack"><div class="pfill" style="width:100%"></div></div><span>100%</span></div></td>
+              <td><span class="pill p-gr">Park Guide</span></td>
+              <td><span style="font-size:11px;color:var(--forest-2)">✓ Changed</span></td>
+              <td><div style="display:flex;gap:4px"><button class="btn btn-sm" onclick="openM('guide-detail')">View</button><button class="btn btn-sm" onclick="openM('manage-role')">Role</button><button class="btn btn-sm" onclick="openM('assign-courses-guide')">Courses</button></div></td>
+            </tr>
+            <tr>
+              <td><div style="display:flex;align-items:center;gap:8px"><div class="av av-s av-g">SR</div><div><div style="font-weight:500">Siti Rahimah</div><div style="font-size:10.5px;color:var(--ink-4)">G-2002 · IC: 920318</div></div></div></td>
+              <td><span class="pill p-sky">Niah N.P.</span></td>
+              <td><span style="font-size:11.5px;font-weight:500;color:var(--forest-2)">CAM-02</span></td>
+              <td><span class="pill p-amb">Available</span></td>
+              <td><span class="pill p-gr" style="font-size:9px">Biodiversity Spec.</span></td>
+              <td><div class="prog-c"><div class="ptrack"><div class="pfill" style="width:95%"></div></div><span>95%</span></div></td>
+              <td><span class="pill p-gr">Park Guide</span></td>
+              <td><span style="font-size:11px;color:var(--forest-2)">✓ Changed</span></td>
+              <td><div style="display:flex;gap:4px"><button class="btn btn-sm" onclick="openM('guide-detail')">View</button><button class="btn btn-sm" onclick="openM('manage-role')">Role</button><button class="btn btn-sm" onclick="openM('assign-courses-guide')">Courses</button></div></td>
+            </tr>
+            <tr style="background:rgba(184,68,48,0.03)">
+              <td><div style="display:flex;align-items:center;gap:8px"><div class="av av-s av-g">RB</div><div><div style="font-weight:500">Remy Bulat</div><div style="font-size:10.5px;color:var(--ink-4)">G-2003 · IC: 900121</div></div></div></td>
+              <td><span class="pill p-sky">Bako N.P.</span></td>
+              <td><span style="font-size:11.5px;font-weight:500;color:var(--coral)">CAM-04 ⚠</span></td>
+              <td><span class="pill p-red">Alert</span></td>
+              <td><span class="pill p-amb" style="font-size:9px">Basic Guide</span></td>
+              <td><div class="prog-c"><div class="ptrack"><div class="pfill" style="width:78%"></div></div><span>78%</span></div></td>
+              <td><span class="pill p-gr">Park Guide</span></td>
+              <td><span style="font-size:11px;color:var(--coral)">✗ Not changed</span></td>
+              <td><div style="display:flex;gap:4px"><button class="btn btn-sm" onclick="openM('guide-detail')">View</button><button class="btn btn-sm" onclick="openM('manage-role')">Role</button><a class="btn btn-sm" href="sfc_07_iot_monitor.html" style="background:var(--coral-pale);color:var(--coral);border-color:var(--coral-pale)">Alert</a></div></td>
+            </tr>
+            <tr>
+              <td><div style="display:flex;align-items:center;gap:8px"><div class="av av-s av-g">NF</div><div><div style="font-weight:500">Nadia Fitri</div><div style="font-size:10.5px;color:var(--ink-4)">G-2004 · IC: 950602</div></div></div></td>
+              <td><span class="pill p-sky">Kubah N.P.</span></td>
+              <td><span style="font-size:11.5px;font-weight:500;color:var(--forest-2)">CAM-09</span></td>
+              <td><span class="pill p-amb">Available</span></td>
+              <td><span class="pill p-amb" style="font-size:9px">Basic Guide</span></td>
+              <td><div class="prog-c"><div class="ptrack"><div class="pfill" style="width:88%"></div></div><span>88%</span></div></td>
+              <td><span class="pill p-gr">Park Guide</span></td>
+              <td><span style="font-size:11px;color:var(--forest-2)">✓ Changed</span></td>
+              <td><div style="display:flex;gap:4px"><button class="btn btn-sm" onclick="openM('guide-detail')">View</button><button class="btn btn-sm" onclick="openM('manage-role')">Role</button><button class="btn btn-sm" onclick="openM('assign-courses-guide')">Courses</button></div></td>
+            </tr>
+            <tr>
+              <td><div style="display:flex;align-items:center;gap:8px"><div class="av av-s av-g">HM</div><div><div style="font-weight:500">Hassan Mat</div><div style="font-size:10.5px;color:var(--ink-4)">G-2005 · IC: 810330</div></div></div></td>
+              <td><span class="pill p-sky">Bako N.P.</span></td>
+              <td><span style="font-size:11.5px;color:var(--ink-4)">—</span></td>
+              <td><span class="pill p-gray">Off-duty</span></td>
+              <td><span class="pill p-pur" style="font-size:9px">Senior Guide</span></td>
+              <td><div class="prog-c"><div class="ptrack"><div class="pfill" style="width:100%"></div></div><span>100%</span></div></td>
+              <td><span class="pill p-gr">Park Guide</span></td>
+              <td><span style="font-size:11px;color:var(--forest-2)">✓ Changed</span></td>
+              <td><div style="display:flex;gap:4px"><button class="btn btn-sm" onclick="openM('guide-detail')">View</button><button class="btn btn-sm" onclick="openM('manage-role')">Role</button><button class="btn btn-sm" onclick="openM('assign-courses-guide')">Courses</button></div></td>
+            </tr>
+            <tr>
+              <td><div style="display:flex;align-items:center;gap:8px"><div class="av av-s av-g">ZI</div><div><div style="font-weight:500">Zulaikha Ibrahim</div><div style="font-size:10.5px;color:var(--ink-4)">G-2006 · IC: 980714</div></div></div></td>
+              <td><span class="pill p-sky">Lambir Hills N.P.</span></td>
+              <td><span style="font-size:11.5px;font-weight:500;color:var(--forest-2)">CAM-11</span></td>
+              <td><span class="pill p-amb">Available</span></td>
+              <td><span class="pill p-gr" style="font-size:9px">Biodiversity Spec.</span></td>
+              <td><div class="prog-c"><div class="ptrack"><div class="pfill" style="width:92%"></div></div><span>92%</span></div></td>
+              <td><span class="pill p-gr">Park Guide</span></td>
+              <td><span style="font-size:11px;color:var(--amber)">⚠ Not changed</span></td>
+              <td><div style="display:flex;gap:4px"><button class="btn btn-sm" onclick="openM('guide-detail')">View</button><button class="btn btn-sm" onclick="openM('manage-role')">Role</button><button class="btn btn-sm" onclick="openM('reset-password')">Reset PW</button></div></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ MODAL: Register New Guide ═══════════ -->
+<div class="modal-ov hidden" id="register-guide">
+  <div class="modal modal-lg">
+    <div class="mhd"><span class="m-title">Register New Park Guide</span><button class="m-close" onclick="closeM('register-guide')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+    <div class="mb">
+      <!-- Password policy notice -->
+      <div class="info-box info-amber">
+        <strong>Park Guide Password Policy:</strong> Guides who register directly (not promoted from trainee) are assigned a temporary password by the admin. They are required to change it on first login. Trainees who register normally use their own chosen password.
+      </div>
+
+      <div class="section-label">Personal Details</div>
+      <div class="g2f">
+        <div class="fg"><div class="fl">Full Name</div><input class="fi" placeholder="Full name as per IC"></div>
+        <div class="fg"><div class="fl">National IC</div><input class="fi" placeholder="e.g. 900101-13-1234"></div>
+      </div>
+      <div class="g2f">
+        <div class="fg"><div class="fl">Email Address</div><input class="fi" type="email" placeholder="guide@sfc.gov.my"></div>
+        <div class="fg"><div class="fl">Phone Number</div><input class="fi" placeholder="+60 1X-XXXX XXXX"></div>
+      </div>
+
+      <div class="section-label" style="margin-top:4px">Assignment</div>
+      <div class="g2f">
+        <div class="fg"><div class="fl">Assigned Park</div><select class="fss"><option>Bako N.P.</option><option>Niah N.P.</option><option>Semenggoh N.R.</option><option>Kubah N.P.</option><option>Lambir Hills N.P.</option><option>Similajau N.P.</option></select></div>
+        <div class="fg"><div class="fl">IoT Camera ID</div><input class="fi" placeholder="e.g. CAM-12"></div>
+      </div>
+
+      <div class="section-label" style="margin-top:4px">Admin-Assigned Password</div>
+      <div class="info-box info-sky" style="margin-bottom:10px">The guide must change this password on their first login. The system will enforce this.</div>
+      <div class="g2f">
+        <div class="fg">
+          <div class="fl">Temporary Password</div>
+          <div class="pw-wrap">
+            <input class="fi" type="password" id="pw1" placeholder="Set a temporary password">
+            <button class="pw-eye" onclick="togglePw('pw1',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+          </div>
+        </div>
+        <div class="fg">
+          <div class="fl">Confirm Password</div>
+          <div class="pw-wrap">
+            <input class="fi" type="password" id="pw2" placeholder="Confirm temporary password">
+            <button class="pw-eye" onclick="togglePw('pw2',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-label" style="margin-top:4px">Bulk Assign Training Courses</div>
+      <div class="info-box info-green" style="margin-bottom:10px">Select the courses this guide needs to complete. These will be assigned immediately upon registration.</div>
+      <div class="course-check-list">
+        <div class="cc-item" onclick="this.querySelector('input').click()">
+          <input type="checkbox" checked>
+          <div class="cc-info"><div class="cc-name">Conservation Fundamentals</div><div class="cc-meta">Biodiversity · 4 modules · 1 quiz each · Required for Basic Cert</div></div>
+          <span class="pill p-gr">Recommended</span>
+        </div>
+        <div class="cc-item" onclick="this.querySelector('input').click()">
+          <input type="checkbox" checked>
+          <div class="cc-info"><div class="cc-name">Eco-Tourism Excellence</div><div class="cc-meta">Eco-Tourism · 3 modules · 1 quiz each · Required for Basic Cert</div></div>
+          <span class="pill p-gr">Recommended</span>
+        </div>
+        <div class="cc-item" onclick="this.querySelector('input').click()">
+          <input type="checkbox">
+          <div class="cc-info"><div class="cc-name">Wildlife Laws &amp; Ethics</div><div class="cc-meta">Legislation · 2 modules · 1 quiz each</div></div>
+        </div>
+        <div class="cc-item" onclick="this.querySelector('input').click()">
+          <input type="checkbox">
+          <div class="cc-info"><div class="cc-name">Emergency Response Protocols</div><div class="cc-meta">Safety · 3 modules · 1 quiz each</div></div>
+        </div>
+        <div class="cc-item" onclick="this.querySelector('input').click()">
+          <input type="checkbox">
+          <div class="cc-info"><div class="cc-name">Visitor Engagement Skills</div><div class="cc-meta">General · 2 modules · 1 quiz each</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="mft">
+      <button class="btn" onclick="closeM('register-guide')">Cancel</button>
+      <button class="btn btn-p" onclick="toast('Park guide registered. Login credentials emailed. Password change required on first login.');closeM('register-guide')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Register Guide</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ MODAL: Guide Detail ═══════════ -->
+<div class="modal-ov hidden" id="guide-detail">
+  <div class="modal modal-lg">
+    <div class="mhd"><span class="m-title">Guide Profile — Danial Bujang</span><button class="m-close" onclick="closeM('guide-detail')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+    <div class="mb">
+      <div style="display:flex;gap:14px;margin-bottom:16px;align-items:flex-start">
+        <div class="av av-lg av-g">DB</div>
+        <div style="flex:1">
+          <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:var(--ink)">Danial Bujang</div>
+          <div style="font-size:11.5px;color:var(--ink-4);margin-top:2px">G-2001 · danial.bujang@sfc.gov.my · +60 12-8834221</div>
+          <div style="margin-top:6px;display:flex;gap:5px;flex-wrap:wrap">
+            <span class="pill p-gr">Park Guide</span>
+            <span class="pill p-sky">Semenggoh N.R.</span>
+            <span class="pill p-pur">Senior Guide</span>
+            <span class="pill p-gr">CAM-07</span>
+          </div>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;margin-bottom:16px">
+        <div style="background:var(--surface);border-radius:var(--r-sm);padding:10px;text-align:center;border:1px solid var(--border)"><div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:var(--ink)">142</div><div style="font-size:10px;color:var(--ink-4);margin-top:2px">Tours Done</div></div>
+        <div style="background:var(--surface);border-radius:var(--r-sm);padding:10px;text-align:center;border:1px solid var(--border)"><div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:var(--forest-2)">100%</div><div style="font-size:10px;color:var(--ink-4);margin-top:2px">Training</div></div>
+        <div style="background:var(--surface);border-radius:var(--r-sm);padding:10px;text-align:center;border:1px solid var(--border)"><div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:var(--ink)">3</div><div style="font-size:10px;color:var(--ink-4);margin-top:2px">Certs Held</div></div>
+        <div style="background:var(--surface);border-radius:var(--r-sm);padding:10px;text-align:center;border:1px solid var(--border)"><div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:var(--forest-2)">0</div><div style="font-size:10px;color:var(--ink-4);margin-top:2px">Violations</div></div>
+      </div>
+
+      <div class="section-label">Assigned Courses</div>
+      <div style="margin-bottom:14px">
+        <div style="display:flex;align-items:center;gap:10px;padding:8px 10px;background:var(--forest-xpale);border-radius:var(--r-sm);margin-bottom:5px;border:1px solid rgba(26,74,28,0.12)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--forest-2)" stroke-width="2" style="width:13px;height:13px;flex-shrink:0"><polyline points="20 6 9 17 4 12"/></svg>
+          <div style="flex:1;font-size:12.5px;font-weight:500;color:var(--ink)">Conservation Fundamentals</div>
+          <span style="font-size:11.5px;font-weight:600;color:var(--forest-2)">100%</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;padding:8px 10px;background:var(--forest-xpale);border-radius:var(--r-sm);margin-bottom:5px;border:1px solid rgba(26,74,28,0.12)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--forest-2)" stroke-width="2" style="width:13px;height:13px;flex-shrink:0"><polyline points="20 6 9 17 4 12"/></svg>
+          <div style="flex:1;font-size:12.5px;font-weight:500;color:var(--ink)">Eco-Tourism Excellence</div>
+          <span style="font-size:11.5px;font-weight:600;color:var(--forest-2)">100%</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;padding:8px 10px;background:var(--forest-xpale);border-radius:var(--r-sm);margin-bottom:5px;border:1px solid rgba(26,74,28,0.12)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--forest-2)" stroke-width="2" style="width:13px;height:13px;flex-shrink:0"><polyline points="20 6 9 17 4 12"/></svg>
+          <div style="flex:1;font-size:12.5px;font-weight:500;color:var(--ink)">Wildlife Laws &amp; Ethics</div>
+          <span style="font-size:11.5px;font-weight:600;color:var(--forest-2)">100%</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;padding:8px 10px;background:var(--forest-xpale);border-radius:var(--r-sm);border:1px solid rgba(26,74,28,0.12)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--forest-2)" stroke-width="2" style="width:13px;height:13px;flex-shrink:0"><polyline points="20 6 9 17 4 12"/></svg>
+          <div style="flex:1;font-size:12.5px;font-weight:500;color:var(--ink)">Emergency Response Protocols</div>
+          <span style="font-size:11.5px;font-weight:600;color:var(--forest-2)">100%</span>
+        </div>
+      </div>
+
+      <div class="section-label">Certification History</div>
+      <div style="margin-bottom:4px">
+        <div class="tl-item"><div class="tl-dot done"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div><div class="tl-body"><div class="tl-title">Senior Park Guide certificate awarded</div><div class="tl-time">March 2026</div></div></div>
+        <div class="tl-item"><div class="tl-dot done"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div><div class="tl-body"><div class="tl-title">Biodiversity Specialist certificate awarded</div><div class="tl-time">January 2026</div></div></div>
+        <div class="tl-item"><div class="tl-dot done"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div><div class="tl-body"><div class="tl-title">Basic Guide Certificate awarded</div><div class="tl-time">September 2025</div></div></div>
+        <div class="tl-item"><div class="tl-dot done"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div><div class="tl-body"><div class="tl-title">Registered as Park Guide · Password changed</div><div class="tl-time">June 2025</div></div></div>
+      </div>
+    </div>
+    <div class="mft">
+      <button class="btn" onclick="closeM('guide-detail')">Close</button>
+      <button class="btn btn-sm" onclick="openM('assign-courses-guide');closeM('guide-detail')">Assign Courses</button>
+      <button class="btn btn-sm" onclick="openM('manage-role');closeM('guide-detail')">Manage Role</button>
+      <button class="btn btn-p btn-sm" onclick="toast('Message sent to Danial Bujang.');closeM('guide-detail')">Contact Guide</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ MODAL: Manage Role ═══════════ -->
+<div class="modal-ov hidden" id="manage-role">
+  <div class="modal">
+    <div class="mhd"><span class="m-title">Manage Role — Danial Bujang</span><button class="m-close" onclick="closeM('manage-role')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+    <div class="mb">
+      <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--surface);border-radius:var(--r-sm);border:1px solid var(--border);margin-bottom:14px">
+        <div class="av av-s av-g">DB</div>
+        <div>
+          <div style="font-size:13px;font-weight:600;color:var(--ink)">Danial Bujang</div>
+          <div style="font-size:11.5px;color:var(--ink-4)">G-2001 · Semenggoh N.R. · Current: Park Guide</div>
+        </div>
+      </div>
+      <div class="section-label">Select Role</div>
+      <div class="role-toggle-row">
+        <div class="role-opt" onclick="selectRole(this)">
+          <div class="role-opt-name">Trainee</div>
+          <div class="role-opt-desc">Access to courses only. No guiding duties or IoT camera. Receives training notifications.</div>
+        </div>
+        <div class="role-opt sel" onclick="selectRole(this)">
+          <div class="role-opt-name">Park Guide</div>
+          <div class="role-opt-desc">Full access — guiding duties, IoT camera assigned, training + compliance monitoring active.</div>
+        </div>
+      </div>
+      <div class="info-box info-amber" id="role-info-box">
+        <strong>Changing to Trainee:</strong> This guide will lose their active Park Guide status. Their IoT camera will be unassigned and they will no longer appear in the park monitoring dashboard. All completed training and certifications remain intact.
+      </div>
+      <div class="fg"><div class="fl">Reason for Role Change (internal)</div><textarea class="fta" placeholder="Optional note for audit trail..."></textarea></div>
+    </div>
+    <div class="mft"><button class="btn" onclick="closeM('manage-role')">Cancel</button><button class="btn btn-p" onclick="toast('Role updated. Guide notified.');closeM('manage-role')">Save Role Change</button></div>
+  </div>
+</div>
+
+<!-- ═══════════ MODAL: Assign Courses to Guide ═══════════ -->
+<div class="modal-ov hidden" id="assign-courses-guide">
+  <div class="modal">
+    <div class="mhd"><span class="m-title">Assign Courses — Danial Bujang</span><button class="m-close" onclick="closeM('assign-courses-guide')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+    <div class="mb">
+      <div style="font-size:12.5px;color:var(--ink-3);margin-bottom:12px;line-height:1.5">Tick courses to assign. Untick to remove. The guide will be notified of any changes.</div>
+      <div class="course-check-list">
+        <div class="cc-item" onclick="this.querySelector('input').click()"><input type="checkbox" checked><div class="cc-info"><div class="cc-name">Conservation Fundamentals</div><div class="cc-meta">4 modules · Completed ✓</div></div><span class="pill p-gr">Done</span></div>
+        <div class="cc-item" onclick="this.querySelector('input').click()"><input type="checkbox" checked><div class="cc-info"><div class="cc-name">Eco-Tourism Excellence</div><div class="cc-meta">3 modules · Completed ✓</div></div><span class="pill p-gr">Done</span></div>
+        <div class="cc-item" onclick="this.querySelector('input').click()"><input type="checkbox" checked><div class="cc-info"><div class="cc-name">Wildlife Laws &amp; Ethics</div><div class="cc-meta">2 modules · Completed ✓</div></div><span class="pill p-gr">Done</span></div>
+        <div class="cc-item" onclick="this.querySelector('input').click()"><input type="checkbox" checked><div class="cc-info"><div class="cc-name">Emergency Response Protocols</div><div class="cc-meta">3 modules · Completed ✓</div></div><span class="pill p-gr">Done</span></div>
+        <div class="cc-item" onclick="this.querySelector('input').click()"><input type="checkbox"><div class="cc-info"><div class="cc-name">Visitor Engagement Skills</div><div class="cc-meta">2 modules · Not started</div></div><span class="pill p-gray">Not Assigned</span></div>
+      </div>
+    </div>
+    <div class="mft"><button class="btn" onclick="closeM('assign-courses-guide')">Cancel</button><button class="btn btn-p" onclick="toast('Course assignments saved. Guide notified.');closeM('assign-courses-guide')">Save Assignments</button></div>
+  </div>
+</div>
+
+<!-- ═══════════ MODAL: Bulk Assign Courses ═══════════ -->
+<div class="modal-ov hidden" id="bulk-assign">
+  <div class="modal modal-lg">
+    <div class="mhd"><span class="m-title">Bulk Assign Courses to Guides</span><button class="m-close" onclick="closeM('bulk-assign')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+    <div class="mb">
+      <div class="info-box info-green">Select one or more courses, then choose which guides to assign them to. Guides already enrolled in selected courses will not be re-enrolled.</div>
+      <div class="section-label">Step 1 — Select Courses to Assign</div>
+      <div class="course-check-list" style="margin-bottom:16px">
+        <div class="cc-item" onclick="this.querySelector('input').click()"><input type="checkbox" checked><div class="cc-info"><div class="cc-name">Conservation Fundamentals</div><div class="cc-meta">Biodiversity · 4 modules · Required for Basic Cert</div></div></div>
+        <div class="cc-item" onclick="this.querySelector('input').click()"><input type="checkbox"><div class="cc-info"><div class="cc-name">Eco-Tourism Excellence</div><div class="cc-meta">Eco-Tourism · 3 modules</div></div></div>
+        <div class="cc-item" onclick="this.querySelector('input').click()"><input type="checkbox"><div class="cc-info"><div class="cc-name">Wildlife Laws &amp; Ethics</div><div class="cc-meta">Legislation · 2 modules</div></div></div>
+        <div class="cc-item" onclick="this.querySelector('input').click()"><input type="checkbox"><div class="cc-info"><div class="cc-name">Emergency Response Protocols</div><div class="cc-meta">Safety · 3 modules</div></div></div>
+      </div>
+      <div class="section-label">Step 2 — Select Guides</div>
+      <div style="display:flex;gap:7px;margin-bottom:9px">
+        <select class="fss" style="border-radius:var(--r-sm);padding:6px 9px;font-size:12px;background:var(--surface);border-color:var(--border)"><option>All Parks</option><option>Bako N.P.</option><option>Niah N.P.</option><option>Semenggoh N.R.</option></select>
+        <button class="btn btn-sm" onclick="document.querySelectorAll('.guide-cb').forEach(function(c){c.checked=true});toast('All guides selected.')">Select All</button>
+        <button class="btn btn-sm" onclick="document.querySelectorAll('.guide-cb').forEach(function(c){c.checked=false})">Clear All</button>
+      </div>
+      <div style="border:1px solid var(--border);border-radius:var(--r-sm);overflow:hidden;max-height:220px;overflow-y:auto">
+        <div style="padding:9px 12px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:9px"><input type="checkbox" class="guide-cb" checked style="accent-color:var(--forest-2)"><div class="av av-s av-g" style="font-size:9.5px">DB</div><div style="flex:1"><div style="font-size:12.5px;font-weight:500;color:var(--ink)">Danial Bujang</div><div style="font-size:11px;color:var(--ink-4)">Semenggoh N.R. · Senior Guide</div></div><span class="pill p-gr" style="font-size:9px">Enrolled</span></div>
+        <div style="padding:9px 12px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:9px"><input type="checkbox" class="guide-cb" style="accent-color:var(--forest-2)"><div class="av av-s av-g" style="font-size:9.5px">SR</div><div style="flex:1"><div style="font-size:12.5px;font-weight:500;color:var(--ink)">Siti Rahimah</div><div style="font-size:11px;color:var(--ink-4)">Niah N.P. · Biodiversity Spec.</div></div><span class="pill p-gray" style="font-size:9px">Not enrolled</span></div>
+        <div style="padding:9px 12px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:9px"><input type="checkbox" class="guide-cb" style="accent-color:var(--forest-2)"><div class="av av-s av-g" style="font-size:9.5px">RB</div><div style="flex:1"><div style="font-size:12.5px;font-weight:500;color:var(--ink)">Remy Bulat</div><div style="font-size:11px;color:var(--ink-4)">Bako N.P. · Basic Guide</div></div><span class="pill p-gray" style="font-size:9px">Not enrolled</span></div>
+        <div style="padding:9px 12px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:9px"><input type="checkbox" class="guide-cb" style="accent-color:var(--forest-2)"><div class="av av-s av-g" style="font-size:9.5px">NF</div><div style="flex:1"><div style="font-size:12.5px;font-weight:500;color:var(--ink)">Nadia Fitri</div><div style="font-size:11px;color:var(--ink-4)">Kubah N.P. · Basic Guide</div></div><span class="pill p-gray" style="font-size:9px">Not enrolled</span></div>
+        <div style="padding:9px 12px;display:flex;align-items:center;gap:9px"><input type="checkbox" class="guide-cb" style="accent-color:var(--forest-2)"><div class="av av-s av-g" style="font-size:9.5px">ZI</div><div style="flex:1"><div style="font-size:12.5px;font-weight:500;color:var(--ink)">Zulaikha Ibrahim</div><div style="font-size:11px;color:var(--ink-4)">Lambir Hills N.P. · Biodiversity Spec.</div></div><span class="pill p-gray" style="font-size:9px">Not enrolled</span></div>
+      </div>
+    </div>
+    <div class="mft"><button class="btn" onclick="closeM('bulk-assign')">Cancel</button><button class="btn btn-p" onclick="toast('Courses assigned to selected guides. All notified.');closeM('bulk-assign')">Assign to Selected Guides</button></div>
+  </div>
+</div>
+
+<!-- ═══════════ MODAL: Reset Password ═══════════ -->
+<div class="modal-ov hidden" id="reset-password">
+  <div class="modal" style="width:420px">
+    <div class="mhd"><span class="m-title">Reset Password — Zulaikha Ibrahim</span><button class="m-close" onclick="closeM('reset-password')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+    <div class="mb">
+      <div class="info-box info-amber">Zulaikha has not changed their admin-assigned password yet. You can send a reminder or reset it to a new temporary password below.</div>
+      <div class="fg">
+        <div class="fl">New Temporary Password</div>
+        <div class="pw-wrap">
+          <input class="fi" type="password" id="reset-pw" placeholder="Set new temporary password">
+          <button class="pw-eye" onclick="togglePw('reset-pw',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+        </div>
+      </div>
+      <div class="info-box info-sky" style="margin-top:4px">The guide will be required to change this password upon their next login.</div>
+    </div>
+    <div class="mft">
+      <button class="btn" onclick="closeM('reset-password')">Cancel</button>
+      <button class="btn btn-sm" onclick="toast('Password change reminder sent to Zulaikha.');closeM('reset-password')">Send Reminder</button>
+      <button class="btn btn-p" onclick="toast('Password reset. Guide notified by email.');closeM('reset-password')">Reset Password</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+<script>
+function openM(id){var e=document.getElementById(id);if(e)e.classList.remove('hidden')}
+function closeM(id){var e=document.getElementById(id);if(e)e.classList.add('hidden')}
+document.querySelectorAll('.modal-ov').forEach(function(o){o.addEventListener('click',function(e){if(e.target===o)o.classList.add('hidden')})})
+
+function togglePw(id,btn){
+  var inp=document.getElementById(id);
+  if(!inp)return;
+  var show=inp.type==='password';
+  inp.type=show?'text':'password';
+  btn.innerHTML=show
+    ?'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>'
+    :'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
+}
+
+function selectRole(el){
+  document.querySelectorAll('.role-opt').forEach(function(o){o.classList.remove('sel')});
+  el.classList.add('sel');
+  var box=document.getElementById('role-info-box');
+  if(el.querySelector('.role-opt-name').textContent.trim()==='Trainee'){
+    box.textContent='Changing to Trainee: This guide will lose their active Park Guide status. IoT camera will be unassigned and they will no longer appear in the park monitoring dashboard. All training and certifications remain intact.';
+    box.className='info-box info-amber';
+  } else {
+    box.textContent='Keeping as Park Guide: No changes to current status. IoT camera, guiding duties, and monitoring remain active.';
+    box.className='info-box info-green';
+  }
+}
+
+var _tt;
+function toast(m){var t=document.getElementById('toast');t.textContent=m;t.style.opacity='1';t.style.transform='translateY(0)';clearTimeout(_tt);_tt=setTimeout(function(){t.style.opacity='0';t.style.transform='translateY(6px)'},2800)}
+</script>
+</body>
+</html>

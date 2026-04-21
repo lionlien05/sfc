@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Certifications · SFC Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--forest:#1A4A1C;--forest-2:#2C6B2F;--forest-3:#3E8C42;--forest-light:#6DB870;--forest-pale:#E8F4E8;--forest-xpale:#F2FAF2;--amber:#B86A00;--amber-2:#D4820A;--amber-pale:#FDF3DC;--amber-xpale:#FFFBF0;--coral:#B84430;--coral-pale:#FBF0EC;--sky:#1A5C8A;--sky-2:#2A7BC4;--sky-pale:#E6F2FB;--purple:#5B3FA0;--purple-pale:#F0EAFB;--ink:#0F1A10;--ink-2:#2A3A2C;--ink-3:#4A5E4C;--ink-4:#7A8E7C;--ink-5:#B0BDB2;--surface:#F6F8F6;--card:#FFFFFF;--border:rgba(26,74,28,0.1);--r:12px;--r-sm:8px;--r-lg:16px;--sh:0 1px 3px rgba(15,26,16,0.07),0 4px 16px rgba(15,26,16,0.05);--sh-md:0 2px 8px rgba(15,26,16,0.08),0 8px 32px rgba(15,26,16,0.08)}
+body{font-family:'Inter',sans-serif;background:var(--surface);color:var(--ink);font-size:13px;display:flex;min-height:100vh;line-height:1.5}
+/* SIDEBAR */
+.sidebar{width:230px;min-width:230px;background:var(--forest);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:50;overflow-y:auto}
+.logo-wrap{padding:20px 16px 16px;border-bottom:1px solid rgba(255,255,255,0.08)}
+.logo-mark{width:34px;height:34px;background:rgba(255,255,255,0.12);border-radius:9px;display:flex;align-items:center;justify-content:center;margin-bottom:9px}
+.logo-mark svg{width:18px;height:18px;color:#fff}
+.logo-name{font-family:'Syne',sans-serif;font-size:13.5px;font-weight:700;color:#fff}
+.logo-sub{font-size:9.5px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.07em;margin-top:1px}
+.nav-sec{padding:12px 8px 2px}
+.nav-lbl{font-size:9px;color:rgba(255,255,255,0.32);letter-spacing:0.12em;text-transform:uppercase;padding:0 8px;margin-bottom:4px;font-weight:600}
+.nav-a{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:var(--r-sm);color:rgba(255,255,255,0.55);font-size:12.5px;cursor:pointer;transition:all 0.13s;margin-bottom:1px;text-decoration:none}
+.nav-a:hover{background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.9)}
+.nav-a.active{background:rgba(255,255,255,0.15);color:#fff;font-weight:500}
+.nav-a svg{width:14px;height:14px;flex-shrink:0}
+.nb{margin-left:auto;background:var(--coral);color:#fff;font-size:9px;font-weight:700;padding:1px 5px;border-radius:9px;min-width:16px;text-align:center}
+.nb-a{margin-left:auto;background:var(--amber-2);color:#fff;font-size:9px;font-weight:700;padding:1px 5px;border-radius:9px}
+.nav-div{margin:5px 8px;border:none;border-top:1px solid rgba(255,255,255,0.07)}
+.sb-foot{margin-top:auto;padding:12px 8px;border-top:1px solid rgba(255,255,255,0.08)}
+.admin-row{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:var(--r-sm);background:rgba(255,255,255,0.07);cursor:pointer}
+.admin-av{width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,0.18);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex-shrink:0;font-family:'Syne',sans-serif}
+.admin-n{font-size:11.5px;font-weight:500;color:#fff}
+.admin-r{font-size:10px;color:rgba(255,255,255,0.4)}
+/* MAIN */
+.main{flex:1;margin-left:230px;display:flex;flex-direction:column;min-width:0}
+.topbar{background:var(--card);border-bottom:1px solid var(--border);padding:0 26px;height:54px;display:flex;align-items:center;position:sticky;top:0;z-index:10;gap:10px}
+.tb-title{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:var(--ink);letter-spacing:-0.01em}
+.tb-sub{font-size:11px;color:var(--ink-4);margin-top:1px}
+.tb-right{margin-left:auto;display:flex;align-items:center;gap:7px}
+.icon-btn{width:32px;height:32px;border-radius:50%;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;color:var(--ink-3);transition:all 0.13s;text-decoration:none}
+.icon-btn:hover{background:var(--forest-xpale);color:var(--forest-2)}
+.icon-btn svg{width:14px;height:14px}
+.ndot{position:absolute;top:6px;right:6px;width:6px;height:6px;background:var(--coral);border-radius:50%;border:1.5px solid #fff}
+.search-bar{background:var(--card);border-bottom:1px solid var(--border);padding:0 26px;height:50px;display:flex;align-items:center;gap:9px}
+.sw{position:relative;max-width:320px;flex:1}
+.sw svg{position:absolute;left:9px;top:50%;transform:translateY(-50%);width:13px;height:13px;color:var(--ink-4);pointer-events:none}
+.si{width:100%;border:1px solid var(--border);border-radius:var(--r-sm);padding:6px 10px 6px 30px;font-size:12.5px;font-family:'Inter',sans-serif;background:var(--surface);outline:none;color:var(--ink)}
+.si:focus{border-color:rgba(26,74,28,0.25);background:var(--card)}
+.fs{border:1px solid var(--border);border-radius:18px;padding:5px 10px;font-size:11.5px;font-family:'Inter',sans-serif;color:var(--ink-3);background:var(--card);cursor:pointer;outline:none;appearance:none;padding-right:22px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%237A8E7C' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 7px center}
+.content{padding:22px 26px 48px}
+/* BUTTONS */
+.btn{padding:6px 13px;border-radius:var(--r-sm);font-size:12px;font-weight:500;cursor:pointer;border:1px solid var(--border);background:var(--surface);color:var(--ink-3);font-family:'Inter',sans-serif;transition:all 0.13s;display:inline-flex;align-items:center;gap:5px;text-decoration:none}
+.btn:hover{background:var(--card);color:var(--ink);border-color:rgba(26,74,28,0.2)}
+.btn svg{width:13px;height:13px}
+.btn-p{background:var(--forest);color:#fff;border-color:var(--forest)}
+.btn-p:hover{background:var(--forest-2);color:#fff}
+.btn-sm{padding:3px 9px;font-size:11px}
+.btn-danger{background:var(--coral-pale);color:var(--coral);border-color:rgba(184,68,48,0.18)}
+.btn-danger:hover{background:#f9ddd7}
+/* PILLS */
+.pill{font-size:9.5px;font-weight:600;padding:2px 8px;border-radius:9px;white-space:nowrap}
+.p-gr{background:var(--forest-xpale);color:var(--forest-2)}.p-amb{background:var(--amber-xpale);color:var(--amber)}.p-red{background:var(--coral-pale);color:var(--coral)}.p-sky{background:var(--sky-pale);color:var(--sky)}.p-gray{background:var(--surface);color:var(--ink-3);border:1px solid var(--border)}.p-pur{background:var(--purple-pale);color:var(--purple)}
+/* AVATAR */
+.av{border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;font-family:'Syne',sans-serif}
+.av-s{width:28px;height:28px;font-size:10px}.av-m{width:34px;height:34px;font-size:12px}.av-lg{width:42px;height:42px;font-size:14px}
+.av-t{background:var(--sky-pale);color:var(--sky)}.av-g{background:var(--amber-xpale);color:var(--amber)}.av-a{background:var(--forest-xpale);color:var(--forest-2)}
+/* PANEL */
+.panel{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;margin-bottom:20px}
+.ph{padding:13px 17px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:8px}
+.ph-title{font-size:13px;font-weight:600;color:var(--ink)}
+.ph-act{font-size:11.5px;color:var(--forest-2);cursor:pointer;font-weight:500;padding:3px 7px;border-radius:5px;transition:background 0.13s;text-decoration:none;background:none;border:none;font-family:'Inter',sans-serif}
+.ph-act:hover{background:var(--forest-xpale)}
+.pb{padding:13px 17px}
+/* STAT GRID */
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;margin-bottom:22px}
+.sc{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);padding:16px 16px 14px;position:relative;overflow:hidden;transition:box-shadow 0.15s}
+.sc::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:var(--r-lg) var(--r-lg) 0 0}
+.sc-gr::before{background:var(--forest-3)}.sc-amb::before{background:var(--amber-2)}.sc-sky::before{background:var(--sky-2)}.sc-pur::before{background:var(--purple)}
+.sc:hover{box-shadow:var(--sh-md)}
+.sc-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:9px}
+.sc-ic{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center}
+.sc-ic svg{width:17px;height:17px}
+.ic-gr{background:var(--forest-xpale);color:var(--forest-2)}.ic-amb{background:var(--amber-xpale);color:var(--amber-2)}.ic-sky{background:var(--sky-pale);color:var(--sky-2)}.ic-pur{background:var(--purple-pale);color:var(--purple)}
+.sc-trend{font-size:10.5px;font-weight:500}.t-up{color:var(--forest-3)}.t-neu{color:var(--ink-4)}
+.sc-val{font-family:'Syne',sans-serif;font-size:28px;font-weight:700;color:var(--ink);line-height:1;margin-bottom:3px}
+.sc-lbl{font-size:12px;font-weight:500;color:var(--ink-2)}
+.sc-sub{font-size:11px;color:var(--ink-4);margin-top:2px}
+/* TABLE */
+.tbl{width:100%;border-collapse:collapse}
+.tbl th{text-align:left;font-size:10.5px;font-weight:600;color:var(--ink-4);padding:8px 13px;border-bottom:1px solid var(--border);text-transform:uppercase;letter-spacing:0.05em;background:var(--surface);white-space:nowrap}
+.tbl td{padding:10px 13px;border-bottom:1px solid var(--border);font-size:12.5px;color:var(--ink-2);vertical-align:middle}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:rgba(246,248,246,0.6)}
+/* CERT LEVEL CARDS */
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:22px}
+.cert-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;display:flex;flex-direction:column;transition:box-shadow 0.15s}
+.cert-card:hover{box-shadow:var(--sh-md)}
+.cert-card-top{padding:18px 18px 14px;flex:1}
+.cert-icon-wrap{width:46px;height:46px;border-radius:13px;display:flex;align-items:center;justify-content:center;margin-bottom:13px;border:1px solid rgba(184,106,0,0.15)}
+.cert-icon-wrap svg{width:22px;height:22px}
+.ic-amber{background:var(--amber-xpale);color:var(--amber-2)}
+.ic-forest{background:var(--forest-xpale);color:var(--forest-2)}
+.ic-purple{background:var(--purple-pale);color:var(--purple)}
+.cert-name{font-family:'Syne',sans-serif;font-size:14.5px;font-weight:700;color:var(--ink);margin-bottom:5px;line-height:1.3}
+.cert-desc{font-size:12px;color:var(--ink-4);line-height:1.6;margin-bottom:13px}
+.cert-requirements{background:var(--surface);border-radius:var(--r-sm);padding:10px 12px;margin-bottom:13px}
+.cert-req-title{font-size:10px;font-weight:700;color:var(--ink-4);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px}
+.cert-req-item{display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--ink-3);margin-bottom:4px}
+.cert-req-item:last-child{margin-bottom:0}
+.cert-req-item svg{width:11px;height:11px;flex-shrink:0;color:var(--forest-3)}
+.cert-stats-row{display:flex;gap:0;border-top:1px solid var(--border)}
+.cs{flex:1;padding:10px 12px;border-right:1px solid var(--border);text-align:center}
+.cs:last-child{border-right:none}
+.cs-val{font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:var(--ink);line-height:1}
+.cs-lbl{font-size:10px;color:var(--ink-4);margin-top:2px}
+.cert-actions{padding:12px 16px;border-top:1px solid var(--border);display:flex;gap:7px;background:var(--surface)}
+/* PTRACK */
+.ptrack{height:4px;background:var(--surface);border-radius:3px;overflow:hidden;border:1px solid var(--border)}
+.pfill{height:100%;background:linear-gradient(90deg,var(--forest-3),var(--forest-light));border-radius:3px}
+/* MODAL */
+.modal-ov{position:fixed;inset:0;background:rgba(10,20,10,0.45);display:flex;align-items:center;justify-content:center;z-index:200;backdrop-filter:blur(2px)}
+.modal-ov.hidden{display:none}
+.modal{background:var(--card);border-radius:var(--r-lg);width:520px;max-width:92vw;max-height:88vh;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,0.16);border:1px solid var(--border);display:flex;flex-direction:column}
+.modal-lg{width:640px}
+.mhd{padding:15px 19px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.m-title{font-family:'Syne',sans-serif;font-size:14.5px;font-weight:700;color:var(--ink)}
+.m-close{width:24px;height:24px;border-radius:5px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--ink-3);border:none;background:none}
+.m-close:hover{background:var(--surface)}
+.m-close svg{width:13px;height:13px}
+.mb{padding:18px 19px;overflow-y:auto;flex:1}
+.mft{padding:11px 19px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:7px;flex-shrink:0}
+.fg{display:flex;flex-direction:column;gap:4px;margin-bottom:12px}
+.fl{font-size:10.5px;font-weight:700;color:var(--ink-4);text-transform:uppercase;letter-spacing:0.04em}
+.fi,.fss,.fta{border:1px solid var(--border);border-radius:var(--r-sm);padding:7px 10px;font-size:12.5px;font-family:'Inter',sans-serif;color:var(--ink);background:var(--surface);outline:none;width:100%}
+.fi:focus,.fss:focus,.fta:focus{border-color:rgba(26,74,28,0.3);background:var(--card)}
+.fta{resize:vertical;min-height:70px;line-height:1.6}
+.g2f{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+/* CERT PREVIEW */
+.cert-preview{border:2px solid var(--amber);border-radius:var(--r-lg);padding:28px 32px;text-align:center;background:linear-gradient(135deg,var(--amber-xpale) 0%,#fff 60%);position:relative;overflow:hidden;margin-bottom:14px}
+.cert-preview::before{content:'';position:absolute;top:-20px;right:-20px;width:120px;height:120px;border-radius:50%;background:rgba(184,106,0,0.06)}
+.cert-preview::after{content:'';position:absolute;bottom:-30px;left:-30px;width:100px;height:100px;border-radius:50%;background:rgba(184,106,0,0.04)}
+.cert-org{font-size:11px;font-weight:600;color:var(--ink-4);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px}
+.cert-main-title{font-family:'Syne',sans-serif;font-size:11px;color:var(--ink-3);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:6px}
+.cert-recipient{font-family:'Syne',sans-serif;font-size:22px;font-weight:700;color:var(--ink);margin-bottom:6px}
+.cert-cert-name{font-family:'Syne',sans-serif;font-size:15px;font-weight:600;color:var(--amber);margin-bottom:10px}
+.cert-meta{font-size:11.5px;color:var(--ink-4)}
+.cert-badge-row{display:flex;justify-content:center;margin-bottom:12px}
+.cert-badge-ic{width:52px;height:52px;border-radius:50%;background:var(--amber-xpale);border:3px solid var(--amber-2);display:flex;align-items:center;justify-content:center}
+.cert-badge-ic svg{width:26px;height:26px;color:var(--amber-2)}
+/* Score colour */
+.score-high{color:var(--forest-2);font-weight:600}
+.score-mid{color:var(--amber);font-weight:600}
+.score-low{color:var(--coral);font-weight:600}
+/* Toast */
+#toast{position:fixed;bottom:22px;right:22px;background:var(--ink);color:#fff;padding:10px 16px;border-radius:var(--r);font-size:12.5px;font-weight:500;z-index:999;opacity:0;transform:translateY(6px);transition:all 0.22s;pointer-events:none;max-width:280px;box-shadow:0 2px 8px rgba(15,26,16,0.2)}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="logo-wrap"><div class="logo-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3C8 3 5 6.5 5 10c0 4 4 8 7 10 3-2 7-6 7-10 0-3.5-3-7-7-7z"/><circle cx="12" cy="9" r="2" fill="currentColor" stroke="none"/></svg></div><div class="logo-name">SFC Admin</div><div class="logo-sub">Sarawak Forestry Corp</div></div>
+  <div class="nav-sec"><div class="nav-lbl">Overview</div><a class="nav-a" href="sfc_01_dashboard.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>Dashboard</a></div>
+  <div class="nav-sec"><div class="nav-lbl">Digital Learning</div>
+    <a class="nav-a" href="sfc_02_trainees.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Trainees<span class="nb-a">4</span></a>
+    <a class="nav-a" href="sfc_03_courses.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Courses &amp; Modules</a>
+    <a class="nav-a active" href="sfc_05_certifications.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>Certifications</a>
+  </div>
+  <hr class="nav-div">
+  <div class="nav-sec"><div class="nav-lbl">Park Monitoring</div>
+    <a class="nav-a" href="sfc_06_park_guides.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Park Guides</a>
+    <a class="nav-a" href="sfc_07_iot_monitor.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5.636 5.636a9 9 0 1 0 12.728 12.728"/><circle cx="12" cy="12" r="1"/></svg>IoT Monitor<span class="nb">3</span></a>
+    <a class="nav-a" href="sfc_08_notifications.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>Notifications<span class="nb">6</span></a>
+  </div>
+  <hr class="nav-div">
+  <div class="nav-sec"><div class="nav-lbl">System</div><a class="nav-a" href="sfc_09_accounts.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>User Accounts</a></div>
+  <div class="sb-foot"><div class="admin-row"><div class="admin-av">AH</div><div><div class="admin-n">Ahmad Hisham</div><div class="admin-r">Super Admin</div></div></div></div>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <div><div class="tb-title">Certifications</div><div class="tb-sub">67 certificates issued · 3 certification levels</div></div>
+    <div class="tb-right">
+      <a class="icon-btn" href="sfc_08_notifications.html" style="position:relative"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="ndot"></span></a>
+      <button class="btn" onclick="openM('new-cert-level')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>New Cert Level</button>
+      <button class="btn btn-p" onclick="openM('issue-cert')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>Issue Certificate</button>
+    </div>
+  </div>
+  <div class="search-bar">
+    <div class="sw"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input class="si" placeholder="Search by trainee name, cert type..."></div>
+    <select class="fs"><option>All Cert Types</option><option>Basic Guide Certificate</option><option>Biodiversity Specialist</option><option>Senior Park Guide</option></select>
+    <select class="fs"><option>All Parks</option><option>Bako N.P.</option><option>Niah N.P.</option><option>Semenggoh N.R.</option><option>Kubah N.P.</option></select>
+    <select class="fs"><option>All Time</option><option>This Month</option><option>Last 3 Months</option><option>This Year</option></select>
+  </div>
+
+  <div class="content">
+    <!-- STATS -->
+    <div class="stat-grid">
+      <div class="sc sc-amb">
+        <div class="sc-top"><div class="sc-ic ic-amb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg></div><span class="sc-trend t-up">↑ 8 this month</span></div>
+        <div class="sc-val">67</div><div class="sc-lbl">Total Issued</div><div class="sc-sub">Across all cert levels</div>
+      </div>
+      <div class="sc sc-gr">
+        <div class="sc-top"><div class="sc-ic ic-gr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div><span class="sc-trend t-neu">—</span></div>
+        <div class="sc-val">34</div><div class="sc-lbl">Eligible Now</div><div class="sc-sub">Awaiting admin review</div>
+      </div>
+      <div class="sc sc-sky">
+        <div class="sc-top"><div class="sc-ic ic-sky"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div><span class="sc-trend t-up">↑ 5%</span></div>
+        <div class="sc-val">76%</div><div class="sc-lbl">Avg. Pass Rate</div><div class="sc-sub">Pass threshold: 70%</div>
+      </div>
+      <div class="sc sc-pur">
+        <div class="sc-top"><div class="sc-ic ic-pur"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></div><span class="sc-trend t-neu">—</span></div>
+        <div class="sc-val">3</div><div class="sc-lbl">Cert Levels</div><div class="sc-sub">Basic · Specialist · Senior</div>
+      </div>
+    </div>
+
+    <!-- CERT LEVEL CARDS -->
+    <div class="g3">
+      <!-- BASIC -->
+      <div class="cert-card">
+        <div class="cert-card-top">
+          <div class="cert-icon-wrap ic-amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg></div>
+          <div class="cert-name">Basic Guide Certificate</div>
+          <div class="cert-desc">Entry-level certification for all park guides. Awarded upon completing Conservation Fundamentals and Eco-Tourism Excellence, with passing quiz scores.</div>
+          <div class="cert-requirements">
+            <div class="cert-req-title">Requirements</div>
+            <div class="cert-req-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Complete: Conservation Fundamentals</div>
+            <div class="cert-req-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Complete: Eco-Tourism Excellence</div>
+            <div class="cert-req-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Avg. quiz score ≥ 70%</div>
+            <div class="cert-req-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Admin approval required</div>
+          </div>
+        </div>
+        <div class="cert-stats-row">
+          <div class="cs"><div class="cs-val">42</div><div class="cs-lbl">Issued</div></div>
+          <div class="cs"><div class="cs-val">148</div><div class="cs-lbl">Eligible</div></div>
+          <div class="cs"><div class="cs-val">74%</div><div class="cs-lbl">Pass rate</div></div>
+        </div>
+        <div class="cert-actions">
+          <button class="btn btn-p btn-sm" onclick="openM('issue-cert')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>Issue Cert</button>
+          <button class="btn btn-sm" onclick="openM('edit-cert-level')">Edit Level</button>
+          <button class="btn btn-sm" onclick="toast('Records exported.')">Export</button>
+        </div>
+      </div>
+      <!-- BIODIVERSITY SPECIALIST -->
+      <div class="cert-card">
+        <div class="cert-card-top">
+          <div class="cert-icon-wrap ic-forest" style="border-color:rgba(26,74,28,0.15)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg></div>
+          <div class="cert-name">Biodiversity Specialist</div>
+          <div class="cert-desc">Advanced certification recognising expertise in flora/fauna identification, biodiversity assessment, and conservation practices in Sarawak's national parks.</div>
+          <div class="cert-requirements">
+            <div class="cert-req-title">Requirements</div>
+            <div class="cert-req-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Hold Basic Guide Certificate</div>
+            <div class="cert-req-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Complete: Biodiversity Assessment</div>
+            <div class="cert-req-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Complete: Wildlife Laws &amp; Ethics</div>
+            <div class="cert-req-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Avg. quiz score ≥ 75%</div>
+          </div>
+        </div>
+        <div class="cert-stats-row">
+          <div class="cs"><div class="cs-val">15</div><div class="cs-lbl">Issued</div></div>
+          <div class="cs"><div class="cs-val">34</div><div class="cs-lbl">Eligible</div></div>
+          <div class="cs"><div class="cs-val">78%</div><div class="cs-lbl">Pass rate</div></div>
+        </div>
+        <div class="cert-actions">
+          <button class="btn btn-p btn-sm" onclick="openM('issue-cert')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>Issue Cert</button>
+          <button class="btn btn-sm" onclick="openM('edit-cert-level')">Edit Level</button>
+          <button class="btn btn-sm" onclick="toast('Records exported.')">Export</button>
+        </div>
+      </div>
+      <!-- SENIOR PARK GUIDE -->
+      <div class="cert-card">
+        <div class="cert-card-top">
+          <div class="cert-icon-wrap ic-purple" style="border-color:rgba(91,63,160,0.15)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg></div>
+          <div class="cert-name">Senior Park Guide</div>
+          <div class="cert-desc">The highest certification level. Awarded to experienced guides who have completed all training courses and demonstrated excellence in guiding and compliance.</div>
+          <div class="cert-requirements">
+            <div class="cert-req-title">Requirements</div>
+            <div class="cert-req-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Hold Biodiversity Specialist cert</div>
+            <div class="cert-req-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Complete all available courses</div>
+            <div class="cert-req-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Avg. quiz score ≥ 80%</div>
+            <div class="cert-req-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>No IoT violations in last 6 months</div>
+          </div>
+        </div>
+        <div class="cert-stats-row">
+          <div class="cs"><div class="cs-val">10</div><div class="cs-lbl">Issued</div></div>
+          <div class="cs"><div class="cs-val">20</div><div class="cs-lbl">Eligible</div></div>
+          <div class="cs"><div class="cs-val">85%</div><div class="cs-lbl">Pass rate</div></div>
+        </div>
+        <div class="cert-actions">
+          <button class="btn btn-p btn-sm" onclick="openM('issue-cert')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>Issue Cert</button>
+          <button class="btn btn-sm" onclick="openM('edit-cert-level')">Edit Level</button>
+          <button class="btn btn-sm" onclick="toast('Records exported.')">Export</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ELIGIBLE NOW - needs review -->
+    <div class="panel">
+      <div class="ph">
+        <span class="ph-title">Eligible for Certification — Pending Admin Review</span>
+        <span style="font-size:10px;font-weight:700;background:var(--amber-xpale);color:var(--amber);padding:2px 8px;border-radius:7px">6 waiting</span>
+      </div>
+      <div class="pb">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div style="border:1px solid var(--border);border-radius:var(--r);padding:13px;background:var(--surface)">
+            <div style="display:flex;align-items:center;gap:9px;margin-bottom:8px">
+              <div class="av av-m av-t">AH</div>
+              <div>
+                <div style="font-size:13px;font-weight:600;color:var(--ink)">Ahmad Haziq</div>
+                <div style="font-size:11px;color:var(--ink-4)">Bako N.P. · Completed 1 Apr 2026</div>
+              </div>
+              <span class="pill p-amb" style="margin-left:auto">Basic Guide</span>
+            </div>
+            <div style="font-size:12px;color:var(--ink-3);line-height:1.6;margin-bottom:10px">Completed Conservation Fundamentals (91%) and Eco-Tourism Excellence (88%). All requirements met. No outstanding quizzes. <strong>Recommended for certification.</strong></div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:10px">
+              <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--r-sm);padding:7px;text-align:center"><div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:var(--forest-2)">91%</div><div style="font-size:9.5px;color:var(--ink-4)">Avg. score</div></div>
+              <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--r-sm);padding:7px;text-align:center"><div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:var(--ink)">2/2</div><div style="font-size:9.5px;color:var(--ink-4)">Courses</div></div>
+              <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--r-sm);padding:7px;text-align:center"><div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:var(--ink)">0</div><div style="font-size:9.5px;color:var(--ink-4)">Violations</div></div>
+            </div>
+            <div style="display:flex;gap:6px">
+              <button class="btn btn-p btn-sm" onclick="openM('issue-cert')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>Issue Certificate</button>
+              <button class="btn btn-sm" onclick="openM('cert-preview')">Preview Cert</button>
+              <button class="btn btn-sm" onclick="openM('contact-modal')">Contact</button>
+            </div>
+          </div>
+          <div style="border:1px solid var(--border);border-radius:var(--r);padding:13px;background:var(--surface)">
+            <div style="display:flex;align-items:center;gap:9px;margin-bottom:8px">
+              <div class="av av-m av-t">SR</div>
+              <div>
+                <div style="font-size:13px;font-weight:600;color:var(--ink)">Siti Rahimah</div>
+                <div style="font-size:11px;color:var(--ink-4)">Niah N.P. · Completed 28 Mar 2026</div>
+              </div>
+              <span class="pill p-gr" style="margin-left:auto">Biodiversity</span>
+            </div>
+            <div style="font-size:12px;color:var(--ink-3);line-height:1.6;margin-bottom:10px">Holds Basic Guide Cert. Completed Biodiversity Assessment (92%) and Wildlife Laws (88%). All specialist requirements met. Zero IoT incidents.</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:10px">
+              <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--r-sm);padding:7px;text-align:center"><div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:var(--forest-2)">92%</div><div style="font-size:9.5px;color:var(--ink-4)">Avg. score</div></div>
+              <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--r-sm);padding:7px;text-align:center"><div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:var(--ink)">4/4</div><div style="font-size:9.5px;color:var(--ink-4)">Courses</div></div>
+              <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--r-sm);padding:7px;text-align:center"><div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:var(--ink)">0</div><div style="font-size:9.5px;color:var(--ink-4)">Violations</div></div>
+            </div>
+            <div style="display:flex;gap:6px">
+              <button class="btn btn-p btn-sm" onclick="openM('issue-cert')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>Issue Certificate</button>
+              <button class="btn btn-sm" onclick="openM('cert-preview')">Preview Cert</button>
+              <button class="btn btn-sm" onclick="openM('contact-modal')">Contact</button>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top:10px;text-align:center">
+          <button class="btn btn-sm" onclick="toast('All 6 eligible trainees shown.')">View all 6 eligible trainees</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ALL ISSUED CERTS TABLE -->
+    <div class="panel">
+      <div class="ph"><span class="ph-title">All Issued Certificates</span><button class="ph-act" onclick="toast('CSV exported.')">Export CSV</button></div>
+      <div style="overflow-x:auto">
+        <table class="tbl">
+          <thead>
+            <tr>
+              <th>Recipient</th>
+              <th>Certificate Level</th>
+              <th>Park</th>
+              <th>Score</th>
+              <th>Issued Date</th>
+              <th>Issued By</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><div style="display:flex;align-items:center;gap:8px"><div class="av av-s av-t">AH</div><div><div style="font-weight:500">Ahmad Haziq</div><div style="font-size:10.5px;color:var(--ink-4)">T-1000</div></div></div></td>
+              <td><div style="display:flex;align-items:center;gap:6px"><svg viewBox="0 0 24 24" fill="none" stroke="var(--amber-2)" stroke-width="2" style="width:13px;height:13px;flex-shrink:0"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>Basic Guide Certificate</div></td>
+              <td><span class="pill p-sky">Bako N.P.</span></td>
+              <td><span class="score-high">91%</span></td>
+              <td style="color:var(--ink-4)">1 Apr 2026</td>
+              <td style="color:var(--ink-4)">Ahmad Hisham</td>
+              <td><div style="display:flex;gap:4px"><button class="btn btn-sm" onclick="openM('cert-preview')">View</button><button class="btn btn-sm" onclick="toast('Certificate downloaded.')">Download</button><button class="btn btn-sm btn-danger" onclick="toast('Certificate revoked.')">Revoke</button></div></td>
+            </tr>
+            <tr>
+              <td><div style="display:flex;align-items:center;gap:8px"><div class="av av-s av-t">LA</div><div><div style="font-weight:500">Lily Awang</div><div style="font-size:10.5px;color:var(--ink-4)">T-1001</div></div></div></td>
+              <td><div style="display:flex;align-items:center;gap:6px"><svg viewBox="0 0 24 24" fill="none" stroke="var(--amber-2)" stroke-width="2" style="width:13px;height:13px;flex-shrink:0"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>Basic Guide Certificate</div></td>
+              <td><span class="pill p-sky">Bako N.P.</span></td>
+              <td><span class="score-high">88%</span></td>
+              <td style="color:var(--ink-4)">1 Apr 2026</td>
+              <td style="color:var(--ink-4)">Ahmad Hisham</td>
+              <td><div style="display:flex;gap:4px"><button class="btn btn-sm" onclick="openM('cert-preview')">View</button><button class="btn btn-sm" onclick="toast('Certificate downloaded.')">Download</button><button class="btn btn-sm btn-danger" onclick="toast('Certificate revoked.')">Revoke</button></div></td>
+            </tr>
+            <tr>
+              <td><div style="display:flex;align-items:center;gap:8px"><div class="av av-s av-g">SR</div><div><div style="font-weight:500">Siti Rahimah</div><div style="font-size:10.5px;color:var(--ink-4)">G-2002</div></div></div></td>
+              <td><div style="display:flex;align-items:center;gap:6px"><svg viewBox="0 0 24 24" fill="none" stroke="var(--forest-2)" stroke-width="2" style="width:13px;height:13px;flex-shrink:0"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>Biodiversity Specialist</div></td>
+              <td><span class="pill p-sky">Niah N.P.</span></td>
+              <td><span class="score-high">92%</span></td>
+              <td style="color:var(--ink-4)">28 Mar 2026</td>
+              <td style="color:var(--ink-4)">Ahmad Hisham</td>
+              <td><div style="display:flex;gap:4px"><button class="btn btn-sm" onclick="openM('cert-preview')">View</button><button class="btn btn-sm" onclick="toast('Certificate downloaded.')">Download</button><button class="btn btn-sm btn-danger" onclick="toast('Certificate revoked.')">Revoke</button></div></td>
+            </tr>
+            <tr>
+              <td><div style="display:flex;align-items:center;gap:8px"><div class="av av-s av-g">DB</div><div><div style="font-weight:500">Danial Bujang</div><div style="font-size:10.5px;color:var(--ink-4)">G-2001</div></div></div></td>
+              <td><div style="display:flex;align-items:center;gap:6px"><svg viewBox="0 0 24 24" fill="none" stroke="var(--purple)" stroke-width="2" style="width:13px;height:13px;flex-shrink:0"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>Senior Park Guide</div></td>
+              <td><span class="pill p-sky">Semenggoh N.R.</span></td>
+              <td><span class="score-high">87%</span></td>
+              <td style="color:var(--ink-4)">25 Mar 2026</td>
+              <td style="color:var(--ink-4)">Ahmad Hisham</td>
+              <td><div style="display:flex;gap:4px"><button class="btn btn-sm" onclick="openM('cert-preview')">View</button><button class="btn btn-sm" onclick="toast('Certificate downloaded.')">Download</button><button class="btn btn-sm btn-danger" onclick="toast('Certificate revoked.')">Revoke</button></div></td>
+            </tr>
+            <tr>
+              <td><div style="display:flex;align-items:center;gap:8px"><div class="av av-s av-g">NF</div><div><div style="font-weight:500">Nadia Fitri</div><div style="font-size:10.5px;color:var(--ink-4)">G-2004</div></div></div></td>
+              <td><div style="display:flex;align-items:center;gap:6px"><svg viewBox="0 0 24 24" fill="none" stroke="var(--amber-2)" stroke-width="2" style="width:13px;height:13px;flex-shrink:0"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>Basic Guide Certificate</div></td>
+              <td><span class="pill p-sky">Kubah N.P.</span></td>
+              <td><span class="score-mid">79%</span></td>
+              <td style="color:var(--ink-4)">20 Mar 2026</td>
+              <td style="color:var(--ink-4)">Ahmad Hisham</td>
+              <td><div style="display:flex;gap:4px"><button class="btn btn-sm" onclick="openM('cert-preview')">View</button><button class="btn btn-sm" onclick="toast('Certificate downloaded.')">Download</button><button class="btn btn-sm btn-danger" onclick="toast('Certificate revoked.')">Revoke</button></div></td>
+            </tr>
+            <tr>
+              <td><div style="display:flex;align-items:center;gap:8px"><div class="av av-s av-g">RB</div><div><div style="font-weight:500">Remy Bulat</div><div style="font-size:10.5px;color:var(--ink-4)">G-2003</div></div></div></td>
+              <td><div style="display:flex;align-items:center;gap:6px"><svg viewBox="0 0 24 24" fill="none" stroke="var(--amber-2)" stroke-width="2" style="width:13px;height:13px;flex-shrink:0"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>Basic Guide Certificate</div></td>
+              <td><span class="pill p-sky">Bako N.P.</span></td>
+              <td><span class="score-mid">74%</span></td>
+              <td style="color:var(--ink-4)">15 Mar 2026</td>
+              <td style="color:var(--ink-4)">Ahmad Hisham</td>
+              <td><div style="display:flex;gap:4px"><button class="btn btn-sm" onclick="openM('cert-preview')">View</button><button class="btn btn-sm" onclick="toast('Certificate downloaded.')">Download</button><button class="btn btn-sm btn-danger" onclick="toast('Certificate revoked.')">Revoke</button></div></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Issue Certificate -->
+<div class="modal-ov hidden" id="issue-cert">
+  <div class="modal">
+    <div class="mhd"><span class="m-title">Issue Certificate</span><button class="m-close" onclick="closeM('issue-cert')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+    <div class="mb">
+      <div class="fg">
+        <div class="fl">Recipient</div>
+        <select class="fss">
+          <option>Ahmad Haziq — Bako N.P. · Score: 91%</option>
+          <option>Lily Awang — Bako N.P. · Score: 88%</option>
+          <option>Siti Rahimah — Niah N.P. · Score: 92%</option>
+          <option>Suhana Kamaruddin — Niah N.P. · Score: 74%</option>
+        </select>
+      </div>
+      <div class="fg">
+        <div class="fl">Certificate Level</div>
+        <select class="fss">
+          <option>Basic Guide Certificate</option>
+          <option>Biodiversity Specialist</option>
+          <option>Senior Park Guide</option>
+        </select>
+      </div>
+      <div class="g2f">
+        <div class="fg"><div class="fl">Date Issued</div><input class="fi" type="date" value="2026-04-01"></div>
+        <div class="fg"><div class="fl">Expiry Date (optional)</div><input class="fi" type="date"></div>
+      </div>
+      <div class="fg"><div class="fl">Admin Notes</div><textarea class="fta" placeholder="Any notes for this certificate record..."></textarea></div>
+      <div style="background:var(--forest-xpale);border:1px solid rgba(26,74,28,0.15);border-radius:var(--r-sm);padding:10px 12px;font-size:12px;color:var(--forest-2)">
+        <strong>Next steps:</strong> The recipient will receive an email notification and a downloadable PDF certificate. The certificate will appear on their platform profile.
+      </div>
+    </div>
+    <div class="mft">
+      <button class="btn" onclick="closeM('issue-cert')">Cancel</button>
+      <button class="btn btn-sm" onclick="openM('cert-preview');closeM('issue-cert')">Preview First</button>
+      <button class="btn btn-p" onclick="toast('Certificate issued. Email sent to recipient.');closeM('issue-cert')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>Issue Certificate</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Certificate Preview -->
+<div class="modal-ov hidden" id="cert-preview">
+  <div class="modal modal-lg">
+    <div class="mhd"><span class="m-title">Certificate Preview</span><button class="m-close" onclick="closeM('cert-preview')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+    <div class="mb">
+      <div class="cert-preview">
+        <div class="cert-org">Sarawak Forestry Corporation</div>
+        <div class="cert-badge-row">
+          <div class="cert-badge-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg></div>
+        </div>
+        <div class="cert-main-title">This is to certify that</div>
+        <div class="cert-recipient">Ahmad Haziq bin Abdullah</div>
+        <div style="font-size:12px;color:var(--ink-4);margin-bottom:8px">has successfully completed all required training and assessments for the</div>
+        <div class="cert-cert-name">Basic Guide Certificate</div>
+        <div style="width:60px;height:2px;background:var(--amber);margin:10px auto 12px;border-radius:1px"></div>
+        <div class="cert-meta">Issued: 1 April 2026 &nbsp;·&nbsp; Bako National Park &nbsp;·&nbsp; Score: 91%</div>
+        <div class="cert-meta" style="margin-top:4px">Authorised by: Ahmad Hisham, Super Admin · SFC</div>
+        <div style="margin-top:14px;font-size:10.5px;color:var(--ink-5);font-family:'Syne',sans-serif;letter-spacing:0.06em">CERT-2026-BKN-1000 &nbsp;·&nbsp; Verify at sfc.gov.my/verify</div>
+      </div>
+      <div style="font-size:12px;color:var(--ink-4);text-align:center;margin-bottom:4px">This preview is for review only. The final PDF will be generated upon issuing.</div>
+    </div>
+    <div class="mft">
+      <button class="btn" onclick="closeM('cert-preview')">Close</button>
+      <button class="btn btn-sm" onclick="toast('Certificate PDF downloaded.')">Download PDF</button>
+      <button class="btn btn-p" onclick="toast('Certificate issued. Email sent.');closeM('cert-preview')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>Confirm &amp; Issue</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: New Cert Level -->
+<div class="modal-ov hidden" id="new-cert-level">
+  <div class="modal">
+    <div class="mhd"><span class="m-title">Create New Certification Level</span><button class="m-close" onclick="closeM('new-cert-level')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+    <div class="mb">
+      <div class="fg"><div class="fl">Certificate Name</div><input class="fi" placeholder="e.g. Advanced Wildlife Specialist"></div>
+      <div class="fg"><div class="fl">Description</div><textarea class="fta" placeholder="Describe what this certification recognises..."></textarea></div>
+      <div class="fg"><div class="fl">Minimum Avg. Quiz Score (%)</div><input class="fi" type="number" value="70"></div>
+      <div class="fg"><div class="fl">Required Courses (select all that apply)</div>
+        <div style="border:1px solid var(--border);border-radius:var(--r-sm);overflow:hidden">
+          <div style="padding:8px 11px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;cursor:pointer" onclick="this.querySelector('input').click()"><input type="checkbox" style="accent-color:var(--forest-2)"><span style="font-size:12.5px;color:var(--ink)">Conservation Fundamentals</span></div>
+          <div style="padding:8px 11px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;cursor:pointer" onclick="this.querySelector('input').click()"><input type="checkbox" style="accent-color:var(--forest-2)"><span style="font-size:12.5px;color:var(--ink)">Eco-Tourism Excellence</span></div>
+          <div style="padding:8px 11px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;cursor:pointer" onclick="this.querySelector('input').click()"><input type="checkbox" style="accent-color:var(--forest-2)"><span style="font-size:12.5px;color:var(--ink)">Wildlife Laws &amp; Ethics</span></div>
+          <div style="padding:8px 11px;display:flex;align-items:center;gap:8px;cursor:pointer" onclick="this.querySelector('input').click()"><input type="checkbox" style="accent-color:var(--forest-2)"><span style="font-size:12.5px;color:var(--ink)">Emergency Response Protocols</span></div>
+        </div>
+      </div>
+      <div class="fg"><div class="fl">Additional Requirements (optional)</div><textarea class="fta" placeholder="e.g. No IoT violations in last 6 months, minimum 50 guided tours..."></textarea></div>
+    </div>
+    <div class="mft"><button class="btn" onclick="closeM('new-cert-level')">Cancel</button><button class="btn btn-p" onclick="toast('New certification level created.');closeM('new-cert-level')">Create Level</button></div>
+  </div>
+</div>
+
+<!-- MODAL: Edit Cert Level -->
+<div class="modal-ov hidden" id="edit-cert-level">
+  <div class="modal">
+    <div class="mhd"><span class="m-title">Edit Certification Level</span><button class="m-close" onclick="closeM('edit-cert-level')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+    <div class="mb">
+      <div class="fg"><div class="fl">Certificate Name</div><input class="fi" value="Basic Guide Certificate"></div>
+      <div class="fg"><div class="fl">Description</div><textarea class="fta">Entry-level certification for all park guides. Awarded upon completing Conservation Fundamentals and Eco-Tourism Excellence, with passing quiz scores.</textarea></div>
+      <div class="fg"><div class="fl">Minimum Avg. Quiz Score (%)</div><input class="fi" type="number" value="70"></div>
+    </div>
+    <div class="mft"><button class="btn" onclick="closeM('edit-cert-level')">Cancel</button><button class="btn btn-p" onclick="toast('Certification level updated.');closeM('edit-cert-level')">Save Changes</button></div>
+  </div>
+</div>
+
+<!-- MODAL: Contact Trainee -->
+<div class="modal-ov hidden" id="contact-modal">
+  <div class="modal">
+    <div class="mhd"><span class="m-title">Contact Trainee — Ahmad Haziq</span><button class="m-close" onclick="closeM('contact-modal')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+    <div class="mb">
+      <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--surface);border-radius:var(--r-sm);border:1px solid var(--border);margin-bottom:14px">
+        <div class="av av-s av-t">AH</div>
+        <div><div style="font-size:13px;font-weight:600;color:var(--ink)">Ahmad Haziq</div><div style="font-size:11.5px;color:var(--ink-4)">ahmad.haziq@email.com · +60 12-3456789</div></div>
+      </div>
+      <div class="fg"><div class="fl">Subject</div><input class="fi" value="Congratulations — Basic Guide Certificate Ready!"></div>
+      <div class="fg"><div class="fl">Message</div>
+        <textarea class="fta" style="min-height:120px">Dear Ahmad,
+
+Congratulations on completing your training with a score of 91%! We are pleased to inform you that your Basic Guide Certificate is now ready.
+
+Please log in to the SFC Training Platform to download your certificate. You are now eligible to operate as an official park guide at Bako National Park.
+
+Best regards,
+SFC Admin Team</textarea>
+      </div>
+      <div class="fg"><div class="fl">Send Via</div><select class="fss"><option>Email + Platform notification</option><option>Email only</option><option>Platform notification only</option></select></div>
+    </div>
+    <div class="mft"><button class="btn" onclick="closeM('contact-modal')">Cancel</button><button class="btn btn-p" onclick="toast('Message sent to Ahmad Haziq.');closeM('contact-modal')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>Send Message</button></div>
+  </div>
+</div>
+
+<div id="toast"></div>
+<script>
+function openM(id){var e=document.getElementById(id);if(e)e.classList.remove('hidden')}
+function closeM(id){var e=document.getElementById(id);if(e)e.classList.add('hidden')}
+document.querySelectorAll('.modal-ov').forEach(function(o){o.addEventListener('click',function(e){if(e.target===o)o.classList.add('hidden')})})
+var _tt;
+function toast(m){var t=document.getElementById('toast');t.textContent=m;t.style.opacity='1';t.style.transform='translateY(0)';clearTimeout(_tt);_tt=setTimeout(function(){t.style.opacity='0';t.style.transform='translateY(6px)'},2800)}
+</script>
+</body>
+</html>
